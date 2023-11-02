@@ -1,0 +1,8 @@
+{
+  "title": "Recover your password",
+  "subtitle": "Enter your email and we'll send you instructions on how to reset your password.",
+  "emailAddress": "Email Address",
+  "sendResetButton": "Send reset link",
+  "haveAccount?": "Don't have an account yet?",
+  "createAccount": "Create one now!"
+}

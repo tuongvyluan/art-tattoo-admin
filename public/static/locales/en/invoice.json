@@ -1,0 +1,8 @@
+{
+  "description": "Description",
+  "amount": "Amount",
+  "subtotal": "Subtotal",
+  "tax": "Tax",
+  "discount": "Discount",
+  "total": "Total"
+}

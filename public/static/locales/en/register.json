@@ -1,0 +1,11 @@
+{
+  "title": "Create new account",
+  "subtitle": "enjoy using your account",
+  "fullName": "Full name",
+  "emailAddress": "Email address",
+  "password": "Password",
+  "cPassword": "Confirm password",
+  "registerButton": "Register",
+  "haveAccount?": "Already have an account?",
+  "loginLink": "Login Now!"
+}

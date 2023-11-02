@@ -1,0 +1,9 @@
+{
+  "title": "Please log in",
+  "subtitle": "to continue using your account",
+  "emailAddress": "Email address",
+  "password": "Password",
+  "loginButton": "Log in",
+  "haveAccount?": "Don't have an account yet?",
+  "createAccount": "Create one now!"
+}

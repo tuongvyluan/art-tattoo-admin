@@ -1,0 +1,12 @@
+{
+  "title": "Something is brewing",
+  "subtitle": "Our website will be ready soon. Please register and we will notify you when it's ready!",
+  "emailAddress": "Email Address",
+  "days": "Days",
+  "hours": "Hours",
+  "minutes": "Minutes",
+  "seconds": "Seconds",
+  "notifyButton": "Notify Me",
+  "haveAccount?": "Don't have an account yet?",
+  "createAccount": "Create one now!"
+}
