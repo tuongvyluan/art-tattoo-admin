@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import useSWR from 'swr';
 import { fetcher } from '../../lib/fetcher';
-import { Avatar, Loading, Ripple } from '../../ui';
+import { Avatar, Card, CardBody, Loading, WidgetStatCard } from '../../ui';
+import { Users } from 'icons/solid';
 
 function StudioIndexPage() {
-	const { data, error } = useSWR(`/api/social`, fetcher);
+	const { data, error } = useSWR(`/api/dashboard`, fetcher);
 	const [activeTab, setActiveTab] = useState('1');
 
 	const toggle = (tab) => {
@@ -26,79 +27,161 @@ function StudioIndexPage() {
 			</div>
 		);
 	return (
-		<div className="-mx-4">
-			<div className="mx-auto">
-				<div className="flex justify-between items-center py-4 px-10">
-					<div className="flex items-center">
-						<div>
-							<Avatar size={84} src={`images/avatar.jpg`} alt={`avatar`} />
-						</div>
-						<div className="ltr:ml-6 rtl:mr-6">
-							<div className="hidden sm:inline-block text-2xl flex items-center">
-								<span className="ltr:mr-2 rtl:ml-2">Gerald Morris</span>
-							</div>
-							<p className="mt-2 font-hairline text-sm">123,456 followers</p>
-						</div>
-					</div>
+		<>
+			<div className="flex flex-wrap -mx-2">
+				<div className="w-full md:w-2/4 lg:w-1/4 px-2">
+					<WidgetStatCard
+						title="Tổng đơn hàng"
+						value={123}
+						icon={<Users width={16} height={16} />}
+						type={'blue'}
+					/>
 				</div>
-				<div className="flex flex-row overflow-hidden w-0 min-w-full">
-					<ul className="list-none flex flex-row overflow-hidden w-0 min-w-full p-4 -mb-10 pb-10">
-						<li
-							className={`text-center  cursor-pointer ${
-								activeTab === '1' ? 'border-b-2 border-solid border-indigo-500' : ''
-							}`}
-							onClick={() => {
-								toggle('1');
-							}}
-						>
-							<a className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-8 block">
-								Trang chủ
-								<Ripple color="black" />
-							</a>
-						</li>
-						<li
-							className={`text-center cursor-pointer ${
-								activeTab === '2' ? 'border-b-2 border-solid border-indigo-500' : ''
-							}`}
-							onClick={() => {
-								toggle('2');
-							}}
-						>
-							<a className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-8 block">
-								Hồ sơ
-								<Ripple color="black" />
-							</a>
-						</li>
-						<li
-							className={`text-center cursor-pointer ${
-								activeTab === '3' ? 'border-b-2 border-solid border-indigo-500' : ''
-							}`}
-							onClick={() => {
-								toggle('3');
-							}}
-						>
-							<a className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-8 block">
-								Nghệ sĩ xăm
-								<Ripple color="black" />
-							</a>
-						</li>
-						<li
-							className={`text-center cursor-pointer ${
-								activeTab === '4' ? 'border-b-2 border-solid border-indigo-500' : ''
-							}`}
-							onClick={() => {
-								toggle('4');
-							}}
-						>
-							<a className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-8 block">
-								Tài khoản
-								<Ripple color="black" />
-							</a>
-						</li>
-					</ul>
+				<div className="w-full md:w-2/4 lg:w-1/4 px-2">
+					<WidgetStatCard
+						title="Đơn hàng tháng này"
+						value={23}
+						icon={<Users width={16} height={16} />}
+						type={'gray'}
+					/>
+				</div>
+				<div className="w-full md:w-2/4 lg:w-1/4 px-2">
+					<WidgetStatCard
+						title={'Doanh thu tháng này'}
+						value={'23,465,563'}
+						icon={<Users width={16} height={16} />}
+						type={'indigo'}
+					/>
+				</div>
+				<div className="w-full md:w-2/4 lg:w-1/4 px-2">
+					<WidgetStatCard
+						title={'Lượt theo dõi'}
+						value={'123'}
+						icon={<Users width={16} height={16} />}
+						type={'red'}
+					/>
 				</div>
 			</div>
-		</div>
+			<div>
+				<Card>
+					<CardBody className="flex">
+          <div className="w-1/4 px-2 mb-3">
+							<a className="w-full block text-gray-900 dark:text-white">
+								<div className="flex justify-center">
+									<Avatar
+										size={48}
+										src={`images/face${Math.floor(Math.random() * 7) + 1}.jpg`}
+										alt={'Trung Tadashi'}
+									/>
+								</div>
+								<div className="mt-1 flex justify-center text-center">
+									<div>
+										<span className="block">Trung Tadashi</span>
+										<small className="text-gray-500">
+											<span>Top nghệ sĩ xăm</span>
+										</small>
+									</div>
+								</div>
+							</a>
+						</div><div className="w-1/4 px-2 mb-3">
+							<a className="w-full block text-gray-900 dark:text-white">
+								<div className="flex justify-center">
+									<Avatar
+										size={48}
+										src={`images/face${Math.floor(Math.random() * 7) + 1}.jpg`}
+										alt={'KietTattoo'}
+									/>
+								</div>
+								<div className="mt-1 flex justify-center text-center">
+									<div>
+										<span className="block">KietTattoo</span>
+										<small className="text-gray-500">
+											<span>Top nghệ sĩ xăm</span>
+										</small>
+									</div>
+								</div>
+							</a>
+						</div>
+						<div className="w-1/4 px-2 mb-3">
+							<a className="w-full block text-gray-900 dark:text-white">
+								<div className="flex justify-center">
+									<Avatar
+										size={48}
+										src={`images/face${Math.floor(Math.random() * 7) + 1}.jpg`}
+										alt={'Keith “Bang Bang”'}
+									/>
+								</div>
+								<div className="mt-1 flex justify-center text-center">
+									<div>
+										<span className="block">Keith “Bang Bang”</span>
+										<small className="text-gray-500">
+											<span>Top nghệ sĩ xăm</span>
+										</small>
+									</div>
+								</div>
+							</a>
+						</div>
+						<div className="w-1/4 px-2 mb-3">
+							<a className="w-full block text-gray-900 dark:text-white">
+								<div className="flex justify-center">
+									<Avatar
+										size={48}
+										src={`images/face${Math.floor(Math.random() * 7) + 1}.jpg`}
+										alt={'Bo Toee'}
+									/>
+								</div>
+								<div className="mt-1 flex justify-center text-center">
+									<div>
+										<span className="block">Bo Toee</span>
+										<small className="text-gray-500">
+											<span>Top nghệ sĩ xăm</span>
+										</small>
+									</div>
+								</div>
+							</a>
+						</div>
+						<div className="w-1/4 px-2 mb-3">
+							<a className="w-full block text-gray-900 dark:text-white">
+								<div className="flex justify-center">
+									<Avatar
+										size={48}
+										src={`images/face${Math.floor(Math.random() * 7) + 1}.jpg`}
+										alt={'Kat Von D'}
+									/>
+								</div>
+								<div className="mt-1 flex justify-center text-center">
+									<div>
+										<span className="block">Kat Von D</span>
+										<small className="text-gray-500">
+											<span>Top nghệ sĩ xăm</span>
+										</small>
+									</div>
+								</div>
+							</a>
+						</div>
+						<div className="w-1/4 px-2 mb-3">
+							<a className="w-full block text-gray-900 dark:text-white">
+								<div className="flex justify-center">
+									<Avatar
+										size={48}
+										src={`images/face${Math.floor(Math.random() * 7) + 1}.jpg`}
+										alt={'Dũng Tattoo'}
+									/>
+								</div>
+								<div className="mt-1 flex justify-center text-center">
+									<div>
+										<span className="block">Dũng Tattoo</span>
+										<small className="text-gray-500">
+											<span>Top nghệ sĩ xăm</span>
+										</small>
+									</div>
+								</div>
+							</a>
+						</div>
+					</CardBody>
+				</Card>
+			</div>
+		</>
 	);
 }
 
