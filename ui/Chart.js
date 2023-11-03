@@ -12,7 +12,6 @@ import {
 
 import PropTypes from "prop-types";
 
-defaults.global.defaultFontFamily = `OpenSans`;
 defaults.global.defaultFontColor = `rgb(107, 114, 128)`;
 
 export const Chart = ({ type, data, height, options }) => {
