@@ -41,10 +41,6 @@ class MyApp extends App {
 					<meta name="msapplication-TileColor" content="#da532c" />
 					<meta name="theme-color" content="#ffffff" />
 					<link rel="preconnect" href="https://fonts.gstatic.com"></link>
-					<link
-						href="https://fonts.googleapis.com/css2?family=Space+Mono:ital@0;1&display=swap"
-						rel="stylesheet"
-					></link>
 					<title>Square - Tailwind Admin Kit</title>
 				</Head>
 
