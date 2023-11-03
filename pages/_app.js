@@ -48,13 +48,14 @@ class MyApp extends App {
 					<script src="https://unpkg.com/@ungap/url-search-params"></script>
 					<title>Square - Tailwind Admin Kit</title>
 				</Head>
-				<AppProvider>
-					<SessionProvider session={pageProps.session}>
+
+				<SessionProvider session={pageProps.session}>
+					<AppProvider>
 						<Page>
 							<Component {...pageProps} />
 						</Page>
-					</SessionProvider>
-				</AppProvider>
+					</AppProvider>
+				</SessionProvider>
 			</>
 		);
 	}

@@ -6,7 +6,6 @@ import { useState } from "react";
 const LoginPage = () => {
   const [user, setUser] = useState({email: '', password: ''})
   const handleSetUser = (newUser) => {
-    console.log(newUser)
     setUser(newUser)
   }
   const handleSubmit = async (e) => {
