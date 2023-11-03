@@ -12,7 +12,6 @@ export * from "./WidgetPricing";
 export * from "./WidgetProfileCard";
 export * from "./WidgetStatCard";
 export * from "./WidgetTimeline";
-export * from "./WidgetWeatherCard";
 export * from "./Chart";
 export * from "./Logo";
 export * from "./Loading";

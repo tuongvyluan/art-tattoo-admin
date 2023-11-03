@@ -13,7 +13,6 @@ import {
 	Ripple,
 	WidgetPostCard,
 	WidgetStatCard,
-	WidgetWeatherCard
 } from 'ui';
 import { LightningBolt, ThumbUp, UserAdd, Users } from 'icons/solid';
 import { memo, useState } from 'react';
@@ -458,10 +457,6 @@ const Dashboard = () => {
 			</div>
 
 			<div className="flex flex-wrap -mx-2">
-				<div className="w-full lg:w-1/2 px-2">
-					<WidgetWeatherCard city="london" country="gb" days={7} />
-				</div>
-
 				<div className="w-full lg:w-1/2 px-2">
 					<WidgetPostCard
 						title={t('shrimpChorizo')}

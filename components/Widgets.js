@@ -8,7 +8,6 @@ import {
   WidgetPostCard,
   WidgetProfileCard,
   WidgetStatCard,
-  WidgetWeatherCard,
 } from "ui";
 import {
   ChevronLeft,
@@ -236,10 +235,6 @@ const Widgets = ({}) => {
       </div>
 
       <div className="flex flex-wrap -mx-2">
-        <div className="w-full lg:w-1/2 px-2">
-          <WidgetWeatherCard city="london" country="gb" days={7} />
-        </div>
-
         <div className="w-full lg:w-1/2 px-2">
           <WidgetPostCard
             title={t("shrimpChorizo")}
