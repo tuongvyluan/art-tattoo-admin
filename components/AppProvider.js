@@ -133,26 +133,12 @@ const AppProvider = (props) => {
   }, []);
 
   useEffect(() => {
-    prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
-    prefersDark.addListener(prefersDarkChanged);
-    if (state.autoDarkMode) prefersDarkChanged();
-    return () => {
-      prefersDark.removeListener(prefersDarkChanged);
-    };
-  }, [state.autoDarkMode]);
-
-  useEffect(() => {
     if(state.darkMode) document.body.classList.add("dark");
     else document.body.classList.remove("dark");
   }, [state.darkMode])
 
   const mediaQueryChanged = () => {
     dispatch({ type: "setMobile" });
-  };
-
-  const prefersDarkChanged = () => {
-    if (!state.autoDarkMode) return;
-    dispatch({ type: "toggleDarkMode", value: prefersDark.matches });
   };
 
   return <Provider value={[state, dispatch]}>{props.children}</Provider>;
