@@ -57,13 +57,15 @@ export const Table = ({ columns, data, update }) => {
 					{...getTableProps()}
 				>
 					<thead>
-						{headerGroups.map((headerGroup) => (
+						{headerGroups.map((headerGroup, index) => (
 							<tr
+								key={index}
 								className="ltr:text-left rtl:text-right"
 								{...headerGroup.getHeaderGroupProps()}
 							>
-								{headerGroup.headers.map((column) => (
+								{headerGroup.headers.map((column, columnIndex) => (
 									<th
+										key={columnIndex}
 										className="border-b border-gray-100 dark:border-gray-700 px-6 py-2 font-medium tracking-wider uppercase text-xs"
 										{...column.getHeaderProps()}
 									>
@@ -77,8 +79,8 @@ export const Table = ({ columns, data, update }) => {
 						{page.map((row, i) => {
 							prepareRow(row);
 							return (
-								<tr {...row.getRowProps()}>
-									{row.cells.map((cell) => {
+								<tr key={i} {...row.getRowProps()}>
+									{row.cells.map((cell, cellIndex) => {
 										if (
 											typeof cell.value !== 'undefined' &&
 											typeof cell.value.tableCellType !== 'undefined'
@@ -86,6 +88,7 @@ export const Table = ({ columns, data, update }) => {
 											if (cell.value.tableCellType === TableCellType.BADGE)
 												return (
 													<td
+														key={cellIndex}
 														className="border-t border-gray-100 dark:border-gray-700"
 														{...cell.getCellProps()}
 													>
@@ -96,20 +99,27 @@ export const Table = ({ columns, data, update }) => {
 														</span>
 													</td>
 												);
-                        if (cell.value.tableCellType === TableCellType.TEXT)
-                          return (
-                            <td
-                              className="border-t border-gray-100 dark:border-gray-700"
-                              {...cell.getCellProps()}
-                            >
-                              <span className={classNames(cell.value.className, "px-6 py-4 flex items-center")}>
-                                  {cell.value.value}
-                              </span>
-                            </td>
-                          );
+											if (cell.value.tableCellType === TableCellType.TEXT)
+												return (
+													<td
+														key={cellIndex}
+														className="border-t border-gray-100 dark:border-gray-700"
+														{...cell.getCellProps()}
+													>
+														<span
+															className={classNames(
+																cell.value.className,
+																'px-6 py-4 flex items-center'
+															)}
+														>
+															{cell.value.value}
+														</span>
+													</td>
+												);
 											if (cell.value.tableCellType === TableCellType.BUTTON) {
 												return (
 													<td
+														key={cellIndex}
 														className="border-t border-gray-100 dark:border-gray-700"
 														{...cell.getCellProps()}
 													>
@@ -119,7 +129,7 @@ export const Table = ({ columns, data, update }) => {
 																	cell.value.className,
 																	'relative cursor-pointer inline-block rounded-lg font-semibold px-2 py-2 text-sm leading-none shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 ltr:mr-1 rtl:ml-1 mt-1'
 																)}
-                                onClick={() => update('approve', row.original)}
+																onClick={() => update('approve', row.original)}
 															>
 																{cell.value.value}
 																<Ripple color="black" />
@@ -131,6 +141,7 @@ export const Table = ({ columns, data, update }) => {
 										}
 										return (
 											<td
+											key={cellIndex}
 												className="border-t border-gray-100 dark:border-gray-700"
 												{...cell.getCellProps()}
 											>

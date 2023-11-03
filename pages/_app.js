@@ -45,7 +45,6 @@ class MyApp extends App {
 						href="https://fonts.googleapis.com/css2?family=Space+Mono:ital@0;1&display=swap"
 						rel="stylesheet"
 					></link>
-					<script src="https://unpkg.com/@ungap/url-search-params"></script>
 					<title>Square - Tailwind Admin Kit</title>
 				</Head>
 
