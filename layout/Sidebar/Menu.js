@@ -2,19 +2,17 @@ import { addRandomId, getMatchedObjectByUrl } from './helpers';
 import { useEffect, useState } from 'react';
 
 import List from './List';
-import { artistRoutes, adminRoutes, studioRoutes } from 'lib';
+import { adminRoutes, studioRoutes } from 'lib';
 import { useAppState } from 'components/AppProvider';
 import { useRouter } from 'next/router';
+import { ROLE } from 'lib/role';
 
 const Menu = () => {
 	const [state] = useAppState();
-	const roleId = 1;
+	const roleId = ROLE.ADMIN;
 	let routes = adminRoutes;
-	if (roleId === 1) {
+	if (roleId === ROLE.STUDIO) {
 		routes = studioRoutes;
-	}
-	if (roleId === 2) {
-    routes = artistRoutes;
 	}
 	const items = addRandomId(routes);
 	const [currentNode, setCurrentNode] = useState({});
