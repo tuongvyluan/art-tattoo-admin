@@ -42,7 +42,7 @@ const Lockscreen = () => {
         <div className="text-center">
           <small className="text-muted text-center">
             <span>{t("yourAccount?")}</span>{" "}
-            <Link href="/login" as={`login`}>
+            <Link href="/auth/signin" as={`login`}>
               <a>{t("loginLink")}</a>
             </Link>
           </small>

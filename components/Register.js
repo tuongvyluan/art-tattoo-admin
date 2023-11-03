@@ -85,7 +85,7 @@ const Register = () => {
               <div className="text-center">
                 <small className="text-gray-700 text-center">
                   <span>{t("haveAccount?")}</span>{" "}
-                  <Link href="/login">
+                  <Link href="/auth/signin">
                     <a>{t("loginLink")}</a>
                   </Link>
                 </small>

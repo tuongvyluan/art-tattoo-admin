@@ -12,8 +12,8 @@ import { useAppState } from 'components/AppProvider';
 import { useRouter } from 'next/router';
 
 const NonDashboardRoutes = [
-	'/login',
-	'/register',
+	'/auth/signin',
+	'/auth/register',
 	'/forgot',
 	'/lockscreen',
 	'/_error',

@@ -51,7 +51,7 @@ const Forgot = () => {
               <div className="text-center">
                 <small className="text-gray-700 text-center">
                   <span>{t("haveAccount?")}</span>
-                  <Link href="/register">
+                  <Link href="/auth/register">
                     <a>{t("createAccount")}</a>
                   </Link>
                 </small>
