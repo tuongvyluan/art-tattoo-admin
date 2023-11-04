@@ -4,16 +4,36 @@ import { useEffect, useState } from 'react';
 import List from './List';
 import { adminRoutes, studioRoutes } from 'lib';
 import { useAppState } from 'components/AppProvider';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { ROLE } from 'lib/role';
+import { useSession } from 'next-auth/react';
+import Error from 'next/error';
 
 const Menu = () => {
+	// Check authenticated
+	const { status, data } = useSession();
+
+	useEffect(() => {
+		if (status === 'unauthenticated') {
+			Router.replace('/auth/signin');
+		}
+	}, [status]);
+
+	const [routes, setRoutes] = useState([]);
+	useEffect(() => {
+		if (data && data.user && data.user.role) {
+			switch (data.user.role) {
+				case ROLE.ADMIN:
+					setRoutes(adminRoutes);
+					break;
+				case ROLE.STUDIO:
+					setRoutes(studioRoutes);
+					break;
+			}
+		}
+	}, [data]);
+
 	const [state] = useAppState();
-	const roleId = ROLE.ADMIN;
-	let routes = adminRoutes;
-	if (roleId === ROLE.STUDIO) {
-		routes = studioRoutes;
-	}
 	const items = addRandomId(routes);
 	const [currentNode, setCurrentNode] = useState({});
 

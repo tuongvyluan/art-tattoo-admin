@@ -32,7 +32,7 @@ function StudioIndexPage() {
 				<div className="w-full md:w-2/4 lg:w-1/4 px-2">
 					<WidgetStatCard
 						title="Tổng đơn hàng"
-						value={123}
+						value={'123'}
 						icon={<Users width={16} height={16} />}
 						type={'blue'}
 					/>
@@ -40,7 +40,7 @@ function StudioIndexPage() {
 				<div className="w-full md:w-2/4 lg:w-1/4 px-2">
 					<WidgetStatCard
 						title="Đơn hàng tháng này"
-						value={23}
+						value={'23'}
 						icon={<Users width={16} height={16} />}
 						type={'gray'}
 					/>
