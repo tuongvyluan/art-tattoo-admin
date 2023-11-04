@@ -4,7 +4,7 @@ import { Loading } from '../ui';
 import { ROLE } from '../lib/role'
 import StudioIndexPage from '../layout/Studio/Index';
 
-const DashboardPage = () => {
+const Index = () => {
 
 	// Check authenticated
 	const { status, data } = useSession();
@@ -25,8 +25,8 @@ const DashboardPage = () => {
 	);
 };
 
-DashboardPage.getInitialProps = async () => ({
+Index.getInitialProps = async () => ({
 	namespacesRequired: ['header', 'footer', 'sidebar', 'dashboard']
 });
 
-export default DashboardPage;
+export default Index;

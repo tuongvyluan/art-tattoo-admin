@@ -57,7 +57,7 @@ const Sidebar = ({
       </Transition>
 
       <div
-        className={`relative flex flex-col flex-auto min-w-0 overflow-visible ${contentClass}`}
+        className={`relative flex flex-col flex-auto min-w-0 ${contentClass}`}
       >
         {children}
       </div>

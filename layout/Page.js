@@ -94,7 +94,7 @@ const Page = ({ children }) => {
 			</Head>
 
 			<div
-				className={`antialiased font-sans text-sm text-gray-900 dark:text-white flex flex-col w-full h-full min-h-screen bg-body dark:bg-gray-700 z-0 ${
+				className={`min-w-[320px] antialiased font-sans text-sm text-gray-900 dark:text-white flex flex-col w-full h-full min-h-screen bg-body dark:bg-gray-700 z-0 ${
 					state.collapsed && 'page-sidebar-collapsed'
 				} `}
 				dir={state.rtl ? 'rtl' : 'ltr'}
