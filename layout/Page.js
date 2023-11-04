@@ -83,7 +83,7 @@ const Page = ({ children }) => {
 		contentClass: 'md:min-h-screen'
 	};
 
-	const pageName = asPath.split('/').reverse()[0];
+	const pageName = asPath.split('/')[1];
 
 	return (
 		<>

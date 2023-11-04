@@ -35,7 +35,8 @@
     "react-simple-maps": "^1.0.0",
     "react-table": "7.6.2",
     "swr": "0.3.9",
-    "tailwindcss": "2.0.1"
+    "tailwindcss": "2.0.1",
+    "uuid": "^9.0.1"
   },
   "scripts": {
     "dev": "next",

@@ -31,4 +31,6 @@ const data = Array(31)
     };
   });
 
-export default (req, res) => res.json(data);
+export default function getMusic(req, res) {
+  return res.json(data);
+};

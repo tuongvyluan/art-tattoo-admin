@@ -1,8 +1,8 @@
-import { fetcher } from 'lib';
+import { fetcher, formatTime } from 'lib';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import useSWR from 'swr';
-import { Loading, Ripple } from 'ui';
+import { Card, CardBody, Loading, Ripple } from 'ui';
 import { Search } from 'icons/outline';
 import debounce from 'lodash.debounce';
 
@@ -15,29 +15,25 @@ function BookingPage() {
 	const [searchKey, setSearchKey] = useState('');
 
 	const onSearch = (e) => {
-		setSearchKey(e.target.value)
-	}
+		setSearchKey(e.target.value);
+	};
 
 	const onKeyDown = (e) => {
-		handleKeyDown(e)
-	}
+		handleKeyDown(e);
+	};
 
 	const handleKeyDown = debounce((e) => {
 		if (e.keyCode === 13 || e.key === 'Enter') {
-			console.log(searchKey)
+			console.log(searchKey);
 		}
-	}, 300)
+	}, 300);
 
 	const toggle = (tab) => {
-		handleToggle(tab)
-	};
-
-	const handleToggle = debounce((tab) => {
 		if (activeTab !== tab) {
 			setActiveTab(tab);
-			console.log(tab)
+			console.log(tab);
 		}
-	}, 500)
+	};
 
 	if (error)
 		return (
@@ -138,6 +134,32 @@ function BookingPage() {
 					/>
 				</div>
 			</div>
+			<Card>
+				<CardBody>
+					<div className="flex justify-between mx-auto border-b border-gray-300 pb-3">
+						<div className="flex gap-3 items-start">
+							<div className="font-semibold">Customer name</div>
+						</div>
+						<div>
+							<div className="text-red-500">ĐANG THỰC HIỆN</div>
+						</div>
+					</div>
+					<div className="flex justify-end pt-3 items-start">
+						<div className='text-right'>
+							<div>
+								Ngày tạo đơn: <span className="text-base">{formatTime(Date())}</span>
+							</div>
+							<div>
+								Ngày hoàn tất:{' '}
+								<span className="text-base">{formatTime(Date())}</span>
+							</div>
+							<div>
+								Thành tiền: <span className="text-lg text-red-500">1,000,000</span>
+							</div>
+						</div>
+					</div>
+				</CardBody>
+			</Card>
 		</div>
 	);
 }
