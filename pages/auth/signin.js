@@ -7,9 +7,11 @@ const LoginPage = () => {
   const [user, setUser] = useState({email: '', password: ''})
   const handleSetUser = (newUser) => {
     setUser(newUser)
+    console.log(newUser)
   }
   const handleSubmit = async (e) => {
     e.preventDefault()
+    console.log(user)
 
     const res = await signIn('credentials', {
       email: user.email,

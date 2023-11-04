@@ -4,6 +4,10 @@ import Illustration from 'public/images/illustrations/undraw_Group_chat_unwm.svg
 import { useTranslation } from 'i18n';
 
 const Login = ({ handleSubmit, user, setUser }) => {
+	const handleFormChange = (e) => {
+		setUser({ ...user, [e.target.name]: e.target.value })
+	};
+
 	const { t } = useTranslation('login');
 	return (
 		<div className="flex flex-col justify-center items-center px-3 bg-white dark:bg-gray-600 min-h-screen">
@@ -24,7 +28,10 @@ const Login = ({ handleSubmit, user, setUser }) => {
 									<h1 className="uppercase text-2xl mb-3 font-bold leading-none text-indigo-500">
 										Art Tattoo Lover
 									</h1>
-									<p className="text-gray-800">Đăng nhập để sử dụng dịch vụ quản lí tiệm xăm của Art Tattoo Lover Platform</p>
+									<p className="text-gray-800">
+										Đăng nhập để sử dụng dịch vụ quản lí tiệm xăm của Art Tattoo
+										Lover Platform
+									</p>
 								</div>
 
 								<div className="rounded-lg shadow-sm">
@@ -35,9 +42,7 @@ const Login = ({ handleSubmit, user, setUser }) => {
 											name="email"
 											type="email"
 											value={user.email}
-											onChange={({ target }) => {
-												setUser({ ...user, email: target.value });
-											}}
+											onChange={handleFormChange}
 											required
 											className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
 											placeholder={t('emailAddress')}
@@ -50,9 +55,7 @@ const Login = ({ handleSubmit, user, setUser }) => {
 											name="password"
 											type="password"
 											value={user.password}
-											onChange={({ target }) => {
-												setUser({ ...user, password: target.value });
-											}}
+											onChange={handleFormChange}
 											required
 											className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
 											placeholder={t('password')}
@@ -87,5 +90,5 @@ Login.propTypes = {
 	handleSubmit: PropTypes.func,
 	user: PropTypes.object,
 	setUser: PropTypes.func
-}
+};
 export default Login;
