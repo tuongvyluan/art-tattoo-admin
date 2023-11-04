@@ -1,5 +1,5 @@
 import BookingPage from "layout/Studio/Booking";
-import { ROLE } from "lib/role";
+import { ROLE } from "lib/status";
 import { useSession } from "next-auth/react";
 import Router from "next/router";
 import { Loading } from "ui";

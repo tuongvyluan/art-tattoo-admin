@@ -1,7 +1,7 @@
 import Dashboard from 'components/Dashboard';
 import { useSession } from 'next-auth/react';
 import { Loading } from '../ui';
-import { ROLE } from '../lib/role'
+import { ROLE } from '../lib/status'
 import StudioIndexPage from '../layout/Studio/Index';
 
 const Index = () => {
