@@ -21,7 +21,7 @@ const Register = ({user, setUser, handleSubmit}) => {
 							<div className="text-center mb-5 text-indigo-500">
 								<Logo height={50} width={50} />
 							</div>
-							<form action="/">
+							<form onSubmit={handleSubmit}>
 								<div className="text-center mb-5">
 									<h1 className="uppercase text-2xl mb-3 font-bold leading-none text-indigo-500">
 										Art Tattoo Lover
@@ -57,6 +57,19 @@ const Register = ({user, setUser, handleSubmit}) => {
 											required
 											className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
 											placeholder={'Tên'}
+										/>
+									</div>
+									<div className="block mb-3">
+										<label>{'Số điện thoại'}</label>
+										<input
+											aria-label={'Phone'}
+											name="phoneNumber"
+											value={user.phoneNumber}
+											onChange={handleFormChange}
+											type="tel"
+											required
+											className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
+											placeholder={'Email'}
 										/>
 									</div>
 									<div className="block mb-3">

@@ -1,4 +1,3 @@
-import { fetcherPost } from 'lib';
 import Login from '../../components/Login';
 import { signIn } from 'next-auth/react';
 import Router from 'next/router';
@@ -10,7 +9,8 @@ const LoginPage = () => {
 	const [showAlert, setShowAlert] = useState(false);
 	const [alertContent, setAlertContent] = useState({
 		title: '',
-		content: ''
+		content: '',
+		isWarn: false
 	});
 	const handleSetUser = (newUser) => {
 		handleAlert(false, '', '')
@@ -18,7 +18,7 @@ const LoginPage = () => {
 	};
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		handleAlert(true, '', 'Đang đăng nhập...');
+		handleAlert(true, '', 'Đang đăng nhập tài khoản...');
 
 		const res = await signIn('credentials', {
 			email: user.email,
@@ -29,21 +29,22 @@ const LoginPage = () => {
 		if (res.ok) {
 			Router.replace('/');
 		} else {
-			handleAlert(true, 'Đăng nhập thất bại', 'Sai email hoặc password.');
+			handleAlert(true, 'Đăng nhập thất bại', 'Sai email hoặc password.', true);
 		}
 	};
 
-	const handleAlert = (state, title, content) => {
+	const handleAlert = (state, title, content, isWarn = false) => {
 		setShowAlert((prev) => state);
 		setAlertContent({
 			title: title,
-			content: content
+			content: content,
+			isWarn: isWarn
 		});
 	};
 	return (
 		<div className="relative">
 			{showAlert ? (
-				<Alert color="blue" className="bottom-2 right-2 absolute">
+				<Alert color={alertContent.isWarn ? 'red' : 'blue'} className="bottom-2 right-2 absolute">
 					<strong className="font-bold mr-1">{alertContent.title}</strong>
 					<span className="block sm:inline">{alertContent.content}</span>
 				</Alert>
