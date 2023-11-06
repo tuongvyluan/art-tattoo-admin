@@ -160,5 +160,5 @@ const data = [
     end: new Date(2015, 3, 14, 20, 0, 0),
   },
 ];
-
-export default (req, res) => res.json(data);
+const getCalendar = (req, res) => res.json(data);
+export default getCalendar;

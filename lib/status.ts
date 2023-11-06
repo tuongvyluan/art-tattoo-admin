@@ -49,6 +49,15 @@ export const enum ARTIST_STATUS {
   UNAVAILABLE = 1
 }
 
+export const enum BOOKING_STATUS {
+  PENDING = 0,
+  COMPLETED = 1,
+  CANCELLED = 2,
+  DELETED = 3
+}
+
+export const stringBookingStatuses = ['Đang thực hiện', 'Đã hoàn thành', 'Đã huỷ', 'Đã xoá']
+
 export const enum TATTOO_ART_STATUS {
   AVAILABLE = 0,
   UNAVAILABLE = 1,

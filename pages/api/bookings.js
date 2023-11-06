@@ -1,11 +1,12 @@
 import { randomFrom0To } from 'lib';
-import { SERVICE_SIZE, TATTOO_ART_STATUS } from 'lib/status';
+import { BOOKING_STATUS, SERVICE_SIZE, TATTOO_ART_STATUS } from 'lib/status';
 import { v4 } from 'uuid';
 
-const data = Array(30)
+const data = Array(20)
 	.fill(0)
 	.map((_, i) => {
 		return {
+			id: v4(),
 			customer: {
 				customerId: v4(),
 				accountId: v4(),
@@ -20,7 +21,7 @@ const data = Array(30)
 					'Dương',
 					'Tuấn',
 					'Đức'
-				][randomFrom0To(3)],
+				][randomFrom0To(10)],
 				lastName: [
 					'Nguyễn',
 					'Luân',
@@ -40,6 +41,7 @@ const data = Array(30)
 				.fill(0)
 				.map((_, i) => {
 					return {
+						id: v4(),
 						artist: {
 							accountId: v4(),
 							firstName: [
@@ -86,14 +88,24 @@ const data = Array(30)
 							SERVICE_SIZE.SMALL
 						][randomFrom0To(10)],
 						status: TATTOO_ART_STATUS.AVAILABLE,
-            bookingDetails: [
-              {
-                bookingDetailsId: v4(),
-                operationName: 'Xăm trọn gói',
-                price: randomFrom0To(8) * 1200000 + 1000000
-              }
-            ]
+						bookingDetails: [
+							{
+								bookingDetailsId: v4(),
+								operationName: 'Xăm trọn gói',
+								price: randomFrom0To(8) * 1200000 + 1000000
+							}
+						]
 					};
-				})
+				}),
+			status: [
+				BOOKING_STATUS.PENDING,
+				BOOKING_STATUS.COMPLETED,
+				BOOKING_STATUS.CANCELLED
+			][randomFrom0To(3)],
+			createdAt: new Date(),
+			meetingDate: new Date(),
+			total: randomFrom0To(8) * 1200000 + 1000000
 		};
 	});
+const getBookingList = (req, res) => res.json(data);
+export default getBookingList;

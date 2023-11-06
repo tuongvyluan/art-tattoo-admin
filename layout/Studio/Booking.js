@@ -1,18 +1,43 @@
-import { fetcher, formatTime } from 'lib';
+import { formatPrice, formatTime } from 'lib';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import useSWR from 'swr';
-import { Card, CardBody, Loading, Ripple } from 'ui';
+import { Card, CardBody, Ripple } from 'ui';
 import { Search } from 'icons/outline';
 import debounce from 'lodash.debounce';
+import { BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
+import Image from 'next/image';
 
-function BookingPage() {
-	const { data, error } = useSWR(`/api/social`, fetcher);
+const ALL_TAB = '1';
+const PENDING_TAB = '2';
+const COMPLETE_TAB = '3';
+const CANCELLED_TAB = '4';
+
+function BookingPage({ data }) {
 	const router = useRouter();
 	const active =
 		typeof router.query['active'] !== 'undefined' ? router.query['active'] : '1';
 	const [activeTab, setActiveTab] = useState(active);
 	const [searchKey, setSearchKey] = useState('');
+
+	let renderData = data;
+
+	switch (activeTab) {
+		case PENDING_TAB:
+			renderData = data.filter(
+				(booking) => booking.status === BOOKING_STATUS.PENDING
+			);
+			break;
+		case COMPLETE_TAB:
+			renderData = data.filter(
+				(booking) => booking.status === BOOKING_STATUS.COMPLETED
+			);
+			break;
+		case CANCELLED_TAB:
+			renderData = data.filter(
+				(booking) => booking.status === BOOKING_STATUS.CANCELLED
+			);
+			break;
+	}
 
 	const onSearch = (e) => {
 		setSearchKey(e.target.value);
@@ -35,19 +60,6 @@ function BookingPage() {
 		}
 	};
 
-	if (error)
-		return (
-			<div className="flex items-center justify-center h-full">
-				Failed to load data
-			</div>
-		);
-	if (!data)
-		return (
-			<div className="flex items-center justify-center h-full">
-				<Loading />
-			</div>
-		);
-
 	return (
 		<div className="sm:px-12 md:px-16 lg:px-32 xl:px-56">
 			<div className="mx-auto ring-1 ring-black ring-opacity-5 bg-white">
@@ -55,12 +67,14 @@ function BookingPage() {
 					<ul className="list-none grid col-span-4 grid-flow-col place-items-center overflow-x-auto w-0 min-w-full -mb-10 pb-10">
 						<li
 							className={`text-center  cursor-pointer ${
-								activeTab === '1' ? 'border-b-2 border-solid border-indigo-500' : ''
+								activeTab === ALL_TAB
+									? 'border-b-2 border-solid border-indigo-500'
+									: ''
 							}`}
 						>
 							<a
 								onClick={() => {
-									toggle('1');
+									toggle(ALL_TAB);
 								}}
 								href="#"
 								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
@@ -71,12 +85,14 @@ function BookingPage() {
 						</li>
 						<li
 							className={`text-center cursor-pointer ${
-								activeTab === '2' ? 'border-b-2 border-solid border-indigo-500' : ''
+								activeTab === PENDING_TAB
+									? 'border-b-2 border-solid border-indigo-500'
+									: ''
 							}`}
 						>
 							<a
 								onClick={() => {
-									toggle('2');
+									toggle(PENDING_TAB);
 								}}
 								href="#"
 								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
@@ -87,13 +103,15 @@ function BookingPage() {
 						</li>
 						<li
 							className={`text-center cursor-pointer ${
-								activeTab === '3' ? 'border-b-2 border-solid border-indigo-500' : ''
+								activeTab === COMPLETE_TAB
+									? 'border-b-2 border-solid border-indigo-500'
+									: ''
 							}`}
 						>
 							<a
 								href="#"
 								onClick={() => {
-									toggle('3');
+									toggle(COMPLETE_TAB);
 								}}
 								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
 							>
@@ -103,13 +121,15 @@ function BookingPage() {
 						</li>
 						<li
 							className={`text-center cursor-pointer ${
-								activeTab === '4' ? 'border-b-2 border-solid border-indigo-500' : ''
+								activeTab === CANCELLED_TAB
+									? 'border-b-2 border-solid border-indigo-500'
+									: ''
 							}`}
 						>
 							<a
 								href="#"
 								onClick={() => {
-									toggle('4');
+									toggle(CANCELLED_TAB);
 								}}
 								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
 							>
@@ -134,32 +154,59 @@ function BookingPage() {
 					/>
 				</div>
 			</div>
-			<Card>
-				<CardBody>
-					<div className="flex justify-between mx-auto border-b border-gray-300 pb-3">
-						<div className="flex gap-3 items-start">
-							<div className="font-semibold">Customer name</div>
-						</div>
-						<div>
-							<div className="text-red-500">ĐANG THỰC HIỆN</div>
-						</div>
-					</div>
-					<div className="flex justify-end pt-3 items-start">
-						<div className='text-right'>
-							<div>
-								Ngày tạo đơn: <span className="text-base">{formatTime(Date())}</span>
+			{renderData.map((booking, index) => (
+				<Card key={booking.id}>
+					<CardBody>
+						<div className="flex justify-between mx-auto border-b border-gray-300 pb-3">
+							<div className="flex gap-3 items-start">
+								<div className="font-semibold">{booking.customer.firstName}</div>
 							</div>
 							<div>
-								Ngày hoàn tất:{' '}
-								<span className="text-base">{formatTime(Date())}</span>
-							</div>
-							<div>
-								Thành tiền: <span className="text-lg text-red-500">1,000,000</span>
+								<div className="text-red-500">
+									{stringBookingStatuses.at(booking.status)}
+								</div>
 							</div>
 						</div>
-					</div>
-				</CardBody>
-			</Card>
+						{booking.artTattoos.map((tattoo, tattooIndex) => (
+							<div key={tattoo.id} className="py-2 flex flex-row justify-start gap-3 flex-wrap">
+								<div className="relative w-32 h-32">
+									<Image
+										layout="fill"
+										src={tattoo.photo}
+										alt={tattoo.id}
+										className="object-contain"
+									/>
+								</div>
+								<div className='flex-grow'>
+									{tattoo.bookingDetails.map((bookingDetail, bookingDetailIndex) => (
+										<div key={bookingDetail.id} className="flex justify-between">
+											<div className='text-base'>{bookingDetail.operationName}</div>
+											<div className='text-lg'>{formatPrice(bookingDetail.price)}</div>
+										</div>
+									))}
+								</div>
+							</div>
+						))}
+						<div className="flex justify-end pt-3 items-start">
+							<div className="text-right">
+								<div>
+									Ngày tạo đơn:{' '}
+									<span className="text-base">{formatTime(booking.createdAt)}</span>
+								</div>
+								<div>
+									Ngày hoàn tất:{' '}
+									<span className="text-base">
+										{formatTime(booking.meetingDate)}
+									</span>
+								</div>
+								<div>
+									Thành tiền: <span className="text-lg text-red-500">{formatPrice(booking.total)}</span>
+								</div>
+							</div>
+						</div>
+					</CardBody>
+				</Card>
+			))}
 		</div>
 	);
 }
