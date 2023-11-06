@@ -1,14 +1,12 @@
 import { Link, Logo, Ripple } from 'ui';
 import PropTypes from 'prop-types';
 import Illustration from 'public/images/illustrations/undraw_Group_chat_unwm.svg';
-import { useTranslation } from 'i18n';
 
 const Login = ({ handleSubmit, user, setUser }) => {
 	const handleFormChange = (e) => {
 		setUser({ ...user, [e.target.name]: e.target.value })
 	};
 
-	const { t } = useTranslation('login');
 	return (
 		<div className="flex flex-col justify-center items-center px-3 bg-white dark:bg-gray-600 min-h-screen">
 			<div className="w-full max-w-screen-xl">

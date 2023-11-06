@@ -1,10 +1,12 @@
 import { Link, Logo, Ripple } from 'ui';
 
 import Illustration from 'public/images/illustrations/undraw_secure_data_0rwp.svg';
-import { useTranslation } from 'i18n';
 
-const Register = () => {
-	const { t } = useTranslation('register');
+const Register = ({user, setUser, handleSubmit}) => {
+	const handleFormChange = (e) => {
+		setUser({ ...user, [e.target.name]: e.target.value })
+	};
+
 	return (
 		<div className="flex flex-col justify-center items-center px-3 bg-white dark:bg-gray-600 min-h-screen">
 			<div className="w-full max-w-screen-xl">
@@ -37,6 +39,8 @@ const Register = () => {
 											aria-label={'Last name'}
 											name="lastName"
 											type="text"
+											value={user.lastName}
+											onChange={handleFormChange}
 											required
 											className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
 											placeholder={'Họ'}
@@ -47,6 +51,8 @@ const Register = () => {
 										<input
 											aria-label={'First name'}
 											name="firstName"
+											value={user.firstName}
+											onChange={handleFormChange}
 											type="text"
 											required
 											className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
@@ -58,6 +64,8 @@ const Register = () => {
 										<input
 											aria-label={'Email'}
 											name="email"
+											value={user.email}
+											onChange={handleFormChange}
 											type="email"
 											required
 											className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
@@ -69,6 +77,8 @@ const Register = () => {
 										<input
 											aria-label={'Password'}
 											name="password"
+											value={user.password}
+											onChange={handleFormChange}
 											type="password"
 											required
 											className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
@@ -80,6 +90,8 @@ const Register = () => {
 										<input
 											aria-label={'cpassword'}
 											name="cpassword"
+											value={user.cpassword}
+											onChange={handleFormChange}
 											type="password"
 											required
 											className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"

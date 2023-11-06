@@ -3,23 +3,17 @@ import { signOut } from "next-auth/react"
 import {
 	Bell,
 	Cog,
-	Duplicate,
 	LightningBolt,
 	Logout,
 	MenuAlt1,
 	Pencil,
-	Selector,
-	Translate,
 	User,
-	ViewGrid
 } from 'icons/solid';
-import { i18n, useTranslation } from 'i18n';
+import { useTranslation } from 'i18n';
 
 import Notifications from './Notifications';
 import PropTypes from 'prop-types';
-import Shortcuts from './Shortcuts';
 import { useAppState } from 'components/AppProvider';
-import { useEffect } from 'react';
 
 const colors = [
 	'gray',
