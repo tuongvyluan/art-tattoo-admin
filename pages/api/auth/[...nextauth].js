@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthOptions } from 'next-auth';
+import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { ROLE } from '../../../lib/status';
 const authOptions = {
@@ -40,12 +40,16 @@ const authOptions = {
 	],
 	callbacks: {
 		jwt({ token, user }) {
-			if (user) token.role = user.role;
+			if (user) {
+				token.role = user.role;
+				token.id = user.id;
+			};
 			return token;
 		},
 		session({ session, token }) {
 			if (token && session.user) {
 				session.user.role = token.role
+				session.user.id = token.id
 			}
 			return session;
 		}

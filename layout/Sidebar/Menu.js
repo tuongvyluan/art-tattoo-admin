@@ -7,7 +7,6 @@ import { useAppState } from 'components/AppProvider';
 import Router, { useRouter } from 'next/router';
 import { ROLE } from 'lib/status';
 import { useSession } from 'next-auth/react';
-import Error from 'next/error';
 
 const Menu = () => {
 	// Check authenticated
