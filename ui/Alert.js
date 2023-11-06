@@ -10,15 +10,15 @@ export const Alert = ({ color = "blue", children, className, ...props }) => {
     <Transition
       show={shown}
       appear={true}
-      enter="transition ease-out duration-150"
+      enter="transition ease-out duration-300"
       enterFrom="transform opacity-0"
       enterTo="transform opacity-100"
-      leave="transition ease-in duration-150"
+      leave="transition ease-in duration-300"
       leaveFrom="transform opacity-100"
       leaveTo="transform opacity-0"
       {...props}
       className={classNames(
-        `bg-${color}-100 text-${color}-700 px-4 py-3 rounded-lg relative ring-1 ring-${color}-400 ring-opacity-50`,
+        `bg-${color}-100 text-${color}-700 pl-4 pr-14 py-3 rounded-lg ring-1 ring-${color}-400 ring-opacity-50`,
         className
       )}
       role="alert"

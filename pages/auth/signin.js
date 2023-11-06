@@ -7,16 +7,18 @@ import { Alert } from 'ui';
 
 const LoginPage = () => {
 	const [user, setUser] = useState({ email: '', password: '' });
-	const [showAlert, setShowAlert] = useState(false)
+	const [showAlert, setShowAlert] = useState(false);
 	const [alertContent, setAlertContent] = useState({
 		title: '',
 		content: ''
-	})
+	});
 	const handleSetUser = (newUser) => {
+		handleAlert(false, '', '')
 		setUser(newUser);
 	};
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		handleAlert(true, '', 'Đang đăng nhập...');
 
 		const res = await signIn('credentials', {
 			email: user.email,
@@ -27,20 +29,28 @@ const LoginPage = () => {
 		if (res.ok) {
 			Router.replace('/');
 		} else {
-			setShowAlert(prev => false)
-			setAlertContent({
-				title: 'Login failed',
-				content: 'Email or password is incorrect'
-			})
+			handleAlert(true, 'Đăng nhập thất bại', 'Sai email hoặc password.');
 		}
 	};
+
+	const handleAlert = (state, title, content) => {
+		setShowAlert((prev) => state);
+		setAlertContent({
+			title: title,
+			content: content
+		});
+	};
 	return (
-		<div>
-			{showAlert ? (<Alert color="blue" className="mb-2">
-				<strong className="font-bold mr-1">Holy smokes!</strong>
-				<span className="block sm:inline">Something seriously bad happened.</span>
-			</Alert>) : <></>}
-			
+		<div className="relative">
+			{showAlert ? (
+				<Alert color="blue" className="bottom-2 right-2 absolute">
+					<strong className="font-bold mr-1">{alertContent.title}</strong>
+					<span className="block sm:inline">{alertContent.content}</span>
+				</Alert>
+			) : (
+				<></>
+			)}
+
 			<Login handleSubmit={handleSubmit} user={user} setUser={handleSetUser} />
 		</div>
 	);

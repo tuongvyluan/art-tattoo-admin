@@ -1,5 +1,5 @@
-import { Avatar, Badge, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
-import { signOut } from "next-auth/react"
+import { Avatar, Badge, Dropdown, DropdownMenu, DropdownToggle, Link } from 'ui';
+import { signOut, useSession } from 'next-auth/react';
 import {
 	Bell,
 	Cog,
@@ -7,7 +7,7 @@ import {
 	Logout,
 	MenuAlt1,
 	Pencil,
-	User,
+	User
 } from 'icons/solid';
 import { useTranslation } from 'i18n';
 
@@ -26,6 +26,7 @@ const colors = [
 	'pink'
 ];
 const Header = ({ toggleOpen }) => {
+	const { status, data } = useSession();
 	const [state, dispatch] = useAppState();
 	const { t } = useTranslation('header');
 
@@ -189,7 +190,7 @@ const Header = ({ toggleOpen }) => {
 
 						<Dropdown className="px-3 relative h-full flex items-center">
 							<DropdownToggle>
-								<Avatar size={28} src={`images/avatar.jpg`} alt={`avatar`} />
+								<Avatar size={28} src={`images/avatar.jpg`} alt={data ? data.user.firstName : 'Unknown'} />
 							</DropdownToggle>
 							<DropdownMenu>
 								<div className="py-1">
@@ -198,24 +199,25 @@ const Header = ({ toggleOpen }) => {
 										className="flex items-center px-5 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
 									>
 										<LightningBolt width={16} height={16} />{' '}
-										<span className="ltr:ml-3 rtl:mr-3">{t('activity')}</span>
+										<span className="ltr:ml-3 rtl:mr-3">Hoạt động</span>
 									</a>
 									<a
 										href="#"
 										className="flex items-center px-5 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
 									>
 										<User width={16} height={16} />{' '}
-										<span className="ltr:ml-3 rtl:mr-3">{t('yourProfile')}</span>
+										<span className="ltr:ml-3 rtl:mr-3">Hồ sơ</span>
 									</a>
 									<a
 										href="#"
 										className="flex items-center px-5 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
 									>
 										<Cog width={16} height={16} />{' '}
-										<span className="ltr:ml-3 rtl:mr-3">{t('settings')}</span>
+										<span className="ltr:ml-3 rtl:mr-3">Cài đặt</span>
 									</a>
 									<a
-										href="#" onClick={() => signOut()}
+										href="#"
+										onClick={() => signOut()}
 										className="flex items-center px-5 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out border-t border-1 border-gray-100"
 									>
 										<Logout width={16} height={16} />{' '}
