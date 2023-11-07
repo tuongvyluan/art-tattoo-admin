@@ -213,7 +213,7 @@ input:checked ~ .toggle__bar {
 /* Timeline */
 .timeline-item:before {
 	content: '';
-	left: 4px;
+	left: 3px;
 	@apply bg-gray-300 absolute bottom-0 w-1 h-full;
 }
 @media (min-width: 640px) {
@@ -221,7 +221,7 @@ input:checked ~ .toggle__bar {
 		content: '';
 		width: 2px;
 		@apply bg-gray-300 absolute bottom-0 w-1 h-full -mb-3;
-		left: 33.33%;
+		left: 33.34%;
 		margin-left: -2px;
 	}
 	.timeline-item:last-child:before {

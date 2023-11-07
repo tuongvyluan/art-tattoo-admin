@@ -174,7 +174,7 @@ function BookingPage({ data }) {
 										key={tattoo.id}
 										className="py-2 flex flex-row justify-start gap-3 flex-wrap"
 									>
-										<div className="relative w-32 h-32">
+										<div className="relative w-24 h-24">
 											<Image
 												layout="fill"
 												src={tattoo.photo}
@@ -183,11 +183,15 @@ function BookingPage({ data }) {
 											/>
 										</div>
 										<div className="flex-grow">
+											<div>
+												<span>Nghệ sĩ xăm: </span>
+												<span className='font-semibold'>{tattoo.artist?.firstName}</span>
+											</div>
 											{tattoo.bookingDetails.map(
 												(bookingDetail, bookingDetailIndex) => (
 													<div
 														key={bookingDetail.id}
-														className="flex justify-between"
+														className="flex justify-between items-center"
 													>
 														<div className="text-base">
 															{bookingDetail.operationName}

@@ -21,7 +21,6 @@ const Menu = () => {
 	const [routes, setRoutes] = useState([]);
 	useEffect(() => {
 		if (data && data.user && data.user.role) {
-			console.log(data)
 			switch (data.user.role) {
 				case ROLE.ADMIN:
 					setRoutes(adminRoutes);
