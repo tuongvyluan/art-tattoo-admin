@@ -16,7 +16,7 @@ function BookingDetailsPage() {
 		},
 		{
 			text: `Đã xác nhận lịch hẹn vào ngày ${formatDate(
-				new Date(+new Date() - 1900000000)
+				new Date(+new Date() - 1000000000)
 			)}`,
 			date: new Date(+new Date() - 1700000000),
 			id: 1
@@ -47,12 +47,12 @@ function BookingDetailsPage() {
 					<div className="pt-3 border-b border-gray-300 pb-3">
 						<div className="font-semibold text-lg pb-2">Thông tin đơn hàng</div>
 						<div className="flex justify-start flex-wrap">
-							<div className="w-full sm:w-1/2 md:w-1/3 border-r border-gray-300">
+							<div className="w-full pr-1 md:w-1/4 lg:w-1/3 sm:border-r sm:border-gray-300">
 								<div className="text-base">Luân Tường Vy</div>
 								<div>0911330695</div>
 								<div>luantuongvy13@gmail.com</div>
 							</div>
-							<div className="flex-grow">
+							<div className="flex-grow pt-3 md:pt-0">
 								<WidgetOrderStatus timeline={timeline} />
 							</div>
 						</div>

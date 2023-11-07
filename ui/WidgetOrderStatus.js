@@ -9,7 +9,7 @@ export const WidgetOrderStatus = ({ timeline }) => {
 			{timeline?.map((item, index) => (
 				<div
 					key={index}
-					className={`relative flow-root pb-5 timeline-item ${
+					className={`relative flow-root sm:pb-5 timeline-item ${
 						index === 0 ? 'timeline-item-first' : ''
 					}`}
 				>
