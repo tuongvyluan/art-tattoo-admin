@@ -190,7 +190,7 @@ const Header = ({ toggleOpen }) => {
 
 						<Dropdown className="px-3 relative h-full flex items-center">
 							<DropdownToggle>
-								<Avatar size={28} src={`images/avatar.jpg`} alt={data ? data.user.firstName : 'Unknown'} />
+								<Avatar size={28} src={`images/avatar.png`} alt={data ? data.user.firstName : 'Unknown'} />
 							</DropdownToggle>
 							<DropdownMenu>
 								<div className="py-1">
