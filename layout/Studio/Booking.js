@@ -1,7 +1,7 @@
 import { formatPrice, formatTime } from 'lib';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { Card, CardBody, Ripple } from 'ui';
+import { Card, CardBody, Link, Ripple } from 'ui';
 import { Search } from 'icons/outline';
 import debounce from 'lodash.debounce';
 import { BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
@@ -157,53 +157,74 @@ function BookingPage({ data }) {
 			{renderData.map((booking, index) => (
 				<Card key={booking.id}>
 					<CardBody>
-						<div className="flex justify-between mx-auto border-b border-gray-300 pb-3">
-							<div className="flex gap-3 items-start">
-								<div className="font-semibold">{booking.customer.firstName}</div>
-							</div>
-							<div>
-								<div className="text-red-500">
-									{stringBookingStatuses.at(booking.status)}
-								</div>
-							</div>
-						</div>
-						{booking.artTattoos.map((tattoo, tattooIndex) => (
-							<div key={tattoo.id} className="py-2 flex flex-row justify-start gap-3 flex-wrap">
-								<div className="relative w-32 h-32">
-									<Image
-										layout="fill"
-										src={tattoo.photo}
-										alt={tattoo.id}
-										className="object-contain"
-									/>
-								</div>
-								<div className='flex-grow'>
-									{tattoo.bookingDetails.map((bookingDetail, bookingDetailIndex) => (
-										<div key={bookingDetail.id} className="flex justify-between">
-											<div className='text-base'>{bookingDetail.operationName}</div>
-											<div className='text-lg'>{formatPrice(bookingDetail.price)}</div>
+						<Link href={`/booking/${booking.id}`}>
+							<div className="cursor-pointer ">
+								<div className="flex justify-between mx-auto border-b border-gray-300 pb-3">
+									<div className="flex gap-3 items-start">
+										<div className="font-semibold">{booking.customer.firstName}</div>
+									</div>
+									<div>
+										<div className="text-red-500">
+											{stringBookingStatuses.at(booking.status)}
 										</div>
-									))}
+									</div>
+								</div>
+								{booking.artTattoos.map((tattoo, tattooIndex) => (
+									<div
+										key={tattoo.id}
+										className="py-2 flex flex-row justify-start gap-3 flex-wrap"
+									>
+										<div className="relative w-32 h-32">
+											<Image
+												layout="fill"
+												src={tattoo.photo}
+												alt={tattoo.id}
+												className="object-contain"
+											/>
+										</div>
+										<div className="flex-grow">
+											{tattoo.bookingDetails.map(
+												(bookingDetail, bookingDetailIndex) => (
+													<div
+														key={bookingDetail.id}
+														className="flex justify-between"
+													>
+														<div className="text-base">
+															{bookingDetail.operationName}
+														</div>
+														<div className="text-lg">
+															{formatPrice(bookingDetail.price)}
+														</div>
+													</div>
+												)
+											)}
+										</div>
+									</div>
+								))}
+								<div className="flex justify-end pt-3 items-start">
+									<div className="text-right">
+										<div>
+											Ngày tạo đơn:{' '}
+											<span className="text-base">
+												{formatTime(booking.createdAt)}
+											</span>
+										</div>
+										<div>
+											Ngày hoàn tất:{' '}
+											<span className="text-base">
+												{formatTime(booking.meetingDate)}
+											</span>
+										</div>
+										<div>
+											Thành tiền:{' '}
+											<span className="text-lg text-red-500">
+												{formatPrice(booking.total)}
+											</span>
+										</div>
+									</div>
 								</div>
 							</div>
-						))}
-						<div className="flex justify-end pt-3 items-start">
-							<div className="text-right">
-								<div>
-									Ngày tạo đơn:{' '}
-									<span className="text-base">{formatTime(booking.createdAt)}</span>
-								</div>
-								<div>
-									Ngày hoàn tất:{' '}
-									<span className="text-base">
-										{formatTime(booking.meetingDate)}
-									</span>
-								</div>
-								<div>
-									Thành tiền: <span className="text-lg text-red-500">{formatPrice(booking.total)}</span>
-								</div>
-							</div>
-						</div>
+						</Link>
 					</CardBody>
 				</Card>
 			))}

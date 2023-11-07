@@ -15,8 +15,7 @@ export const WidgetTimeline = ({ title, timeline }) => {
           </button>
         </div>
       )}
-      {timeline &&
-        timeline.map((item, index) => (
+      {timeline?.map((item, index) => (
           <div
             key={index}
             className={`relative flow-root py-5 timeline-item ${
