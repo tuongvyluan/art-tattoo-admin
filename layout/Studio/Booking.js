@@ -4,7 +4,14 @@ import { useState } from 'react';
 import { Card, CardBody, Link, Ripple } from 'ui';
 import { Search } from 'icons/outline';
 import debounce from 'lodash.debounce';
-import { BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
+import {
+	BOOKING_STATUS,
+	stringBookingStatuses,
+	stringColor,
+	stringDifficult,
+	stringPlacements,
+	stringSize
+} from 'lib/status';
 import Image from 'next/image';
 
 const ALL_TAB = '1';
@@ -61,7 +68,7 @@ function BookingPage({ data }) {
 	};
 
 	return (
-		<div className="sm:px-12 md:px-16 lg:px-32 xl:px-56">
+		<div className="sm:px-8 md:px-10 lg:px-32 xl:px-56">
 			<div className="mx-auto ring-1 ring-black ring-opacity-5 bg-white">
 				<div className="flex flex-row w-0 min-w-full">
 					<ul className="list-none grid col-span-4 grid-flow-col place-items-center overflow-x-auto w-0 min-w-full -mb-10 pb-10">
@@ -169,6 +176,43 @@ function BookingPage({ data }) {
 										</div>
 									</div>
 								</div>
+								{booking.services && Object.keys(booking.services).length > 0 ? (
+									<div className="mx-auto border-b border-gray-300 py-3">
+										<div className="text-gray-500 pb-2">Dịch vụ tham khảo</div>
+										{booking.services.map((service, serviceIndex) => (
+											// Booking service
+											<div
+												key={`${booking.id}-${service.id}`}
+												className="pb-1 pl-2 flex text-base"
+											>
+												<div>{stringSize.at(service.size)}</div>
+
+												{service.placement ? (
+													<div>, {stringPlacements.at(service.placement)}</div>
+												) : (
+													<></>
+												)}
+
+												<div>, {stringColor(service.hasColor)}</div>
+
+												<div>, {stringDifficult(service.isDifficult)}</div>
+
+												{service.ink && service.ink.length > 0 ? (
+													<div>, {service.ink}</div>
+												) : (
+													<></>
+												)}
+
+												<div>
+													, {formatPrice(service.minPrice)} -{' '}
+													{formatPrice(service.maxPrice)}
+												</div>
+											</div>
+										))}
+									</div>
+								) : (
+									<></>
+								)}
 								{booking.artTattoos.map((tattoo, tattooIndex) => (
 									<div
 										key={tattoo.id}
@@ -185,7 +229,9 @@ function BookingPage({ data }) {
 										<div className="flex-grow">
 											<div>
 												<span>Nghệ sĩ xăm: </span>
-												<span className='font-semibold'>{tattoo.artist?.firstName}</span>
+												<span className="font-semibold">
+													{tattoo.artist?.firstName}
+												</span>
 											</div>
 											{tattoo.bookingDetails.map(
 												(bookingDetail, bookingDetailIndex) => (

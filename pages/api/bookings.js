@@ -1,5 +1,10 @@
 import { randomFrom0To } from 'lib';
-import { BOOKING_STATUS, SERVICE_SIZE, TATTOO_ART_STATUS } from 'lib/status';
+import {
+	BOOKING_STATUS,
+	SERVICE_SIZE,
+	TATTOO_ART_STATUS,
+	stringPlacements
+} from 'lib/status';
 import { v4 } from 'uuid';
 
 const data = Array(20)
@@ -37,6 +42,25 @@ const data = Array(20)
 				email: `email${[randomFrom0To(3)]}@gmail.com`,
 				phoneNumber: '0912345678'
 			},
+			services: Array(1 + randomFrom0To(2))
+				.fill(0)
+				.map((_, i) => {
+					return {
+						serviceId: v4(),
+						minPrice: 1000000 + randomFrom0To(9) * 100000,
+						maxPrice: 2000000 + randomFrom0To(9) * 100000,
+						hasColor: Math.random() < 0.5,
+						isDifficult: Math.random() < 0.5,
+						size: [
+							SERVICE_SIZE.EXTRA,
+							SERVICE_SIZE.LARGE,
+							SERVICE_SIZE.MEDIUM,
+							SERVICE_SIZE.SMALL
+						][randomFrom0To(4)],
+						ink: '',
+						placement: randomFrom0To(stringPlacements.length)
+					};
+				}),
 			artTattoos: Array(1 + randomFrom0To(2))
 				.fill(0)
 				.map((_, i) => {
@@ -86,7 +110,7 @@ const data = Array(20)
 							SERVICE_SIZE.LARGE,
 							SERVICE_SIZE.MEDIUM,
 							SERVICE_SIZE.SMALL
-						][randomFrom0To(10)],
+						][randomFrom0To(4)],
 						status: TATTOO_ART_STATUS.AVAILABLE,
 						bookingDetails: [
 							{
@@ -94,7 +118,8 @@ const data = Array(20)
 								operationName: 'Xăm trọn gói',
 								price: randomFrom0To(8) * 1200000 + 1000000
 							}
-						]
+						],
+						placement: randomFrom0To(stringPlacements.length)
 					};
 				}),
 			status: [
