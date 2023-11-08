@@ -1,10 +1,42 @@
 import { randomFrom0To } from 'lib';
 import { stringPlacements, stringSize } from 'lib/status';
+import { v4 } from 'uuid';
 
 const data = Array(10)
 	.fill(0)
 	.map((_, i) => {
 		return {
+			id: v4(),
+			customer: {
+				customerId: v4(),
+				accountId: v4(),
+				firstName: [
+					'Vy',
+					'Trân',
+					'Trường',
+					'Tân',
+					'Thịnh',
+					'Bảo',
+					'Châu',
+					'Dương',
+					'Tuấn',
+					'Đức'
+				][randomFrom0To(10)],
+				lastName: [
+					'Nguyễn',
+					'Luân',
+					'Trần',
+					'Lâm',
+					'Vũ',
+					'Lê',
+					'Hoàng',
+					'Đinh',
+					'Lý',
+					'Hồ'
+				][randomFrom0To(3)],
+				email: `email${[randomFrom0To(3)]}@gmail.com`,
+				phoneNumber: '0912345678'
+			},
 			description: [
 				'Mô tả 1',
 				'Mô tả 2',
@@ -17,7 +49,6 @@ const data = Array(10)
 			][Math.floor(Math.random() * 8)],
 			size: stringSize.at(randomFrom0To(stringSize.length)),
 			position: stringPlacements.at(randomFrom0To(stringPlacements.length)),
-			tattooArtId: i,
 			artist: {
 				artistId: [Math.floor(Math.random() * 900)],
 				artistName: [
@@ -199,7 +230,16 @@ const data = Array(10)
 					][randomFrom0To(10)],
 					description: 'Mô tả media 1'
 				}
-			]
+			],
+			bookingDetails: [
+				{
+					bookingDetailsId: v4(),
+					operationName: 'Xăm trọn gói',
+					price: randomFrom0To(8) * 1200000 + 1000000
+				}
+			],
+			placement: randomFrom0To(stringPlacements.length),
+			createdAt: new Date(),
 		};
 	});
 

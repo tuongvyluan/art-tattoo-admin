@@ -43,7 +43,7 @@ const Header = ({ toggleOpen }) => {
 			}`}
 		>
 			<div className="w-full mx-auto h-full">
-				<div className="relative flex items-center justify-end h-full">
+				<div className="relative flex items-center justify-between md:justify-end h-full">
 					<a
 						className="flex md:hidden items-center flex-shrink-0 px-4 cursor-pointer text-gray-900"
 						onClick={toggleOpen}

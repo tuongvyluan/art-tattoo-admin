@@ -8,7 +8,7 @@ import { useState } from "react";
 export const WidgetPostCard = ({
   title,
   subtitle,
-  text,
+  children,
   images,
   imageHeight,
 }) => {
@@ -46,7 +46,7 @@ export const WidgetPostCard = ({
           {images.map((image, index) => (
             <CarouselSlide key={index} index={index} activeIndex={activeIndex}>
               <BackgroundImg
-                className="relative w-full bg-top bg-center bg-cover bg-fallback"
+                className="relative w-full bg-center bg-cover bg-fallback"
                 image={image}
                 height={imageHeight}
               />
@@ -67,7 +67,7 @@ export const WidgetPostCard = ({
         </div>
       </div>
 
-      <CardBody>{text}</CardBody>
+      <div className={'p-2 bg-white'}>{children}</div>
     </Card>
   );
 };
@@ -75,7 +75,7 @@ export const WidgetPostCard = ({
 WidgetPostCard.propTypes = {
   title: PropTypes.string,
   subtitle: PropTypes.string,
-  text: PropTypes.string.isRequired,
+  children: PropTypes.node.isRequired,
   images: PropTypes.array.isRequired,
   imageHeight: PropTypes.number.isRequired,
 };

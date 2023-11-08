@@ -1,8 +1,8 @@
-const { useSession } = require("next-auth/react");
-import TattooDetailsPage from 'layout/Studio/TattooDetails';
+import TattooDetailsPage from 'layout/Studio/TattooDetailsPage';
 import { ROLE } from 'lib/status';
+import { useSession } from 'next-auth/react';
 import Router from 'next/router';
-const { Loading } = require("ui");
+import { Loading } from 'ui';
 
 const TattooDetails = () => {
 	// Check authenticated
