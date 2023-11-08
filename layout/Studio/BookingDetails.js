@@ -1,33 +1,13 @@
 import { ChevronLeft } from 'icons/solid';
-import { formatDate, formatPrice } from 'lib';
-import { BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
+import { extractBookingStatusTimeline, formatPrice } from 'lib';
+import { stringBookingStatuses } from 'lib/status';
+import PropTypes from 'prop-types';
 import Image from 'next/image';
-import { useRouter } from 'next/router';
 import { Card, CardBody, Link } from 'ui';
 import { WidgetOrderStatus } from 'ui/WidgetOrderStatus';
 
-function BookingDetailsPage() {
-	const router = useRouter();
-	const bookingId = router.query.id;
-	const timeline = [
-		{
-			text: 'Đã hoàn thành',
-			date: new Date(+new Date() - 1000000000).toString(),
-			id: 0
-		},
-		{
-			text: `Đã xác nhận lịch hẹn vào ngày ${formatDate(
-				new Date(+new Date() - 1000000000)
-			)}`,
-			date: new Date(+new Date() - 1700000000).toString(),
-			id: 1
-		},
-		{
-			text: 'Đã đặt hẹn',
-			date: new Date(+new Date() - 1900000000).toString(),
-			id: 2
-		}
-	];
+function BookingDetailsPage({ data }) {
+	const timeline = extractBookingStatusTimeline(data);
 	return (
 		<div className="sm:px-12 md:px-16 lg:px-32 xl:px-56">
 			<Card>
@@ -42,9 +22,9 @@ function BookingDetailsPage() {
 							</div>
 						</Link>
 						<div>
-							<span>Mã đơn hàng: {bookingId} | </span>
+							<span>Mã đơn hàng: {data.id} | </span>
 							<span className="text-red-500">
-								{stringBookingStatuses[BOOKING_STATUS.COMPLETED]}
+								{stringBookingStatuses[data.status]}
 							</span>
 						</div>
 					</div>
@@ -55,12 +35,18 @@ function BookingDetailsPage() {
 						<div className="font-semibold text-lg pb-2">Thông tin đơn hàng</div>
 						<div className="flex justify-start flex-wrap">
 							<div className="w-full pr-1 md:w-1/4 lg:w-1/3 sm:border-r sm:border-gray-300">
-								<div className="text-base">Luân Tường Vy</div>
-								<div>0911330695</div>
-								<div>luantuongvy13@gmail.com</div>
+								<div className="text-base">{data.customer.firstName}</div>
+								<div>{data.customer.phoneNumber}</div>
+								<div>{data.customer.email}</div>
 							</div>
 							<div className="flex-grow pt-3 md:pt-0">
-								<WidgetOrderStatus timeline={timeline} />
+								{timeline.length > 0 ? (
+									<WidgetOrderStatus timeline={timeline} />
+								) : (
+									<div className="text-center text-base text-red-500">
+										ĐƠN HÀNG ĐÃ BỊ HUỶ
+									</div>
+								)}
 							</div>
 						</div>
 					</div>
@@ -69,37 +55,40 @@ function BookingDetailsPage() {
 					}
 					<div className="pt-3">
 						<div className="font-semibold text-lg pb-2">Chi tiết đơn hàng</div>
-						<div
-							// key={tattoo.id}
-							className="py-2 flex justify-start gap-3 flex-wrap"
-						>
-							<div className="relative w-32 h-32">
-								<Image layout="fill" src={''} alt={'a'} className="object-contain" />
-							</div>
-							<div className="flex-grow">
-								<div>
-									<span>Nghệ sĩ xăm: </span>
-									<span className="font-semibold">Vy Luân</span>
+						{data.artTattoos?.map((tattoo, tattooIndex) => (
+							<div
+								key={tattoo.id}
+								className="py-2 flex justify-start gap-3 flex-wrap"
+							>
+								<div className="relative w-32 h-32">
+									<Image
+										layout="fill"
+										src={tattoo.photo}
+										alt={'a'}
+										className="object-contain"
+									/>
 								</div>
-								{/* {tattoo.bookingDetails.map(
-												(bookingDetail, bookingDetailIndex) => ( */}
-								<div
-									// key={bookingDetail.id}
-									className="flex justify-between items-center"
-								>
-									<div className="text-base">
-										{/* {bookingDetail.operationName} */}
-										Xăm trọn gói
+								<div className="flex-grow">
+									<div>
+										<span>Nghệ sĩ xăm: </span>
+										<span className="font-semibold">{tattoo.artist.firstName}</span>
 									</div>
-									<div className="text-lg">
-										{/* {formatPrice(bookingDetail.price)} */}
-										{formatPrice(1000000)}
-									</div>
+									{tattoo.bookingDetails.map((bookingDetail, bookingDetailIndex) => (
+										<div
+											key={bookingDetail.id}
+											className="flex justify-between items-center"
+										>
+											<div className="text-base">
+												{bookingDetail.operationName}
+											</div>
+											<div className="text-lg">
+												{formatPrice(bookingDetail.price)}
+											</div>
+										</div>
+									))}
 								</div>
-								{/* )
-											)} */}
 							</div>
-						</div>
+						))}
 					</div>
 					{
 						// Final sum
@@ -112,7 +101,7 @@ function BookingDetailsPage() {
 										Tổng tiền
 									</th>
 									<td className="py-3 text-right text-xl text-red-500">
-										{formatPrice(5000000)}
+										{formatPrice(data.total)}
 									</td>
 								</tr>
 								<tr className="border-t border-gray-300">
@@ -129,5 +118,7 @@ function BookingDetailsPage() {
 		</div>
 	);
 }
-
+BookingDetailsPage.propTypes = {
+	data: PropTypes.object
+};
 export default BookingDetailsPage;

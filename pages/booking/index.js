@@ -9,6 +9,8 @@ import { Loading } from 'ui';
 const Booking = () => {
 	// Check authenticated
 	const { status, data } = useSession();
+
+	// Call api to get bookings
 	const { data: bookingData, error } = useSWR('api/bookings', fetcher);
 	
 	if (status === 'loading') {

@@ -213,7 +213,7 @@ function BookingPage({ data }) {
 								) : (
 									<></>
 								)}
-								{booking.artTattoos.map((tattoo, tattooIndex) => (
+								{booking.artTattoos?.map((tattoo, tattooIndex) => (
 									<div
 										key={tattoo.id}
 										className="py-2 flex flex-row justify-start gap-3 flex-wrap"

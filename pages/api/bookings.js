@@ -128,9 +128,15 @@ const data = Array(20)
 				BOOKING_STATUS.CANCELLED
 			][randomFrom0To(3)],
 			createdAt: new Date(),
-			meetingDate: new Date(),
+			meetingDate: new Date(+new Date() + 200000000),
 			total: randomFrom0To(8) * 1200000 + 1000000
 		};
 	});
-const getBookingList = (req, res) => res.json(data);
+const getBookingList = (req, res) => {
+
+	if (req.query.id) {
+		return res.json(data.at(0))
+	}
+	return res.json(data)
+};
 export default getBookingList;
