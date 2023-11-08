@@ -13,7 +13,7 @@ const SidebarContent = () => {
         <a className="flex items-center text-white px-2 py-3 w-full">
           <span className="flex font-medium items-center md:justify-start justify-start">
             <Logo height={24} width={24} />{" "}
-            <span className="ltr:ml-4 rtl:mr-4 font-bold text-base">
+            <span className="ml-4 rtl:mr-4 font-bold text-base">
               {state.name}
             </span>
           </span>

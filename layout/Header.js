@@ -89,9 +89,7 @@ const Header = ({ toggleOpen }) => {
 														<a
 															key={index}
 															href="#"
-															className={`flex justify-between px-3 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out -m-3 ${
-																option === 'rtl' ? 'uppercase' : ''
-															}`}
+															className={`flex justify-between px-3 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out -m-3`}
 														>
 															{t(option)}
 															<label
@@ -151,14 +149,14 @@ const Header = ({ toggleOpen }) => {
 													}
 												>
 													<span
-														className={`absolute transform ltr:translate-x-1/2 rtl:-translate-x-1/2 translate-y-1/2 w-2 h-2 block rounded-full cursor-pointer ${
+														className={`absolute transform translate-x-1/2 translate-y-1/2 w-2 h-2 block rounded-full cursor-pointer ${
 															color === state.sidebarColor
 																? 'bg-white'
 																: `bg-${color}-800`
 														}`}
 														style={{
-															marginLeft: !state.rtl ? '2px' : '0',
-															marginRight: state.rtl ? '2px' : '0',
+															marginLeft: '0',
+															marginRight: '0',
 															marginTop: '2px'
 														}}
 													></span>
@@ -175,7 +173,7 @@ const Header = ({ toggleOpen }) => {
 								<Bell width={18} height={18} strokeWidth={2} />
 								<Badge
 									color="red"
-									className="absolute top-0 ltr:right-0 rtl:left-0 ring-2 ring-white dark:ring-gray-600 h-4"
+									className="absolute top-0 right-0 ring-2 ring-white dark:ring-gray-600 h-4"
 									style={{
 										transform: 'translate(5px, -5px)'
 									}}
@@ -199,21 +197,21 @@ const Header = ({ toggleOpen }) => {
 										className="flex items-center px-5 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
 									>
 										<LightningBolt width={16} height={16} />{' '}
-										<span className="ltr:ml-3 rtl:mr-3">Hoạt động</span>
+										<span className="ml-3">Hoạt động</span>
 									</a>
 									<a
 										href="#"
 										className="flex items-center px-5 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
 									>
 										<User width={16} height={16} />{' '}
-										<span className="ltr:ml-3 rtl:mr-3">Hồ sơ</span>
+										<span className="ml-3">Hồ sơ</span>
 									</a>
 									<a
 										href="#"
 										className="flex items-center px-5 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
 									>
 										<Cog width={16} height={16} />{' '}
-										<span className="ltr:ml-3 rtl:mr-3">Cài đặt</span>
+										<span className="ml-3">Cài đặt</span>
 									</a>
 									<a
 										href="#"

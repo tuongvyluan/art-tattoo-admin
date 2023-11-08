@@ -36,7 +36,7 @@ const Invoice = () => {
         <div className="p-8">
           <h1 className="font-medium text-xl">{data.receiver.company}</h1>
           <div className="flex flex-col sm:flex-row">
-            <div className="ltr:mr-auto rtl:ml-auto">
+            <div className="mr-auto rtl:ml-auto">
               <ul className="list-none">
                 <li>{data.receiver.name}</li>
                 <li>{data.receiver.email}</li>
@@ -56,7 +56,7 @@ const Invoice = () => {
                 <li>{data.createdAt}</li>
               </ul>
             </div>
-            <div className="sm:ltr:text-right sm:rtl:text-left pt-3 sm:pt-0">
+            <div className="sm:text-right sm:rtl:text-left pt-3 sm:pt-0">
               <ul className="list-none">
                 <li>{data.sender.company}</li>
                 <li>{data.sender.name}</li>
@@ -80,10 +80,10 @@ const Invoice = () => {
         <div className="rounded-b-lg p-5">
           <div className="p-5">
             <div className="flex py-2 text-gray-500 border-b border-t items-center border-solid border-gray-100 dark:border-gray-700">
-              <div className="ltr:mr-auto rtl:ml-auto">
+              <div className="mr-auto rtl:ml-auto">
                 <small>{t("description")}</small>
               </div>
-              <div className="ltr:text-right rtl:text-left">
+              <div className="text-right rtl:text-left">
                 <small>{t("amount")}</small>
               </div>
             </div>
@@ -93,7 +93,7 @@ const Invoice = () => {
                 className="flex py-4 border-b border-solid border-gray-100 dark:border-gray-700 items-center"
                 key={index}
               >
-                <div className="ltr:mr-auto rtl:ml-auto">
+                <div className="mr-auto rtl:ml-auto">
                   <span>{item.title}</span>
                   <small className="block text-gray-500">
                     {item.subtitle}
@@ -105,7 +105,7 @@ const Invoice = () => {
                     )}
                   </small>
                 </div>
-                <div className="ltr:text-right rtl:text-left">
+                <div className="text-right rtl:text-left">
                   <span>{formatPrice(item.price * item.quantity)}</span>
                 </div>
               </div>
@@ -113,19 +113,19 @@ const Invoice = () => {
 
             <div className="flex">
               <div
-                className="block ltr:ml-auto rtl:mr-auto w-full"
+                className="block ml-auto rtl:mr-auto w-full"
                 style={{ maxWidth: "400px" }}
               >
                 <div className="flex py-4 border-b border-solid border-gray-100 dark:border-gray-700 items-center">
-                  <small className="ltr:mr-auto rtl:ml-auto text-gray-500">
+                  <small className="mr-auto rtl:ml-auto text-gray-500">
                     {t("subtotal")}
                   </small>
-                  <span className="ltr:text-right rtl:text-left">
+                  <span className="text-right rtl:text-left">
                     {formatPrice(getSubTotal())}
                   </span>
                 </div>
                 <div className="flex py-4 border-b border-t border-solid border-gray-100 dark:border-gray-700 items-center">
-                  <small className="ltr:mr-auto rtl:ml-auto text-gray-500">
+                  <small className="mr-auto rtl:ml-auto text-gray-500">
                     {t("tax")}
                   </small>
                   <span>
@@ -134,7 +134,7 @@ const Invoice = () => {
                   </span>
                 </div>
                 <div className="flex py-4 border-t border-solid border-gray-100 dark:border-gray-700 items-center">
-                  <small className="ltr:mr-auto rtl:ml-auto text-gray-500">
+                  <small className="mr-auto rtl:ml-auto text-gray-500">
                     {t("discount")}
                   </small>
                   <span>
@@ -143,7 +143,7 @@ const Invoice = () => {
                   </span>
                 </div>
                 <div className="flex py-4 border-b border-t border-solid border-blue-500 items-center">
-                  <small className="ltr:mr-auto rtl:ml-auto text-gray-500">
+                  <small className="mr-auto rtl:ml-auto text-gray-500">
                     {t("total")}
                   </small>
                   <strong>{formatPrice(getTotal())}</strong>

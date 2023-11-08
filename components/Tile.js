@@ -26,14 +26,14 @@ const Tile = () => {
       {data.map((id) => (
         <div className="w-full lg:w-1/3 px-2" key={id}>
           <figure
-            className="relative overflow-hidden cursor-pointer bg-gray-900 w-full ltr:text-left rtl:text-right mb-4 rounded-lg"
+            className="relative overflow-hidden cursor-pointer bg-gray-900 w-full text-left rtl:text-right mb-4 rounded-lg"
             style={{ height: "300px" }}
           >
             <BackgroundImg
               className="relative block w-full m-auto absolute bg-cover bg-center w-full h-full object-cover bg-center"
               image={`${basePath}/images/unsplash/${id}.jpg`}
             />
-            <figcaption className="absolute bottom-0 ltr:left-0 rtl:right-0 w-full p-3 bg-black bg-opacity-50">
+            <figcaption className="absolute bottom-0 left-0 rtl:right-0 w-full p-3 bg-black bg-opacity-50">
               <h5 className="w-1/2 text-xl font-bolder text-white">
                 Gallery {id}
               </h5>

@@ -1,5 +1,4 @@
 import '../index.css';
-
 import App from 'next/app';
 import AppProvider from 'components/AppProvider';
 import { SessionProvider } from 'next-auth/react';

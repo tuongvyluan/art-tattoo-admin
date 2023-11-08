@@ -9,11 +9,11 @@ export const WidgetActivityStream = ({ stream }) => (
         className="activity-item relative bg-transparent pb-3 m-0"
       >
         <div className="flex items-start justify-start">
-          <span className="flex ltr:mr-3 rtl:ml-3 rounded-full relative border border-white">
+          <span className="flex mr-3 rtl:ml-3 rounded-full relative border border-white">
             <Avatar size={48} src={item.avatar} alt={item.title} />
           </span>
 
-          <div className="ltr:pl-3 rtl:pr-3">
+          <div className="pl-3 rtl:pr-3">
             <span className="block pb-2">
               <small className="text-gray-600">
                 <span>{item.subtitle}</span>

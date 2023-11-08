@@ -25,23 +25,23 @@ export const WidgetTimeline = ({ title, timeline }) => {
             <span
               className={`sm:w-1/2  hidden sm:inline-block sm:absolute sm:top-0 mt-2 ${
                 index % 2
-                  ? "sm:ltr:text-left sm:rtl:text-right sm:ltr:right-0 sm:rtl:left-0"
-                  : "sm:ltr:text-right sm:rtl:text-left sm:ltr:left-0 sm:rtl:right-0"
+                  ? "sm:text-left sm:rtl:text-right sm:right-0 sm:rtl:left-0"
+                  : "sm:text-right sm:rtl:text-left sm:left-0 sm:rtl:right-0"
               }`}
             >
               <span
                 className={`block w-10 h-1 bg-gray-300 ${
                   index % 2
-                    ? "sm:ltr:float-left sm:rtl:float-right"
-                    : "sm:ltr:float-right sm:rtl:float-left"
+                    ? "sm:float-left sm:rtl:float-right"
+                    : "sm:float-right sm:rtl:float-left"
                 }`}
               />
             </span>
             <small
               className={`sm:w-1/2 inline-block sm:absolute sm:top-0 text-gray-800 ${
                 index % 2
-                  ? "ltr:pl-4 rtl:pr-4 sm:ltr:text-right sm:rtl:text-left sm:ltr:pr-10 sm:rtl:pl-10 sm:ltr:left-0 sm:rtl:right-0"
-                  : "ltr:pl-4 rtl:pr-4 sm:ltr:pl-10 sm:rtl:pr-10 sm:ltr:right-0 sm:rtl:left-0"
+                  ? "pl-4 rtl:pr-4 sm:text-right sm:rtl:text-left sm:pr-10 sm:rtl:pl-10 sm:left-0 sm:rtl:right-0"
+                  : "pl-4 rtl:pr-4 sm:pl-10 sm:rtl:pr-10 sm:right-0 sm:rtl:left-0"
               }`}
             >
               {formatDistance(new Date(item.date), new Date())}&nbsp;ago
@@ -49,15 +49,15 @@ export const WidgetTimeline = ({ title, timeline }) => {
             <div
               className={`sm:w-1/2 block sm:inline-block relative mt-0 sm:-mt-5 ${
                 index % 2
-                  ? "sm:ltr:float-right sm:rtl:float-left"
-                  : "sm:ltr:float-left sm:rtl:float-right"
+                  ? "sm:float-right sm:rtl:float-left"
+                  : "sm:float-left sm:rtl:float-right"
               }`}
             >
               <div
                 className={`${
                   index % 2
-                    ? "sm:ltr:float-left sm:rtl:float-right sm:ltr:ml-4 sm:rtl:mr-4"
-                    : "sm:ltr:float-right sm:rtl:float-left sm:ltr:mr-4 sm:rtl:ml-4"
+                    ? "sm:float-left sm:rtl:float-right sm:ml-4 sm:rtl:mr-4"
+                    : "sm:float-right sm:rtl:float-left sm:mr-4 sm:rtl:ml-4"
                 }`}
               >
                 <Card>

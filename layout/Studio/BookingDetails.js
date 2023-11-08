@@ -1,10 +1,11 @@
 import { ChevronLeft } from 'icons/solid';
 import { extractBookingStatusTimeline, formatPrice } from 'lib';
-import { stringBookingStatuses } from 'lib/status';
+import { BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import { Card, CardBody, Link } from 'ui';
 import { WidgetOrderStatus } from 'ui/WidgetOrderStatus';
+import Button from 'components/Button';
 
 function BookingDetailsPage({ data }) {
 	const timeline = extractBookingStatusTimeline(data);
@@ -17,12 +18,12 @@ function BookingDetailsPage({ data }) {
 					}
 					<div className="flex justify-between border-b border-gray-300 pb-3">
 						<Link href="/booking">
-							<div className="cursor-pointer flex gap-1 text-gray-500">
+							<div className="cursor-pointer flex gap-1 text-gray-500 hover:text-indigo-500">
 								<ChevronLeft width={20} heigh={20} /> TRỞ LẠI
 							</div>
 						</Link>
 						<div>
-							<span>Mã đơn hàng: {data.id} | </span>
+							<span>Mã đơn hàng: {data.id.split('-').reverse().at(0)} | </span>
 							<span className="text-red-500">
 								{stringBookingStatuses[data.status]}
 							</span>
@@ -39,12 +40,12 @@ function BookingDetailsPage({ data }) {
 								<div>{data.customer.phoneNumber}</div>
 								<div>{data.customer.email}</div>
 							</div>
-							<div className="flex-grow pt-3 md:pt-0">
+							<div className="flex flex-col justify-center flex-grow pt-3 md:pt-0">
 								{timeline.length > 0 ? (
 									<WidgetOrderStatus timeline={timeline} />
 								) : (
-									<div className="text-center text-base text-red-500">
-										ĐƠN HÀNG ĐÃ BỊ HUỶ
+									<div className="text-center my-auto text-base text-red-500">
+										<div>ĐƠN HÀNG ĐÃ BỊ HUỶ</div>
 									</div>
 								)}
 							</div>
@@ -54,7 +55,23 @@ function BookingDetailsPage({ data }) {
 						// Booking detail list
 					}
 					<div className="pt-3">
-						<div className="font-semibold text-lg pb-2">Chi tiết đơn hàng</div>
+						<div className="flex justify-between items-center font-semibold text-lg pb-2">
+							<div>Chi tiết đơn hàng</div>
+							{
+								// Button thêm hình xăm cho đơn hàng
+								data.status === BOOKING_STATUS.PENDING ? (
+									<div>
+										<Button>Thêm hình xăm</Button>
+									</div>
+								) : (
+									<></>
+								)
+							}
+						</div>
+
+						{
+							// List hình xăm
+						}
 						{data.artTattoos?.map((tattoo, tattooIndex) => (
 							<div
 								key={tattoo.id}
@@ -78,9 +95,7 @@ function BookingDetailsPage({ data }) {
 											key={bookingDetail.id}
 											className="flex justify-between items-center"
 										>
-											<div className="text-base">
-												{bookingDetail.operationName}
-											</div>
+											<div className="text-base">{bookingDetail.operationName}</div>
 											<div className="text-lg">
 												{formatPrice(bookingDetail.price)}
 											</div>
@@ -104,12 +119,19 @@ function BookingDetailsPage({ data }) {
 										{formatPrice(data.total)}
 									</td>
 								</tr>
-								<tr className="border-t border-gray-300">
-									<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
-										Phương thức thanh toán
-									</th>
-									<td className="py-3 text-right text-base">Tiền mặt</td>
-								</tr>
+								{
+									// Button thêm hình xăm cho đơn hàng
+									data.status === BOOKING_STATUS.COMPLETED ? (
+										<tr className="border-t border-gray-300">
+											<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
+												Phương thức thanh toán
+											</th>
+											<td className="py-3 text-right text-base">Tiền mặt</td>
+										</tr>
+									) : (
+										<></>
+									)
+								}
 							</tbody>
 						</table>
 					</div>

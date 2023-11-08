@@ -1,10 +1,11 @@
-import { Link, Logo, Ripple } from 'ui';
+import { Link, Logo } from 'ui';
 import PropTypes from 'prop-types';
 import Illustration from 'public/images/illustrations/undraw_Group_chat_unwm.svg';
+import Button from './Button';
 
 const Login = ({ handleSubmit, user, setUser }) => {
 	const handleFormChange = (e) => {
-		setUser({ ...user, [e.target.name]: e.target.value })
+		setUser({ ...user, [e.target.name]: e.target.value });
 	};
 
 	return (
@@ -61,13 +62,9 @@ const Login = ({ handleSubmit, user, setUser }) => {
 									</div>
 								</div>
 
-								<button
-									className="shadow-sm relative w-full flex justify-center py-3 px-4 border border-transparent text-sm rounded-lg text-white bg-indigo-600 hover:bg-indigo-500 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-700 transition duration-150 ease-in-out mb-3 leading-none"
-									type="submit"
-								>
-									Đăng nhập
-									<Ripple />
-								</button>
+								<div className='flex justify-center'>
+									<Button>Đăng nhập</Button>
+								</div>
 							</form>
 							<div className="text-center">
 								<small className="text-gray-700 text-center">

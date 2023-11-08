@@ -60,7 +60,7 @@ export const Table = ({ columns, data, update }) => {
 						{headerGroups.map((headerGroup, index) => (
 							<tr
 								key={index}
-								className="ltr:text-left rtl:text-right"
+								className="text-left rtl:text-right"
 								{...headerGroup.getHeaderGroupProps()}
 							>
 								{headerGroup.headers.map((column, columnIndex) => (
@@ -127,7 +127,7 @@ export const Table = ({ columns, data, update }) => {
 															<a
 																className={classNames(
 																	cell.value.className,
-																	'relative cursor-pointer inline-block rounded-lg font-semibold px-2 py-2 text-sm leading-none shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 ltr:mr-1 rtl:ml-1 mt-1'
+																	'relative cursor-pointer inline-block rounded-lg font-semibold px-2 py-2 text-sm leading-none shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 mr-1 rtl:ml-1 mt-1'
 																)}
 																onClick={() => update('approve', row.original)}
 															>
@@ -179,9 +179,9 @@ export const Table = ({ columns, data, update }) => {
 						className="appearance-none relative inline-block px-3 py-3 border border-transparent placeholder-gray-500 text-gray-900 shadow-sm rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none w-12"
 					/>
 				</span>
-				<div className="ml-0 mr-0 sm:ltr:ml-3 sm:rtl:mr-3">
+				<div className="ml-0 mr-0 sm:ml-3 sm:rtl:mr-3">
 					<button
-						className="relative inline-flex justify-center ltr:rounded-l-lg rtl:rounded-r-lg border border-transparent px-4 py-3 bg-white text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none"
+						className="relative inline-flex justify-center rounded-l-lg rtl:rounded-r-lg border border-transparent px-4 py-3 bg-white text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none"
 						onClick={() => gotoPage(0)}
 						disabled={!canPreviousPage}
 					>
@@ -205,7 +205,7 @@ export const Table = ({ columns, data, update }) => {
 						<Ripple color="black" />
 					</button>
 					<button
-						className="relative inline-flex justify-center ltr:rounded-r-lg rtl:rounded-l-lg border border-transparent px-4 py-3 bg-white text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none"
+						className="relative inline-flex justify-center rounded-r-lg rtl:rounded-l-lg border border-transparent px-4 py-3 bg-white text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none"
 						onClick={() => gotoPage(pageCount - 1)}
 						disabled={!canNextPage}
 					>

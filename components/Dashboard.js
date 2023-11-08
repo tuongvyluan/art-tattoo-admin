@@ -147,13 +147,13 @@ const MapCard = memo((states) => {
 							</colgroup>
 							<thead>
 								<tr>
-									<th className="ltr:text-right rtl:text-left py-2 px-1"></th>
-									<th className="ltr:text-right rtl:text-left py-2 px-1">
+									<th className="text-right rtl:text-left py-2 px-1"></th>
+									<th className="text-right rtl:text-left py-2 px-1">
 										<span className="bg-green-100 ring-1 ring-green-400 ring-opacity-50 text-green-700 px-2 py-1 rounded-lg font-medium uppercase text-xs">
 											{t('passed')}
 										</span>
 									</th>
-									<th className="ltr:text-right rtl:text-left py-2 px-1">
+									<th className="text-right rtl:text-left py-2 px-1">
 										<span className="bg-red-100 ring-1 ring-red-400 ring-opacity-50 text-red-700 px-2 py-1 rounded-lg font-medium uppercase text-xs">
 											{t('failed')}
 										</span>
@@ -167,17 +167,17 @@ const MapCard = memo((states) => {
 									.slice(0, 8)
 									.map((state) => (
 										<tr key={state.id}>
-											<td className="ltr:text-right rtl:text-left py-3 px-1">
+											<td className="text-right rtl:text-left py-3 px-1">
 												{state.name}
 											</td>
-											<td className="ltr:text-right rtl:text-left py-3 px-1">
+											<td className="text-right rtl:text-left py-3 px-1">
 												{state.value1}
 											</td>
-											<td className="ltr:text-right rtl:text-left py-3 px-1">
+											<td className="text-right rtl:text-left py-3 px-1">
 												{state.value2}
 											</td>
 											<td className="py-3 px-1">
-												<div className="w-full my-1 rounded-lg ltr:ml-3 rtl:mr-3">
+												<div className="w-full my-1 rounded-lg ml-3 rtl:mr-3">
 													<div
 														className="py-1 text-center text-white h-1 rounded-lg"
 														style={{
@@ -345,7 +345,7 @@ const Dashboard = () => {
 					</div>
 					<div className="inline-flex mt-1 sm:mt-0">
 						<button
-							className={`relative inline-flex justify-center ltr:rounded-l-lg rtl:rounded-r-lg border border-indigo-500 px-5 py-1 ${
+							className={`relative inline-flex justify-center rounded-l-lg rtl:rounded-r-lg border border-indigo-500 px-5 py-1 ${
 								dataSet === 'gold'
 									? 'bg-indigo-500 text-gray-200 hover:text-white'
 									: 'bg-white text-gray-700 hover:text-indigo-500'
@@ -353,7 +353,7 @@ const Dashboard = () => {
 							onClick={() => setDataSet('gold')}
 						>
 							{t('gold')}
-							<Ripple className="ltr:rounded-l-lg rtl:rounded-r-lg" />
+							<Ripple className="rounded-l-lg rtl:rounded-r-lg" />
 						</button>
 						<button
 							className={`relative inline-flex justify-center border-t border-b border-indigo-500 px-5 py-1 ${
@@ -367,7 +367,7 @@ const Dashboard = () => {
 							<Ripple />
 						</button>
 						<button
-							className={`relative inline-flex justify-center ltr:rounded-r-lg rtl:rounded-l-lg border border-indigo-500 px-5 py-1 ${
+							className={`relative inline-flex justify-center rounded-r-lg rtl:rounded-l-lg border border-indigo-500 px-5 py-1 ${
 								dataSet === 'bronze'
 									? 'bg-indigo-500 text-gray-200 hover:text-white'
 									: 'bg-white text-gray-700 hover:text-indigo-500'
@@ -375,7 +375,7 @@ const Dashboard = () => {
 							onClick={() => setDataSet('bronze')}
 						>
 							{t('bronze')}
-							<Ripple className="ltr:rounded-r-lg rtl:rounded-l-lg" />
+							<Ripple className="rounded-r-lg rtl:rounded-l-lg" />
 						</button>
 					</div>
 				</div>

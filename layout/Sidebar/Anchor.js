@@ -18,15 +18,15 @@ const Anchor = ({
 	const { t } = useTranslation('sidebar');
 	const content = (
 		<a
-			className={`flex items-center px-3 py-px h-10 text-gray-100 cursor-pointer hover:text-white focus:text-opacity-100 outline-none transition-all duration-150 ease-in-out truncate ${
+			className={`flex items-center gap-1 px-3 py-px h-10 text-gray-100 cursor-pointer hover:text-white focus:text-opacity-100 outline-none transition-all duration-150 ease-in-out truncate ${
 				(divider ? `text-xxs uppercase font-bold mt-4 sidebar-divider` : ``,
 				isSelected ? `text-white` : `text-gray-200`,
-				level < 2 ? '' : 'ltr:pl-7 rtl:pr-7')
+				level < 2 ? '' : 'pl-7 rtl:pr-7')
 			}`}
 			onClick={expand}
 		>
-			{icon && <span className="ltr:mr-4 rtl:ml-4">{icon}</span>}
-			<span className="ltr:mr-auto rtl:ml-auto leading-none">{t(name)}</span>
+			{icon && <span className="mr-4 rtl:ml-4">{icon}</span>}
+			<span className="mr-auto rtl:ml-auto leading-none">{t(name)}</span>
 			{badge && <Badge color={badge.type}>{badge.value}</Badge>}
 			{hasItems && (
 				<span

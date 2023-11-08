@@ -52,7 +52,6 @@
     "postcss-flexbugs-fixes": "^5.0.1",
     "postcss-preset-env": "^7.0.1",
     "raw-loader": "4.0.2",
-    "tailwindcss-dir": "4.0.0",
     "typescript": "5.2.2"
   }
 }

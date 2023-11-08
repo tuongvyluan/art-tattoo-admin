@@ -67,10 +67,10 @@ const Chat = () => {
               />
             </span>
 
-            <span className="w-full hidden lg:block ltr:ml-3 rtl:mr-3 lg:min-w-0">
+            <span className="w-full hidden lg:block ml-3 rtl:mr-3 lg:min-w-0">
               <small className="flex w-full text-gray-500">
                 <span>{contact.from}</span>
-                <span className="ltr:mr-auto rtl:ml-auto" />
+                <span className="mr-auto rtl:ml-auto" />
                 <span>
                   {formatDistance(new Date(contact.date), new Date(), {
                     addSuffix: true,
@@ -93,7 +93,7 @@ const Chat = () => {
       <div className="flex flex-row overflow-auto w-0 min-w-full">
         {data && (
           <div className="flex flex-row overflow-auto w-0 min-w-full  p-4 -mb-10 pb-10">
-            <div className="text-sm text-center ltr:mr-4 rtl:ml-4">
+            <div className="text-sm text-center mr-4 rtl:ml-4">
               <button
                 className="relative flex flex-shrink-0 focus:outline-none block bg-indigo-500 text-white rounded-full w-10 h-10 items-center justify-center shadow mx-auto"
                 type="button"
@@ -104,7 +104,7 @@ const Chat = () => {
               <span className="text-xs mt-2 block">{t("compose")}</span>
             </div>
             {data.map((contact, index) => (
-              <div className="text-center ltr:mr-4 rtl:ml-4 w-16" key={index}>
+              <div className="text-center mr-4 rtl:ml-4 w-16" key={index}>
                 <Avatar
                   src={contact.avatar ? contact.avatar : ""}
                   alt={contact.from}
@@ -126,11 +126,11 @@ const Chat = () => {
           <div className="relative">
             <label>
               <input
-                className="appearance-none relative block w-full py-3 ltr:pl-10 rtl:pr-10 ltr:pr-3 rtl:pl-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
+                className="appearance-none relative block w-full py-3 pl-10 rtl:pr-10 pr-3 rtl:pl-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
                 type="search"
                 placeholder={t("search")}
               />
-              <span className="absolute top-0 ltr:left-0 rtl:right-0 mt-2 ltr:ml-3 rtl:mr-3 inline-block text-gray-600">
+              <span className="absolute top-0 left-0 rtl:right-0 mt-2 ml-3 rtl:mr-3 inline-block text-gray-600">
                 <Search width={24} height={24} />
               </span>
             </label>
@@ -204,7 +204,7 @@ const ChatPanel = ({ id }) => {
                   }`}
                 >
                   <p
-                    className={`px-6 py-3 rounded-t-lg ltr:rounded-lg rtl:rounded-lg w-full sm:max-w-xs lg:max-w-md ${
+                    className={`px-6 py-3 rounded-t-lg rounded-lg rtl:rounded-lg w-full sm:max-w-xs lg:max-w-md ${
                       transcript.from === "them"
                         ? "bg-gray-200 dark:bg-gray-600"
                         : "bg-indigo-500"

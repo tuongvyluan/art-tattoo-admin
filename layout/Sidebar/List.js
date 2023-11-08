@@ -55,7 +55,7 @@ const List = memo(
           (isSelected && level < 2) || (expanded && level < 2)
             ? `bg-${sidebarColor}-700 bg-opacity-60`
             : ``
-        } ${level < 2 ? "mx-3" : "ltr:pl-5 rtl:pr-5 -ml-px"}`}
+        } ${level < 2 ? "mx-3" : "pl-5 rtl:pr-5 -ml-px"}`}
       >
         <Anchor
           icon={Object.keys(node).includes("icon") ? node.icon : ""}

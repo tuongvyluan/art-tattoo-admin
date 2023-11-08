@@ -25,7 +25,7 @@ export const Alert = ({ color = "blue", children, className, ...props }) => {
     >
       {children}
       <span
-        className="absolute top-0 bottom-0 ltr:right-0 rtl:left-0 px-4 py-3 cursor-pointer"
+        className="absolute top-0 bottom-0 right-0 rtl:left-0 px-4 py-3 cursor-pointer"
         onClick={() => setShown(false)}
       >
         <X width={16} height={16} />

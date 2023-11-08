@@ -20,13 +20,13 @@ const Sidebar = ({
       <Transition show={open}>
         <Transition.Child
           enter="transition ease-in-out duration-150 transform"
-          enterFrom="ltr:-translate-x-full rtl:translate-x-full"
-          enterTo="ltr:translate-x-0 rtl:-translate-x-0"
+          enterFrom="-translate-x-full rtl:translate-x-full"
+          enterTo="translate-x-0 rtl:-translate-x-0"
           leave="transition ease-in-out duration-150 transform"
-          leaveFrom="ltr:translate-x-0 rtl:-translate-x-0"
-          leaveTo="ltr:-translate-x-full rtl:translate-x-full"
+          leaveFrom="translate-x-0 rtl:-translate-x-0"
+          leaveTo="-translate-x-full rtl:translate-x-full"
           className={`app-sidebar z-40 md:z-40 top-0 bottom-0 flex-auto flex-shrink-0 shadow-lg h-screen md:h-full ${sidebarClass} fixed ${
-            breakpoint ? "" : "ltr:left-0 rtl:right-0"
+            breakpoint ? "" : "left-0 rtl:right-0"
           }`}
           style={{
             maxWidth: `${width}px`,

@@ -51,9 +51,9 @@ const Social = () => {
               <div>
                 <Avatar size={84} src={`images/avatar.jpg`} alt={`avatar`} />
               </div>
-              <div className="ltr:ml-6 rtl:mr-6">
+              <div className="ml-6 rtl:mr-6">
                 <div className="hidden sm:inline-block text-2xl flex items-center">
-                  <span className="ltr:mr-2 rtl:ml-2">Gerald Morris</span>
+                  <span className="mr-2 rtl:ml-2">Gerald Morris</span>
                 </div>
                 <p className="mt-2 font-hairline text-sm">
                   123,456 {t("followers")}
@@ -61,7 +61,7 @@ const Social = () => {
               </div>
             </div>
             <div className="flex items-center text-gray-800 dark:text-gray-300">
-              <button className="appearance-none px-3 py-2 uppercase text-sm ltr:mr-3 rtl:ml-3 font-medium">
+              <button className="appearance-none px-3 py-2 uppercase text-sm mr-3 rtl:ml-3 font-medium">
                 <span className="hidden sm:inline-block">
                   {t("subscribers")}
                 </span>{" "}
@@ -318,7 +318,7 @@ const Social = () => {
                             ]
                           }
                         />
-                        <span className="block sm:inline-block mt-1 sm:mt-0 sm:ltr:ml-3 sm:rtl:mr-3">
+                        <span className="block sm:inline-block mt-1 sm:mt-0 sm:ml-3 sm:rtl:mr-3">
                           <span className="block">{contact.name}</span>
                           <small className="text-gray-500">
                             <span>{contact.status}</span>
@@ -340,7 +340,7 @@ const Social = () => {
                 <div className="md:flex md:items-center mb-6 px-5 px-5">
                   <div className="md:w-1/3">
                     <label
-                      className="block md:ltr:text-right md:rtl:text-left mb-1 md:mb-0 ltr:pr-4 rtl:pl-4"
+                      className="block md:text-right md:rtl:text-left mb-1 md:mb-0 pr-4 rtl:pl-4"
                       htmlFor="inline-first-name"
                     >
                       {t("firstName")}
@@ -359,7 +359,7 @@ const Social = () => {
                 <div className="md:flex md:items-center mb-6 px-5">
                   <div className="md:w-1/3">
                     <label
-                      className="block md:ltr:text-right md:rtl:text-left mb-1 md:mb-0 ltr:pr-4 rtl:pl-4"
+                      className="block md:text-right md:rtl:text-left mb-1 md:mb-0 pr-4 rtl:pl-4"
                       htmlFor="inline-last-name"
                     >
                       {t("lastName")}
@@ -378,7 +378,7 @@ const Social = () => {
                 <div className="md:flex md:items-center mb-6 px-5">
                   <div className="md:w-1/3">
                     <label
-                      className="block md:ltr:text-right md:rtl:text-left mb-1 md:mb-0 ltr:pr-4 rtl:pl-4"
+                      className="block md:text-right md:rtl:text-left mb-1 md:mb-0 pr-4 rtl:pl-4"
                       htmlFor="inline-email"
                     >
                       {t("emailAddress")}
@@ -397,7 +397,7 @@ const Social = () => {
                 <div className="md:flex md:items-center mb-6 px-5">
                   <div className="md:w-1/3">
                     <label
-                      className="block md:ltr:text-right md:rtl:text-left mb-1 md:mb-0 ltr:pr-4 rtl:pl-4"
+                      className="block md:text-right md:rtl:text-left mb-1 md:mb-0 pr-4 rtl:pl-4"
                       htmlFor="inline-phone-number"
                     >
                       {t("phoneNumber")}
@@ -416,7 +416,7 @@ const Social = () => {
                 <div className="md:flex md:items-center mb-6 px-5">
                   <div className="md:w-1/3">
                     <label
-                      className="block md:ltr:text-right md:rtl:text-left mb-1 md:mb-0 ltr:pr-4 rtl:pl-4"
+                      className="block md:text-right md:rtl:text-left mb-1 md:mb-0 pr-4 rtl:pl-4"
                       htmlFor="inline-company-name"
                     >
                       {t("companyName")}
@@ -435,7 +435,7 @@ const Social = () => {
                 <div className="md:flex md:items-center mb-6 px-5">
                   <div className="md:w-1/3">
                     <label
-                      className="block md:ltr:text-right md:rtl:text-left mb-1 md:mb-0 ltr:pr-4 rtl:pl-4"
+                      className="block md:text-right md:rtl:text-left mb-1 md:mb-0 pr-4 rtl:pl-4"
                       htmlFor="inline-company-website"
                     >
                       {t("companyWebsite")}
@@ -456,7 +456,7 @@ const Social = () => {
                 <div className="md:flex md:items-center mb-6 px-5">
                   <div className="md:w-1/3">
                     <label
-                      className="block md:ltr:text-right md:rtl:text-left mb-1 md:mb-0 ltr:pr-4 rtl:pl-4"
+                      className="block md:text-right md:rtl:text-left mb-1 md:mb-0 pr-4 rtl:pl-4"
                       htmlFor="inline-address-1"
                     >
                       {t("addressLine")} 1
@@ -475,7 +475,7 @@ const Social = () => {
                 <div className="md:flex md:items-center mb-6 px-5">
                   <div className="md:w-1/3">
                     <label
-                      className="block md:ltr:text-right md:rtl:text-left mb-1 md:mb-0 ltr:pr-4 rtl:pl-4"
+                      className="block md:text-right md:rtl:text-left mb-1 md:mb-0 pr-4 rtl:pl-4"
                       htmlFor="inline-address-2"
                     >
                       {t("addressLine")} 2
@@ -494,7 +494,7 @@ const Social = () => {
                 <div className="md:flex md:items-center mb-6 px-5">
                   <div className="md:w-1/3">
                     <label
-                      className="block md:ltr:text-right md:rtl:text-left mb-1 md:mb-0 ltr:pr-4 rtl:pl-4"
+                      className="block md:text-right md:rtl:text-left mb-1 md:mb-0 pr-4 rtl:pl-4"
                       htmlFor="inline-city"
                     >
                       {t("city")}
@@ -513,7 +513,7 @@ const Social = () => {
                 <div className="md:flex md:items-center mb-6 px-5">
                   <div className="md:w-1/3">
                     <label
-                      className="block md:ltr:text-right md:rtl:text-left mb-1 md:mb-0 ltr:pr-4 rtl:pl-4"
+                      className="block md:text-right md:rtl:text-left mb-1 md:mb-0 pr-4 rtl:pl-4"
                       htmlFor="inline-state"
                     >
                       {t("state")}
@@ -532,7 +532,7 @@ const Social = () => {
                 <div className="md:flex md:items-center mb-6 px-5">
                   <div className="md:w-1/3">
                     <label
-                      className="block md:ltr:text-right md:rtl:text-left mb-1 md:mb-0 ltr:pr-4 rtl:pl-4"
+                      className="block md:text-right md:rtl:text-left mb-1 md:mb-0 pr-4 rtl:pl-4"
                       htmlFor="inline-post-code"
                     >
                       {t("postCode")}
@@ -551,7 +551,7 @@ const Social = () => {
                 <div className="md:flex md:items-center mb-6 px-5">
                   <div className="md:w-1/3">
                     <label
-                      className="block md:ltr:text-right md:rtl:text-left mb-1 md:mb-0 ltr:pr-4 rtl:pl-4"
+                      className="block md:text-right md:rtl:text-left mb-1 md:mb-0 pr-4 rtl:pl-4"
                       htmlFor="inline-country"
                     >
                       {t("country")}

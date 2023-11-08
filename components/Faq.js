@@ -28,7 +28,7 @@ const Accordion = ({data}) => {
         }`}
       >
         <QuestionMarkCircle width={16} height={16} />
-        <span className="ltr:ml-3 rtl:mr-3 flex-1">
+        <span className="ml-3 rtl:mr-3 flex-1">
           {item.title}
         </span>
         {active === index ? (

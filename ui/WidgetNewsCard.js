@@ -31,7 +31,7 @@ export const WidgetNewsCard = ({ title, subtitle, feed }) => (
           <div className="flex items-center py-1">
             <Avatar size={32} src={item.avatar} alt={item.subject} circular={false} />
 
-            <div className="ltr:pl-3 rtl:pr-3">
+            <div className="pl-3 rtl:pr-3">
               <span className="block font-medium">{item.subject}</span>
               <small>{item.message}</small>
             </div>

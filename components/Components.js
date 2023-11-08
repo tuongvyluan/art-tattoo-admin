@@ -45,7 +45,7 @@ const Components = () => {
         <div className="mb-5">
           <h2 className="mb-2 text-md font-medium">{t("alerts")}</h2>
           <Alert color="blue" className="mb-2">
-            <strong className="font-bold ltr:mr-1 rtl:ml-1">
+            <strong className="font-bold mr-1 rtl:ml-1">
               Holy smokes!
             </strong>
             <span className="block sm:inline">
@@ -54,7 +54,7 @@ const Components = () => {
           </Alert>
 
           <Alert color="gray" className="mb-2">
-            <strong className="font-bold ltr:mr-1 rtl:ml-1">
+            <strong className="font-bold mr-1 rtl:ml-1">
               Holy smokes!
             </strong>
             <span className="block sm:inline">
@@ -63,7 +63,7 @@ const Components = () => {
           </Alert>
 
           <Alert color="green" className="mb-2">
-            <strong className="font-bold ltr:mr-1 rtl:ml-1">
+            <strong className="font-bold mr-1 rtl:ml-1">
               Holy smokes!
             </strong>
             <span className="block sm:inline">
@@ -72,7 +72,7 @@ const Components = () => {
           </Alert>
 
           <Alert color="red" className="mb-2">
-            <strong className="font-bold ltr:mr-1 rtl:ml-1">
+            <strong className="font-bold mr-1 rtl:ml-1">
               Holy smokes!
             </strong>
             <span className="block sm:inline">
@@ -81,7 +81,7 @@ const Components = () => {
           </Alert>
 
           <Alert color="yellow" className="mb-2">
-            <strong className="font-bold ltr:mr-1 rtl:ml-1">
+            <strong className="font-bold mr-1 rtl:ml-1">
               Holy smokes!
             </strong>
             <span className="block sm:inline">
@@ -95,7 +95,7 @@ const Components = () => {
                 <InformationCircle
                   width={24}
                   height={24}
-                  className="ltr:mr-4 rtl:ml-4"
+                  className="mr-4 rtl:ml-4"
                 />
               </div>
               <div>
@@ -110,27 +110,27 @@ const Components = () => {
 
         <div className="mb-5">
           <h2 className="mb-2 text-md font-medium">{t("badge")}</h2>
-          <Badge color="blue" className="ltr:mr-2 rtl:ml-2">
+          <Badge color="blue" className="mr-2 rtl:ml-2">
             1
           </Badge>
 
-          <Badge color="gray" className="ltr:mr-2 rtl:ml-2">
+          <Badge color="gray" className="mr-2 rtl:ml-2">
             2
           </Badge>
 
-          <Badge color="green" className="ltr:mr-2 rtl:ml-2">
+          <Badge color="green" className="mr-2 rtl:ml-2">
             3
           </Badge>
 
-          <Badge color="red" className="ltr:mr-2 rtl:ml-2">
+          <Badge color="red" className="mr-2 rtl:ml-2">
             4
           </Badge>
 
-          <Badge color="yellow" className="ltr:mr-2 rtl:ml-2">
+          <Badge color="yellow" className="mr-2 rtl:ml-2">
             5
           </Badge>
 
-          <Badge color="indigo" className="ltr:mr-2 rtl:ml-2">
+          <Badge color="indigo" className="mr-2 rtl:ml-2">
             Badge
           </Badge>
         </div>
@@ -138,23 +138,23 @@ const Components = () => {
         <div className="mb-5">
           <h2 className="mb-2 text-md font-medium">{t("pagination")}</h2>
           <div className="inline-flex flex-wrap">
-            <button className="relative inline-flex justify-center ltr:rounded-l-lg rtl:rounded-r-lg border border-white px-4 py-3 bg-white font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
+            <button className="relative inline-flex justify-center rounded-l-lg rtl:rounded-r-lg border border-white px-4 py-3 bg-white font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
               {t("previous")}
               <Ripple color="black" />
             </button>
-            <button className="relative inline-flex justify-center border-t border-b ltr:border-r rtl:border-l border-white px-4 py-3 bg-white font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
+            <button className="relative inline-flex justify-center border-t border-b border-r rtl:border-l border-white px-4 py-3 bg-white font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
               1
               <Ripple color="black" />
             </button>
-            <button className="relative inline-flex justify-center border-t border-b ltr:border-r rtl:border-l border-white px-4 py-3 bg-white font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
+            <button className="relative inline-flex justify-center border-t border-b border-r rtl:border-l border-white px-4 py-3 bg-white font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
               2
               <Ripple color="black" />
             </button>
-            <button className="relative inline-flex justify-center border-t border-b ltr:border-r rtl:border-l border-white px-4 py-3 bg-white font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
+            <button className="relative inline-flex justify-center border-t border-b border-r rtl:border-l border-white px-4 py-3 bg-white font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
               3
               <Ripple color="black" />
             </button>
-            <button className="relative inline-flex justify-center ltr:rounded-r-lg rtl:rounded-l-lg border border-white px-4 py-3 bg-white font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
+            <button className="relative inline-flex justify-center rounded-r-lg rtl:rounded-l-lg border border-white px-4 py-3 bg-white font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
               {t("next")}
               <Ripple color="black" />
             </button>
@@ -165,7 +165,7 @@ const Components = () => {
           <h2 className="mb-2 text-md font-medium">{t("card")}</h2>
           <Card className="max-w-sm w-full lg:max-w-full lg:flex">
             <BackgroundImg
-              className="h-48 lg:h-auto lg:w-48 flex-none bg-cover rounded-t-lg lg:rounded-t-none lg:ltr:rounded-l-lg lg:rtl:rounded-r-lg text-center overflow-hidden"
+              className="h-48 lg:h-auto lg:w-48 flex-none bg-cover rounded-t-lg lg:rounded-t-none lg:rounded-l-lg lg:rtl:rounded-r-lg text-center overflow-hidden"
               image="images/unsplash/1.jpg"
             />
             <CardBody>
@@ -174,7 +174,7 @@ const Components = () => {
                   <LockClosed
                     width={14}
                     height={14}
-                    className="ltr:mr-2 rtl:ml-2"
+                    className="mr-2 rtl:ml-2"
                   />
                   Members only
                 </p>
@@ -192,7 +192,7 @@ const Components = () => {
                   size={48}
                   src={`images/face4.jpg`}
                   alt={`avatar`}
-                  className="ltr:mr-4 rtl:ml-4"
+                  className="mr-4 rtl:ml-4"
                   status="green"
                 />
                 <div className="text-sm">
@@ -208,23 +208,23 @@ const Components = () => {
         <div className="mb-5">
           <h2 className="mb-2 text-md font-medium">{t("buttons")}</h2>
           <div className="flex flex-wrap mb-2">
-            <a className="relative inline-block rounded-lg px-4 py-3 bg-white text-sm leading-none text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 ltr:mr-1 rtl:ml-1 mt-1">
+            <a className="relative inline-block rounded-lg px-4 py-3 bg-white text-sm leading-none text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 mr-1 rtl:ml-1 mt-1">
               Button
               <Ripple color="black" />
             </a>
-            <a className="relative inline-block rounded-lg px-4 py-3 bg-indigo-500 text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none ltr:mr-1 rtl:ml-1 mt-1">
+            <a className="relative inline-block rounded-lg px-4 py-3 bg-indigo-500 text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none mr-1 rtl:ml-1 mt-1">
               Button
               <Ripple />
             </a>
-            <a className="relative inline-block rounded-lg px-4 py-3 bg-green-500 text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none ltr:mr-1 rtl:ml-1 mt-1">
+            <a className="relative inline-block rounded-lg px-4 py-3 bg-green-500 text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none mr-1 rtl:ml-1 mt-1">
               Button
               <Ripple />
             </a>
-            <a className="relative inline-block rounded-lg px-4 py-3 bg-blue-500 text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none ltr:mr-1 rtl:ml-1 mt-1">
+            <a className="relative inline-block rounded-lg px-4 py-3 bg-blue-500 text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none mr-1 rtl:ml-1 mt-1">
               Button
               <Ripple />
             </a>
-            <a className="relative inline-block rounded-lg px-4 py-3 bg-yellow-500 text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none ltr:mr-1 rtl:ml-1 mt-1">
+            <a className="relative inline-block rounded-lg px-4 py-3 bg-yellow-500 text-gray-100 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none mr-1 rtl:ml-1 mt-1">
               Button
               <Ripple />
             </a>
@@ -235,34 +235,34 @@ const Components = () => {
           </div>
 
           <div className="flex flex-wrap mb-2">
-            <a className="relative inline-block rounded-lg ring-1 ring-gray-400 ring-opacity-50 px-4 py-3 text-gray-600 hover:text-gray-500 focus:outline-none focus:border-gray-400 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none ltr:mr-1 rtl:ml-1 mt-1">
+            <a className="relative inline-block rounded-lg ring-1 ring-gray-400 ring-opacity-50 px-4 py-3 text-gray-600 hover:text-gray-500 focus:outline-none focus:border-gray-400 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none mr-1 rtl:ml-1 mt-1">
               Button
               <Ripple color="black" />
             </a>
-            <a className="relative inline-block rounded-lg ring-1 ring-indigo-400 ring-opacity-50 px-4 py-3 text-indigo-400 hover:text-indigo-500 focus:outline-none focus:border-indigo-400 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none ltr:mr-1 rtl:ml-1 mt-1">
+            <a className="relative inline-block rounded-lg ring-1 ring-indigo-400 ring-opacity-50 px-4 py-3 text-indigo-400 hover:text-indigo-500 focus:outline-none focus:border-indigo-400 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none mr-1 rtl:ml-1 mt-1">
               Button
               <Ripple color="black" />
             </a>
-            <a className="relative inline-block rounded-lg ring-1 ring-green-400 ring-opacity-50 px-4 py-3 text-green-400 hover:text-green-500 focus:outline-none focus:border-green-400 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none ltr:mr-1 rtl:ml-1 mt-1">
+            <a className="relative inline-block rounded-lg ring-1 ring-green-400 ring-opacity-50 px-4 py-3 text-green-400 hover:text-green-500 focus:outline-none focus:border-green-400 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none mr-1 rtl:ml-1 mt-1">
               Button
               <Ripple color="black" />
             </a>
-            <a className="relative inline-block rounded-lg ring-1 ring-blue-400 ring-opacity-50 px-4 py-3 text-blue-400 hover:text-blue-500 focus:outline-none focus:border-blue-400 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none ltr:mr-1 rtl:ml-1 mt-1">
+            <a className="relative inline-block rounded-lg ring-1 ring-blue-400 ring-opacity-50 px-4 py-3 text-blue-400 hover:text-blue-500 focus:outline-none focus:border-blue-400 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none mr-1 rtl:ml-1 mt-1">
               Button
               <Ripple color="black" />
             </a>
-            <a className="relative inline-block rounded-lg ring-1 ring-yellow-400 ring-opacity-50 px-4 py-3 text-yellow-400 hover:text-yellow-500 focus:outline-none focus:border-yellow-400 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none ltr:mr-1 rtl:ml-1 mt-1">
+            <a className="relative inline-block rounded-lg ring-1 ring-yellow-400 ring-opacity-50 px-4 py-3 text-yellow-400 hover:text-yellow-500 focus:outline-none focus:border-yellow-400 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none mr-1 rtl:ml-1 mt-1">
               Button
               <Ripple color="black" />
             </a>
-            <a className="relative inline-block rounded-lg border border-gray-500 px-4 py-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:border-gray-400 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none ltr:mr-1 rtl:ml-1 mt-1">
+            <a className="relative inline-block rounded-lg border border-gray-500 px-4 py-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:border-gray-400 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none mr-1 rtl:ml-1 mt-1">
               <InformationCircle width={20} height={20} />
               <Ripple color="black" />
             </a>
           </div>
 
           <div className="flex flex-wrap">
-            <button className="relative inline-flex justify-center ltr:rounded-l-lg rtl:rounded-r-lg border border-white px-4 py-3 bg-white text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
+            <button className="relative inline-flex justify-center rounded-l-lg rtl:rounded-r-lg border border-white px-4 py-3 bg-white text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
               Button
               <Ripple color="black" />
             </button>
@@ -270,7 +270,7 @@ const Components = () => {
               Button
               <Ripple color="black" />
             </button>
-            <button className="relative inline-flex justify-center ltr:rounded-r-lg rtl:rounded-l-lg border border-white px-4 py-3 bg-white text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
+            <button className="relative inline-flex justify-center rounded-r-lg rtl:rounded-l-lg border border-white px-4 py-3 bg-white text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none">
               Button
               <Ripple color="black" />
             </button>
@@ -281,7 +281,7 @@ const Components = () => {
           <h2 className="mb-2 text-md font-medium">{t("avatar")}</h2>
 
           <div className="block sm:flex mb-2">
-            <div className="inline-flex ltr:mr-4 rtl:ml-4">
+            <div className="inline-flex mr-4 rtl:ml-4">
               <Avatar size={16} src={`images/face1.jpg`} alt={`avatar`} />
               <Avatar size={32} src={`images/face2.jpg`} alt={`avatar`} />
               <Avatar size={48} src={`images/face3.jpg`} alt={`avatar`} />
