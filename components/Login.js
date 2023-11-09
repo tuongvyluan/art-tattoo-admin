@@ -2,23 +2,11 @@ import { Link, Logo } from 'ui';
 import PropTypes from 'prop-types';
 import Illustration from 'public/images/illustrations/undraw_Group_chat_unwm.svg';
 import Button from './Button';
-import useSWR from 'swr';
-import { fetcherPost } from 'lib';
 
 const Login = ({ handleSubmit, user, setUser }) => {
 	const handleFormChange = (e) => {
 		setUser({ ...user, [e.target.name]: e.target.value });
 	};
-	const payload = {
-		email: 'luantuongvy13@gmail.com',
-		password: '123'
-	};
-
-	const BASE_URL = process.env.NEXT_PUBLIC_API_BASEURL;
-
-	const { data, error } = useSWR(BASE_URL + '/Auth/Login', fetcherPost(BASE_URL + '/Auth/Login', payload));
-
-	console.log(data, error);
 
 	return (
 		<div className="flex flex-col justify-center items-center px-3 bg-white dark:bg-gray-600 min-h-screen">

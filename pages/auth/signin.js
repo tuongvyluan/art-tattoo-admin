@@ -29,6 +29,7 @@ const LoginPage = () => {
 		if (res.ok) {
 			Router.replace('/');
 		} else {
+			console.log(res);
 			handleAlert(true, 'Đăng nhập thất bại', 'Sai email hoặc password.', true);
 		}
 	};
