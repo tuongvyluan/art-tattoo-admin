@@ -2,7 +2,7 @@ import { randomFrom0To } from 'lib';
 import { stringPlacements, stringSize } from 'lib/status';
 import { v4 } from 'uuid';
 
-const data = Array(10)
+const data = Array(15)
 	.fill(0)
 	.map((_, i) => {
 		return {

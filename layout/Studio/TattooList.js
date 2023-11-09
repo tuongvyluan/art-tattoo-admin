@@ -30,7 +30,7 @@ const TattooIndexPage = () => {
 				next={() => setSize(size + 1)}
 				hasMore={isReachingEnd}
 				loader={<Loading />}
-				className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2"
+				className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"
 			>
 				{items.map((item) => (
 					<WidgetPostCard

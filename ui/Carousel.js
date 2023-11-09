@@ -9,7 +9,7 @@ export const CarouselLeftArrow = ({ onClick, className, ...props }) => (
   <a
     {...props}
     className={classNames(
-      `z-40 cursor-pointer absolute top-0 left-0 block h-full flex items-center pl-5 text-white`,
+      `z-40 cursor-pointer absolute top-0 left-0 h-full flex items-center pl-5 text-white`,
       className
     )}
     onClick={onClick}
@@ -28,7 +28,7 @@ export const CarouselRightArrow = ({ onClick, className, ...props }) => (
   <a
     {...props}
     className={classNames(
-      `z-40 cursor-pointer absolute top-0 right-0 block h-full flex items-center pr-5 text-white`,
+      `z-40 cursor-pointer absolute top-0 right-0 h-full flex items-center pr-5 text-white`,
       className
     )}
     onClick={onClick}

@@ -30,6 +30,7 @@
     "react-cool-onclickoutside": "1.5.8",
     "react-dom": "^18.2.0",
     "react-flow-renderer": "^10.3.17",
+    "react-icons": "^4.11.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-map-gl": "5.2.10",
     "react-markdown": "5.0.3",

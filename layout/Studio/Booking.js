@@ -183,9 +183,10 @@ function BookingPage({ data }) {
 											// Booking service
 											<div
 												key={`${booking.id}-${service.id}`}
-												className="pb-1 pl-2 flex text-base"
+												className="pb-1 flex text-base"
 											>
-												<div>{stringSize.at(service.size)}</div>
+												<div>{serviceIndex + 1}</div>
+												<div>. {stringSize.at(service.size)}</div>
 
 												{service.placement ? (
 													<div>, {stringPlacements.at(service.placement)}</div>
@@ -213,6 +214,7 @@ function BookingPage({ data }) {
 								) : (
 									<></>
 								)}
+								<div className="text-gray-500 pt-2">Hình xăm</div>
 								{booking.artTattoos?.map((tattoo, tattooIndex) => (
 									<div
 										key={tattoo.id}
