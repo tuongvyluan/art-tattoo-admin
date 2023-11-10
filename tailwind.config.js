@@ -3,6 +3,11 @@ const plugin = require('tailwindcss/plugin');
 
 module.exports = {
 	purge: ['./**/*.js'],
+	content: [
+		'./node_modules/flowbite-react/**/*.js',
+		'./pages/**/*.{ts,js}',
+		'./public/**/*.html'
+	],
 	darkMode: 'class',
 	theme: {
 		extend: {
@@ -23,7 +28,7 @@ module.exports = {
 				xs: '0 0 0 1px rgba(0, 0, 0, 0.05)',
 				outline: '0 0 0 3px rgba(66, 153, 225, 0.5)'
 			}
-		},
+		}
 	},
 	variants: {
 		backgroundColor: ['dark', 'hover'],
@@ -31,5 +36,5 @@ module.exports = {
 		textColor: ['dark', 'hover'],
 		boxShadow: ['dark', 'hover']
 	},
-	plugins: [require('@tailwindcss/typography')]
+	plugins: [require('@tailwindcss/typography'), require('flowbite/plugin')]
 };

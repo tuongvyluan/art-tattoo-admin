@@ -73,35 +73,42 @@ function BookingDetailsPage({ data }) {
 							// List hình xăm
 						}
 						{data.artTattoos?.map((tattoo, tattooIndex) => (
-							<div
-								key={tattoo.id}
-								className="py-2 flex justify-start gap-3 flex-wrap"
-							>
-								<div className="relative w-32 h-32">
-									<Image
-										layout="fill"
-										src={tattoo.photo}
-										alt={'a'}
-										className="object-contain"
-									/>
-								</div>
-								<div className="flex-grow">
-									<div>
-										<span>Nghệ sĩ xăm: </span>
-										<span className="font-semibold">{tattoo.artist.firstName}</span>
-									</div>
-									{tattoo.bookingDetails.map((bookingDetail, bookingDetailIndex) => (
-										<div
-											key={bookingDetail.id}
-											className="flex justify-between items-center"
-										>
-											<div className="text-base">{bookingDetail.operationName}</div>
-											<div className="text-lg">
-												{formatPrice(bookingDetail.price)}
-											</div>
+							<div key={tattoo.id}>
+								<Link href={`/tattoo/new?booking=${data.id}`}>
+									<div className="cursor-pointer py-2 flex justify-start gap-3 flex-wrap">
+										<div className="relative w-32 h-32">
+											<Image
+												layout="fill"
+												src={tattoo.photo}
+												alt={'a'}
+												className="object-contain"
+											/>
 										</div>
-									))}
-								</div>
+										<div className="flex-grow">
+											<div>
+												<span>Nghệ sĩ xăm: </span>
+												<span className="font-semibold">
+													{tattoo.artist.firstName}
+												</span>
+											</div>
+											{tattoo.bookingDetails.map(
+												(bookingDetail, bookingDetailIndex) => (
+													<div
+														key={bookingDetail.id}
+														className="flex justify-between items-center"
+													>
+														<div className="text-base">
+															{bookingDetail.operationName}
+														</div>
+														<div className="text-lg">
+															{formatPrice(bookingDetail.price)}
+														</div>
+													</div>
+												)
+											)}
+										</div>
+									</div>
+								</Link>
 							</div>
 						))}
 					</div>
