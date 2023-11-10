@@ -96,16 +96,16 @@ const data = Array(20)
 							][randomFrom0To(3)]
 						},
 						photo: [
-							'https://d1kq2dqeox7x40.cloudfront.net/images/posts/20180703_zY5TxVrqsm4PbQG.png?w=600',
-							'https://d1kq2dqeox7x40.cloudfront.net/images/posts/20180801_ZKP1ilwlCtpl80C.png?w=600',
-							'https://d1kq2dqeox7x40.cloudfront.net/images/posts/postImage_TLBLorKh3M.png?w=600',
-							'https://d1kq2dqeox7x40.cloudfront.net/images/posts/20190812_8ImKSlW9XZOrogE.png?w=600',
-							'https://d1kq2dqeox7x40.cloudfront.net/images/posts/20190412_XlimSpuXS7GEu1V.jpg?w=600',
-							'https://d1kq2dqeox7x40.cloudfront.net/images/posts/20190630_aHDXzkZD0JdqIS3.png?w=600',
-							'https://d1kq2dqeox7x40.cloudfront.net/images/posts/nodes_BXYJHjlECa.jpg?w=600',
-							'https://d1kq2dqeox7x40.cloudfront.net/images/posts/20180829_xD5mHwxVLhs21xo.png?w=600',
-							'https://d1kq2dqeox7x40.cloudfront.net/images/posts/20180823_iyIcQRE1cTbfn3Q.png?w=600',
-							'https://d1kq2dqeox7x40.cloudfront.net/images/posts/20190109_ieJmWAPACrUDE4v.jpg?w=600'
+							'https://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/fg3okai6ykckrt3ayhnb.webp',
+							'https://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/jsmevnjedqggvb7ug4ly.webp',
+							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/tmthhhbasigujjqxenl1.webp',
+							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/olc0mzjoybrf1odeynnu.webp',
+							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/v10zlbwlh43gfbsu7ksy.webp',
+							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/tefad0rzugdnekvxd14f.webp',
+							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/bucnozik8rmqepiw2gky.webp',
+							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618041/ilgkjxvfhahlfjwckp1i.webp',
+							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618041/iwiyxibenpxfubc5gb54.webp',
+							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618041/lurefci1dfzvrrahx4sy.webp'
 						][randomFrom0To(10)],
 						size: [
 							SERVICE_SIZE.EXTRA,
