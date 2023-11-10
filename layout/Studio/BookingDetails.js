@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import Image from 'next/image';
 import { Card, CardBody, Link } from 'ui';
 import { WidgetOrderStatus } from 'ui/WidgetOrderStatus';
-import Button from 'components/Button';
 
 function BookingDetailsPage({ data }) {
 	const timeline = extractBookingStatusTimeline(data);
@@ -60,9 +59,11 @@ function BookingDetailsPage({ data }) {
 							{
 								// Button thêm hình xăm cho đơn hàng
 								data.status === BOOKING_STATUS.PENDING ? (
-									<div>
-										<Button>Thêm hình xăm</Button>
-									</div>
+									<Link href={`/tattoo/new?booking=${data.id}`}>
+										<span className="text-white cursor-pointer bg-gray-800 hover:bg-gray-700 font-medium rounded-lg text-sm py-2 px-2 dark:bg-indigo-600 dark:hover:bg-indigo-500 focus:outline-none dark:focus:ring-blue-800">
+											Thêm hình xăm
+										</span>
+									</Link>
 								) : (
 									<></>
 								)
