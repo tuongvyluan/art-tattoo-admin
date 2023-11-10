@@ -5,6 +5,7 @@ import {
 	TATTOO_ART_STATUS,
 	stringPlacements
 } from 'lib/status';
+import { tattooStylesWithoutDescription } from 'lib/tattooStyle';
 import { v4 } from 'uuid';
 
 const data = Array(20)
@@ -66,6 +67,7 @@ const data = Array(20)
 				.map((_, i) => {
 					return {
 						id: v4(),
+						style: tattooStylesWithoutDescription[randomFrom0To(45)],
 						artist: {
 							accountId: v4(),
 							firstName: [
