@@ -1,5 +1,6 @@
 import { randomFrom0To } from 'lib';
 import { stringPlacements, stringSize } from 'lib/status';
+import { tattooStylesWithoutDescription } from 'lib/tattooStyle';
 import { v4 } from 'uuid';
 
 const data = Array(15)
