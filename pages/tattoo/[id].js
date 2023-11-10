@@ -34,4 +34,8 @@ const TattooDetails = () => {
   }
 }
 
+TattooDetails.getInitialProps = async () => ({
+	namespacesRequired: ['header', 'footer', 'sidebar', 'dashboard']
+});
+
 export default TattooDetails;

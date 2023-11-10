@@ -57,6 +57,12 @@ const TattooIndexPage = () => {
                     {stringPlacements.at(item.placement)}
                   </span>
                 </div>
+                <div className="text-gray-400">
+                  Style:{' '}
+                  <span className="text-black">
+                    {item.style?.name}
+                  </span>
+                </div>
               </div>
 						</Link>
 					</WidgetPostCard>

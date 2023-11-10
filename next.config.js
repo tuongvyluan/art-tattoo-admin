@@ -26,11 +26,12 @@ module.exports = {
 		return config;
 	},
 	images: {
+		domains: ['res.cloudinary.com'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: '**.cloudfront.net',
-      },
-    ],
+      }
+    ]
   },
 };
