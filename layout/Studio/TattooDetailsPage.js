@@ -68,7 +68,6 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 		};
 		stages[stageIndex] = stage;
 		setTattoo({ ...tattoo, stages: stages });
-		console.log(tattoo);
 	};
 
 	const handleUploadImage = (result, options, stageIndex) => {
@@ -85,7 +84,24 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 		};
 		stages[stageIndex] = stage;
 		setTattoo({ ...tattoo, stages: stages });
-		console.log(tattoo);
+	};
+
+	const stageLength = tattoo.stages.length;
+
+	const handleAddStage = () => {
+		const stages = tattoo.stages;
+		stages.push({
+			stageId: stages.at(stageLength - 1).stageId + 1,
+			name: '',
+			medias: []
+		});
+		setTattoo({ ...tattoo, stages: stages });
+	};
+
+	const handleRemoveStage = (stageIndex) => {
+		const stages = tattoo.stages;
+		stages.splice(stageIndex, 1);
+		setTattoo({ ...tattoo, stages: stages });
 	};
 
 	return (
@@ -102,12 +118,26 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 					<div>
 						<div className="flex pt-3">
 							<div>
-								<Button>Thêm giai đoạn</Button>
+								<Button onClick={handleAddStage}>Thêm giai đoạn</Button>
 							</div>
 						</div>
-						<Card className={'pt-3'}>
-							<CardBody className={'shadow-md bg-gray-50'}>
-								{tattoo.stages.map((stage, stageIndex) => (
+						{tattoo.stages.map((stage, stageIndex) => (
+							<Card className={'pt-3'} key={stage.stageId}>
+								<CardBody className={'shadow-md bg-gray-50 relative'}>
+									{
+										// Remove stage icon
+									}
+									<button onClick={() => handleRemoveStage(stageIndex)}>
+										<AiOutlineClose
+											className={`absolute top-2 right-2 hover:scale-125 hover:text-red-500 ${
+												stageLength > 1 ? '' : 'hidden'
+											}`}
+											size={16}
+										/>
+									</button>
+									{
+										//Stage body
+									}
 									<div key={stage.stageId}>
 										<input
 											className="w-full rounded-lg p-2 text-base border border-gray-300"
@@ -149,7 +179,11 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 												<div className="relative" key={media.url}>
 													<button
 														onClick={() =>
-															handleDeleteCloudinaryImage(media.url, stageIndex, mediaIndex)
+															handleDeleteCloudinaryImage(
+																media.url,
+																stageIndex,
+																mediaIndex
+															)
 														}
 													>
 														<AiOutlineClose
@@ -167,9 +201,9 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 											))}
 										</div>
 									</div>
-								))}
-							</CardBody>
-						</Card>
+								</CardBody>
+							</Card>
+						))}
 					</div>
 				</CardBody>
 			</Card>
