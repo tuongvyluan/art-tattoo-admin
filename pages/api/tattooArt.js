@@ -7,10 +7,11 @@ const data = Array(15)
 	.fill(0)
 	.map((_, i) => {
 		return {
-			id: v4(),
+			id: v4() + `${i}`,
+			bookingId: v4() + `${i}`,
 			customer: {
-				customerId: v4(),
-				accountId: v4(),
+				customerId: v4() + `${i}`,
+				accountId: v4() + `${i}`,
 				firstName: [
 					'Vy',
 					'Trân',
@@ -111,7 +112,17 @@ const data = Array(15)
 			tattooMedias: [
 				{
 					tattooMediaId: Math.floor(Math.random() * 1000),
-					tattooArtStage: null,
+					tattooArtStage: [
+						'Trước khi xăm',
+						'Thiết kế',
+						'Scan trên da',
+						'Đi nét viền',
+						'Đánh bóng',
+						'Tô màu',
+						'Sau khi xăm',
+						'Trước khi xoá',
+						'Sau khi xoá xăm'
+					][Math.floor(Math.random() * 8)],
 					type: 0, //0: image, 1: video
 					url: [
 						'https://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/fg3okai6ykckrt3ayhnb.webp',

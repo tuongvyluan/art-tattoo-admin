@@ -15,25 +15,27 @@ const API_KEY = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
 const API_SECRET = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
 
 function TattooDetailsPage({ bookingId, artTattoo, artist }) {
-	const defaultTattoo = {
-		bookingId: bookingId,
-		artistId: artist.id,
-		artist: artist,
-		bookingDetails: [],
-		stages: [
-			{
-				stageId: 1,
-				name: 'Sau khi xăm',
-				medias: [
-					// {
-					// url: '',
-					// description: '',
-					// isPublicized: false
-					// }
+	const defaultTattoo = typeof artTattoo !== 'undefined'
+		? artTattoo
+		: {
+				bookingId: bookingId,
+				artistId: artist.id,
+				artist: artist,
+				bookingDetails: [],
+				stages: [
+					{
+						stageId: 1,
+						name: 'Sau khi xăm',
+						medias: [
+							// {
+							// url: '',
+							// description: '',
+							// isPublicized: false
+							// }
+						]
+					}
 				]
-			}
-		]
-	};
+		  };
 	const [tattoo, setTattoo] = useState(defaultTattoo);
 
 	const handleStageChange = (e, stageIndex) => {

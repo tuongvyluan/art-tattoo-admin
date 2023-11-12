@@ -47,7 +47,7 @@ const data = Array(20)
 				.fill(0)
 				.map((_, i) => {
 					return {
-						serviceId: v4(),
+						id: v4(),
 						minPrice: 1000000 + randomFrom0To(9) * 100000,
 						maxPrice: 2000000 + randomFrom0To(9) * 100000,
 						hasColor: Math.random() < 0.5,
