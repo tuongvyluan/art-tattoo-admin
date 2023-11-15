@@ -124,7 +124,7 @@ const Header = ({ toggleOpen }) => {
 																		}
 																	/>
 																	<div className="toggle__bar h-4 bg-gray-400 rounded-full shadow-inner"></div>
-																	<div className="toggle__handle absolute transform bg-white rounded-full shadow-sm transform transition duration-150 ease-in-out"></div>
+																	<div className="toggle__handle absolute bg-white rounded-full shadow-sm transform transition duration-150 ease-in-out"></div>
 																</div>
 															</label>
 														</a>

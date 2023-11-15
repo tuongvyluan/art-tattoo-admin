@@ -101,6 +101,16 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 		setTattoo({ ...tattoo, stages: stages });
 	};
 
+	const handlePublicImage = (stageIndex, mediaIndex) => {
+		const stages = tattoo.stages;
+		const medias = stages.at(stageIndex).medias;
+		medias[mediaIndex] = {
+			...medias[mediaIndex],
+			isPublicized: !medias[mediaIndex].isPublicized
+		};
+		setTattoo({ ...tattoo, stages: stages });
+	};
+
 	const stageLength = tattoo.stages.length;
 
 	const handleAddStage = () => {
@@ -150,18 +160,34 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 								<ChevronLeft width={20} heigh={20} /> TRỞ LẠI
 							</div>
 						</Link>
+						<div className="flex items-center cursor-pointer gap-2">
+							<div className="text-gray-500">Public:</div>
+							<div
+								onClick={() => setTattooState('isPublicized', !tattoo.isPublicized)}
+								className="relative"
+							>
+								<input
+									checked={tattoo.isPublicized}
+									type="checkbox"
+									className="hidden"
+									disabled={false}
+								/>
+								<div className="toggle__bar h-4 bg-gray-400 rounded-full shadow-inner"></div>
+								<div className="toggle__handle absolute bg-white rounded-full shadow-sm transform transition duration-150 ease-in-out"></div>
+							</div>
+						</div>
 					</div>
 					{
 						// Tattoo info
 					}
 					<div className="pt-3 border-b border-gray-300">
 						<div className="font-semibold text-lg pb-2">Thông tin hình xăm</div>
-						<div className="pb-3">
-							Nghệ sĩ xăm:{' '}
+						<div className="pb-3 flex items-center gap-1">
+							<div className='w-20'>Nghệ sĩ xăm:</div>
 							<span className="font-semibold"> {tattoo.artist.firstName}</span>
 						</div>
 						<div className="pb-3 flex items-center gap-1">
-							<div className="w-16">Kích thước: </div>
+							<div className="w-20">Kích thước: </div>
 							<Dropdown className="relative h-full flex items-center">
 								<DropdownToggle>
 									<div className="w-28 rounded-lg p-1 border border-gray-300">
@@ -184,7 +210,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 							</Dropdown>
 						</div>
 						<div className="pb-3 flex gap-1 items-center">
-							<div className="w-16">Vị trí xăm:</div>
+							<div className="w-20">Vị trí xăm:</div>
 							<Dropdown className="relative h-full flex items-center">
 								<DropdownToggle>
 									<div className="w-28 rounded-lg p-1 border border-gray-300">
@@ -198,9 +224,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 												key={placement}
 												onClick={() => setTattooState('placement', placementIndex)}
 												className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
-													tattoo.placement === placementIndex
-														? 'bg-indigo-100'
-														: ''
+													tattoo.placement === placementIndex ? 'bg-indigo-100' : ''
 												}`}
 											>
 												{placement}
@@ -211,7 +235,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 							</Dropdown>
 						</div>
 						<div className="pb-3 flex gap-1 items-center">
-							<div className="w-16">Style:</div>
+							<div className="w-20">Style:</div>
 							<Dropdown className="relative h-full flex items-center">
 								<DropdownToggle>
 									<div className="w-28 rounded-lg p-1 border border-gray-300">
@@ -225,9 +249,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 												key={style.id}
 												onClick={() => setTattooState('styleId', style.id)}
 												className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
-													tattoo.styleId === style.id
-														? 'bg-indigo-100'
-														: ''
+													tattoo.styleId === style.id ? 'bg-indigo-100' : ''
 												}`}
 											>
 												{style.name}
@@ -372,6 +394,24 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 											<div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
 												{stage.medias.map((media, mediaIndex) => (
 													<div className="relative" key={media.tattooMediaId}>
+														<div className="absolute top-0 left-0 flex items-center cursor-pointer gap-2">
+															<div className="text-gray-500">Public:</div>
+															<div
+																onClick={() =>
+																	handlePublicImage(stageIndex, mediaIndex)
+																}
+																className="relative"
+															>
+																<input
+																	checked={media.isPublicized}
+																	type="checkbox"
+																	className="hidden"
+																	disabled={false}
+																/>
+																<div className="toggle__bar h-4 bg-gray-400 rounded-full shadow-inner"></div>
+																<div className="toggle__handle absolute bg-white rounded-full shadow-sm transform transition duration-150 ease-in-out"></div>
+															</div>
+														</div>
 														<button
 															onClick={() =>
 																handleDeleteCloudinaryImage(
@@ -388,7 +428,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 														</button>
 														<BackgroundImg
 															key={media.mediaIndex}
-															className="relative w-full bg-center bg-cover bg-fallback"
+															className="relative w-full bg-center bg-cover bg-fallback mt-1"
 															image={media.url}
 															height={150}
 														/>
