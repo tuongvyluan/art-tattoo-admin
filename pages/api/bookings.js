@@ -66,7 +66,13 @@ const data = Array(20)
 				.fill(0)
 				.map((_, i) => {
 					return {
-						id: v4(),
+						id: [
+							'4e52b109-e267-4aeb-9763-090fc60b21f1',
+							'f73d647a-34e1-4cdf-88a5-3968d49bd577',
+							'009f1723-6fdc-4ef9-b8c7-5569d0d3f29e',
+							'0b8d9754-a833-467a-862a-7459fe6d8171',
+							'ae439cd0-72e3-4215-9ae9-8464bc23c09b'
+						][randomFrom0To(5)],
 						style: tattooStylesWithoutDescription[randomFrom0To(45)],
 						artist: {
 							accountId: v4(),

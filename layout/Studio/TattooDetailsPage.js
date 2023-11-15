@@ -1,5 +1,13 @@
 import { ChevronLeft } from 'icons/solid';
-import { BackgroundImg, Card, CardBody, Link } from 'ui';
+import {
+	BackgroundImg,
+	Card,
+	CardBody,
+	Dropdown,
+	DropdownMenu,
+	DropdownToggle,
+	Link
+} from 'ui';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import Button from 'components/Button';
@@ -9,6 +17,8 @@ import { generateSHA1, generateSignature } from 'lib/cloudinary_signature';
 import { AiOutlineClose } from 'react-icons/ai';
 import { extractPublicId } from 'cloudinary-build-url';
 import MoneyInput from 'components/MoneyInput';
+import { stringPlacements, stringSize } from 'lib/status';
+import { tattooStyleById, tattooStylesWithoutDescription } from 'lib/tattooStyle';
 
 const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
@@ -28,6 +38,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 						{
 							stageId: 1,
 							name: 'Sau khi xăm',
+							description: '',
 							medias: [
 								// {
 								// url: '',
@@ -44,7 +55,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 		const stages = tattoo.stages;
 		const stage = {
 			...stages.at(stageIndex),
-			name: e.target.value
+			[e.target.name]: e.target.value
 		};
 		stages[stageIndex] = stage;
 		setTattoo({ ...tattoo, stages: stages });
@@ -97,6 +108,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 		stages.push({
 			stageId: stages.at(stageLength - 1).stageId + 1,
 			name: '',
+			description: '',
 			medias: []
 		});
 		setTattoo({ ...tattoo, stages: stages });
@@ -122,6 +134,12 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 		setTattoo({ ...tattoo, bookingDetails: bookingDetails });
 	};
 
+	const setTattooState = (key, newValue) => {
+		if (tattoo[key] !== newValue) {
+			setTattoo({ ...tattoo, [key]: newValue });
+		}
+	};
+
 	return (
 		<div className="sm:px-12 md:px-16 lg:px-32 xl:px-56">
 			<Card>
@@ -133,6 +151,96 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 							</div>
 						</Link>
 					</div>
+					{
+						// Tattoo info
+					}
+					<div className="pt-3 border-b border-gray-300">
+						<div className="font-semibold text-lg pb-2">Thông tin hình xăm</div>
+						<div className="pb-3">
+							Nghệ sĩ xăm:{' '}
+							<span className="font-semibold"> {tattoo.artist.firstName}</span>
+						</div>
+						<div className="pb-3 flex items-center gap-1">
+							<div className="w-16">Kích thước: </div>
+							<Dropdown className="relative h-full flex items-center">
+								<DropdownToggle>
+									<div className="w-28 rounded-lg p-1 border border-gray-300">
+										{stringSize.at(tattoo.size)}
+									</div>
+								</DropdownToggle>
+								<DropdownMenu>
+									{stringSize.map((size, sizeIndex) => (
+										<div
+											key={size}
+											onClick={() => setTattooState('size', sizeIndex)}
+											className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
+												tattoo.size === sizeIndex ? 'bg-indigo-100' : ''
+											}`}
+										>
+											{size}
+										</div>
+									))}
+								</DropdownMenu>
+							</Dropdown>
+						</div>
+						<div className="pb-3 flex gap-1 items-center">
+							<div className="w-16">Vị trí xăm:</div>
+							<Dropdown className="relative h-full flex items-center">
+								<DropdownToggle>
+									<div className="w-28 rounded-lg p-1 border border-gray-300">
+										{stringPlacements.at(tattoo.placement)}
+									</div>
+								</DropdownToggle>
+								<DropdownMenu className={'top-2 left-2'}>
+									<div className="h-40 overflow-y-auto">
+										{stringPlacements.map((placement, placementIndex) => (
+											<div
+												key={placement}
+												onClick={() => setTattooState('placement', placementIndex)}
+												className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
+													tattoo.placement === placementIndex
+														? 'bg-indigo-100'
+														: ''
+												}`}
+											>
+												{placement}
+											</div>
+										))}
+									</div>
+								</DropdownMenu>
+							</Dropdown>
+						</div>
+						<div className="pb-3 flex gap-1 items-center">
+							<div className="w-16">Style:</div>
+							<Dropdown className="relative h-full flex items-center">
+								<DropdownToggle>
+									<div className="w-28 rounded-lg p-1 border border-gray-300">
+										{tattooStyleById(tattoo.styleId)?.name}
+									</div>
+								</DropdownToggle>
+								<DropdownMenu className={'top-2 left-2'}>
+									<div className="h-40 overflow-y-auto">
+										{tattooStylesWithoutDescription.map((style, styleIndex) => (
+											<div
+												key={style.id}
+												onClick={() => setTattooState('styleId', style.id)}
+												className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
+													tattoo.styleId === style.id
+														? 'bg-indigo-100'
+														: ''
+												}`}
+											>
+												{style.name}
+											</div>
+										))}
+									</div>
+								</DropdownMenu>
+							</Dropdown>
+						</div>
+					</div>
+					{
+						// Update tattoo info
+					}
 					<div>
 						{
 							// Add booking details
@@ -154,11 +262,11 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 												'shadow-md bg-gray-50 py-4 px-6 flex flex-row items-center'
 											}
 										>
-											<div className="relative grid grid-cols-5 w-full">
-												<div className="col-span-3 text-base flex flex-row items-center">
+											<div className="relative grid grid-cols-3 md:grid-cols-5 w-full">
+												<div className="col-span-2 lg:col-span-3 text-base flex flex-row items-center">
 													{detail.operationName}
 												</div>
-												<div className="col-span-1 text-base relative">
+												<div className="col-span-1 md:col-span-2 lg:col-span-1 text-base relative">
 													<MoneyInput
 														value={detail.price}
 														onAccept={(value, mask) =>
@@ -172,7 +280,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 											}
 											<button onClick={() => handleRemoveBookingDetail(detailIndex)}>
 												<AiOutlineClose
-													className={`absolute top-6 right-2 hover:scale-125 hover:text-red-500`}
+													className={`absolute top-5 right-1 hover:scale-125 hover:text-red-500`}
 													size={16}
 												/>
 											</button>
@@ -201,7 +309,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 										}
 										<button onClick={() => handleRemoveStage(stageIndex)}>
 											<AiOutlineClose
-												className={`absolute top-2 right-2 hover:scale-125 hover:text-red-500 ${
+												className={`absolute top-1 right-1 hover:scale-125 hover:text-red-500 ${
 													stageLength > 1 ? '' : 'hidden'
 												}`}
 												size={16}
@@ -214,10 +322,25 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 											<input
 												className="w-full rounded-lg p-2 text-base border border-gray-300"
 												type="text"
+												name="name"
 												value={stage.name}
 												onChange={(e) => handleStageChange(e, stageIndex)}
 												placeholder="Giai đoạn xăm"
 											/>
+											<div>
+												<label className="pt-2 block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+													Thêm mô tả
+												</label>
+												<textarea
+													className="w-full rounded-lg p-2 text-base border border-gray-300"
+													type="text"
+													rows={5}
+													value={stage.description}
+													name="description"
+													onChange={(e) => handleStageChange(e, stageIndex)}
+													placeholder="Mô tả cho hình xăm"
+												/>
+											</div>
 											{
 												// Add media section
 											}

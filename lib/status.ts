@@ -78,6 +78,14 @@ export const stringBookingStatuses = [
 	'Đã xoá'
 ];
 
+export const operationNames = [
+	'Xăm',
+	'Thiết kế',
+	'Xăm đè',
+	'Xăm dặm lại',
+	'Xoá xăm',
+]
+
 export const enum TATTOO_ART_STATUS {
 	AVAILABLE = 0,
 	UNAVAILABLE = 1,

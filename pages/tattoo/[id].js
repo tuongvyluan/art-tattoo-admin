@@ -19,7 +19,7 @@ const TattooDetails = () => {
 		artistName: 'Vy'
 	});
 	
-	if (id !== 'new') {
+	if (id !== 'new' && !artTattoo) {
 		fetcher('/api/studioTattooArt').then((data) => {
 			setArtTattoo(data)
 			setArtist(data.artist)

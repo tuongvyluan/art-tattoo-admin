@@ -85,7 +85,7 @@ export const DropdownMenu = ({ children, className, style, ...props }) => {
       leaveTo="transform opacity-0 scale-95"
       {...props}
       className={classNames(
-        `z-10 absolute bg-white right-0 rtl:left-0 origin-top-right rtl:origin-top-left mt-1 w-auto rounded-lg shadow-lg left-auto rtl:right-auto ring-1 ring-black ring-opacity-5 `,
+        `z-10 absolute bg-white right-0 origin-top-right mt-1 w-auto rounded-lg shadow-lg left-auto ring-1 ring-black ring-opacity-5 `,
         className
       )}
       style={{ minWidth: "150px", top: "100%", ...style }}

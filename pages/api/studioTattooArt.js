@@ -1,10 +1,16 @@
 import { randomFrom0To } from 'lib';
 import { stringPlacements, stringSize } from 'lib/status';
-import { tattooStylesWithoutDescription } from 'lib/tattooStyle';
+import { countStyle } from 'lib/tattooStyle';
 import { v4 } from 'uuid';
 
 const data = {
-	id: v4(),
+	id: [
+		'4e52b109-e267-4aeb-9763-090fc60b21f1',
+		'f73d647a-34e1-4cdf-88a5-3968d49bd577',
+		'009f1723-6fdc-4ef9-b8c7-5569d0d3f29e',
+		'0b8d9754-a833-467a-862a-7459fe6d8171',
+		'ae439cd0-72e3-4215-9ae9-8464bc23c09b'
+	][randomFrom0To(5)],
 	bookingId: v4(),
 	customer: {
 		customerId: v4(),
@@ -46,11 +52,11 @@ const data = {
 		'Mô tả 7',
 		'Mô tả 8'
 	][Math.floor(Math.random() * 8)],
-	size: stringSize.at(randomFrom0To(stringSize.length)),
-	position: stringPlacements.at(randomFrom0To(stringPlacements.length)),
+	size: randomFrom0To(stringSize.length),
+	placement: randomFrom0To(stringPlacements.length),
 	artist: {
 		artistId: Math.floor(Math.random() * 900),
-		artistName: [
+		firstName: [
 			'Megan',
 			'Jeffrey',
 			'Amber',
@@ -61,7 +67,7 @@ const data = {
 			'Samantha'
 		][Math.floor(Math.random() * 8)]
 	},
-	style: tattooStylesWithoutDescription[randomFrom0To(45)],
+	styleId: randomFrom0To(countStyle),
 	images: [
 		{
 			imageId: [Math.floor(Math.random() * 50)],
@@ -165,8 +171,8 @@ const data = {
 			price: randomFrom0To(8) * 1200000 + 1000000
 		}
 	],
-	placement: randomFrom0To(stringPlacements.length),
-	createdAt: new Date()
+	createdAt: new Date(),
+	isPublicized: Math.random() < 0.5
 };
 
 const getStudioTattooArts = (req, res) => res.json(data);

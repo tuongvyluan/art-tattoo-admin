@@ -183,29 +183,29 @@ function BookingPage({ data }) {
 											// Booking service
 											<div
 												key={`${booking.id}-${service.id}`}
-												className="pb-1 flex text-base"
+												className="pb-1 flex flex-wrap text-base"
 											>
 												<div>{serviceIndex + 1}</div>
-												<div>. {stringSize.at(service.size)}</div>
+												<div className='pr-1'>. {stringSize.at(service.size)},</div>
 
 												{service.placement ? (
-													<div>, {stringPlacements.at(service.placement)}</div>
+													<div className='pr-1'>Vị trí xăm: {stringPlacements.at(service.placement)},</div>
 												) : (
 													<></>
 												)}
 
-												<div>, {stringColor(service.hasColor)}</div>
+												<div className='pr-1'>{stringColor(service.hasColor)},</div>
 
-												<div>, {stringDifficult(service.isDifficult)}</div>
+												<div className='pr-1'>{stringDifficult(service.isDifficult)},</div>
 
 												{service.ink && service.ink.length > 0 ? (
-													<div>, {service.ink}</div>
+													<div className='pr-1'>{service.ink},</div>
 												) : (
 													<></>
 												)}
 
 												<div>
-													, {formatPrice(service.minPrice)} -{' '}
+													{formatPrice(service.minPrice)} -{' '}
 													{formatPrice(service.maxPrice)}
 												</div>
 											</div>
