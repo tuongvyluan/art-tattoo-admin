@@ -11,6 +11,8 @@ const MoneyInput = ({value, onAccept, currency = '₫'}) => {
 				min={0}
 				max={1000000000}
 				scale={0}
+				required
+				placeholder='1,000,000'
 				unmask={'typed'}
 				radix="."
 				thousandsSeparator=","

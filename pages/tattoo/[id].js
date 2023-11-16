@@ -18,13 +18,23 @@ const TattooDetails = () => {
 		artistId: [Math.floor(Math.random() * 900)],
 		artistName: 'Vy'
 	});
-	
+
 	if (id !== 'new' && !artTattoo) {
 		fetcher('/api/studioTattooArt').then((data) => {
-			setArtTattoo(data)
-			setArtist(data.artist)
-		})
+			setArtTattoo(data);
+			setArtist(data.artist);
+		});
 	}
+
+	const handleSubmit = (newArtTattoo) => {
+		if (id === 'new') {
+			console.log('Create');
+		} else {
+			console.log('Update');
+		}
+		setArtTattoo(newArtTattoo);
+		console.log(newArtTattoo);
+	};
 
 	if (status === 'loading') {
 		return (
@@ -47,6 +57,7 @@ const TattooDetails = () => {
 				bookingId={booking}
 				artTattoo={artTattoo}
 				artist={artist}
+				handleSubmit={handleSubmit}
 			/>
 		);
 	} else {

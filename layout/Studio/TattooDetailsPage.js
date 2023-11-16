@@ -11,29 +11,37 @@ import {
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import Button from 'components/Button';
-import { fetcherPost } from 'lib';
+import { fetcherPost, randomFrom0To } from 'lib';
 import { CldUploadButton } from 'next-cloudinary';
 import { generateSHA1, generateSignature } from 'lib/cloudinary_signature';
 import { AiOutlineClose } from 'react-icons/ai';
 import { extractPublicId } from 'cloudinary-build-url';
 import MoneyInput from 'components/MoneyInput';
-import { stringPlacements, stringSize } from 'lib/status';
+import { operationNames, stringPlacements, stringSize } from 'lib/status';
 import { tattooStyleById, tattooStylesWithoutDescription } from 'lib/tattooStyle';
+import { v4 } from 'uuid';
 
 const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 const API_KEY = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
 const API_SECRET = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
 
-function TattooDetailsPage({ bookingId, artTattoo, artist }) {
-	const defaultTattoo =
+function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
+	let defaultTattoo =
 		typeof artTattoo !== 'undefined'
 			? artTattoo
 			: {
-					bookingId: artTattoo.id,
+					bookingId: artTattoo ? artTattoo.id : bookingId,
 					artistId: artist.id,
 					artist: artist,
-					bookingDetails: [],
+					bookingDetails: [
+						{
+							bookingDetailsId: v4(),
+							operationName: 'Xăm trọn gói',
+							price: randomFrom0To(8) * 1200000 + 1000000
+						}
+					],
+					styleId: 14,
 					stages: [
 						{
 							stageId: 1,
@@ -49,7 +57,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 						}
 					]
 			  };
-	const [tattoo, setTattoo] = useState(defaultTattoo);
+	const [tattoo, setTattoo] = useState(JSON.parse(JSON.stringify(defaultTattoo)));
 
 	const handleStageChange = (e, stageIndex) => {
 		const stages = tattoo.stages;
@@ -130,16 +138,33 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 		setTattoo({ ...tattoo, stages: stages });
 	};
 
-	const handleAddBookingDetail = () => {};
-
-	const handleRemoveBookingDetail = () => {};
-
-	const handleBookingDetailPrice = (value, detailIndex) => {
+	const handleAddBookingDetail = () => {
 		const bookingDetails = tattoo.bookingDetails;
-		const detail = {
-			...bookingDetails.at(detailIndex),
-			price: value
-		};
+		bookingDetails.push({
+			bookingDetailsId: v4(),
+			operationName: '',
+			price: 0
+		});
+		setTattoo({...tattoo, bookingDetails: bookingDetails})
+	};
+
+	const handleRemoveBookingDetail = (detailIndex) => {
+		const bookingDetails = tattoo.bookingDetails;
+		bookingDetails.splice(detailIndex, 1);
+		setTattoo({...tattoo, bookingDetails: bookingDetails})
+	};
+
+	const handleBookingDetail = (value, detailIndex, changePrice = true) => {
+		const bookingDetails = tattoo.bookingDetails;
+		const detail = changePrice
+			? {
+					...bookingDetails.at(detailIndex),
+					price: value
+			  }
+			: {
+					...bookingDetails.at(detailIndex),
+					operationName: value
+			  };
 		bookingDetails[detailIndex] = detail;
 		setTattoo({ ...tattoo, bookingDetails: bookingDetails });
 	};
@@ -148,6 +173,15 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 		if (tattoo[key] !== newValue) {
 			setTattoo({ ...tattoo, [key]: newValue });
 		}
+	};
+
+	const handleResetChange = () => {
+		setTattoo(JSON.parse(JSON.stringify(defaultTattoo)));
+	};
+
+	const handleSaveChange = () => {
+		handleSubmit(tattoo);
+		defaultTattoo = JSON.parse(JSON.stringify(tattoo));
 	};
 
 	return (
@@ -169,6 +203,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 								<input
 									checked={tattoo.isPublicized}
 									type="checkbox"
+									readOnly
 									className="hidden"
 									disabled={false}
 								/>
@@ -183,7 +218,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 					<div className="pt-3 border-b border-gray-300">
 						<div className="font-semibold text-lg pb-2">Thông tin hình xăm</div>
 						<div className="pb-3 flex items-center gap-1">
-							<div className='w-20'>Nghệ sĩ xăm:</div>
+							<div className="w-20">Nghệ sĩ xăm:</div>
 							<span className="font-semibold"> {tattoo.artist.firstName}</span>
 						</div>
 						<div className="pb-3 flex items-center gap-1">
@@ -238,7 +273,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 							<div className="w-20">Style:</div>
 							<Dropdown className="relative h-full flex items-center">
 								<DropdownToggle>
-									<div className="w-28 rounded-lg p-1 border border-gray-300">
+									<div className="w-28 md:w-48 rounded-lg p-1 border border-gray-300">
 										{tattooStyleById(tattoo.styleId)?.name}
 									</div>
 								</DropdownToggle>
@@ -261,7 +296,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 						</div>
 					</div>
 					{
-						// Update tattoo info
+						// Update tattoo stages and booking details
 					}
 					<div>
 						{
@@ -278,36 +313,71 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 									// Booking details list
 								}
 								{tattoo.bookingDetails.map((detail, detailIndex) => (
-									<Card className={'pt-3'} key={detail.bookingDetailsId}>
+									<div
+										className={
+											'pt-3 relative min-w-0 break-words rounded-lg mb-4 w-full bg-white dark:bg-gray-600'
+										}
+										key={detail.bookingDetailsId}
+									>
 										<div
-											className={
-												'shadow-md bg-gray-50 py-4 px-6 flex flex-row items-center'
-											}
+											className={'bg-gray-50 py-4 px-6 flex flex-row items-center'}
 										>
-											<div className="relative grid grid-cols-3 md:grid-cols-5 w-full">
-												<div className="col-span-2 lg:col-span-3 text-base flex flex-row items-center">
-													{detail.operationName}
-												</div>
-												<div className="col-span-1 md:col-span-2 lg:col-span-1 text-base relative">
+											<div className="relative flex flex-wrap justify-between w-full">
+												<Dropdown className={'relative'}>
+													<DropdownToggle>
+														<input
+															onChange={(e) =>
+																handleBookingDetail(
+																	e.target.value,
+																	detailIndex,
+																	false
+																)
+															}
+															required
+															placeholder='Tên dịch vụ'
+															value={detail.operationName}
+															className="text-base flex flex-row items-center rounded-lg p-2 border border-gray-300"
+														/>
+													</DropdownToggle>
+													<DropdownMenu>
+														{operationNames.map((op, opIndex) => (
+															<div
+																key={op}
+																onClick={() =>
+																	handleBookingDetail(op, detailIndex, false)
+																}
+																className={`px-2 py-1 cursor-pointer hover:bg-gray-100`}
+															>
+																{op}
+															</div>
+														))}
+													</DropdownMenu>
+												</Dropdown>
+
+												<div className="text-base relative">
 													<MoneyInput
 														value={detail.price}
 														onAccept={(value, mask) =>
-															handleBookingDetailPrice(value, detailIndex)
+															handleBookingDetail(value, detailIndex)
 														}
 													/>
 												</div>
+												{
+													// Remove booking detail icon
+												}
+												<button
+													onClick={() => handleRemoveBookingDetail(detailIndex)}
+												>
+													<AiOutlineClose
+														className={`absolute -top-3 -right-5 hover:scale-125 hover:text-red-500 ${
+															tattoo.bookingDetails.length > 1 ? '' : 'hidden'
+														}`}
+														size={16}
+													/>
+												</button>
 											</div>
-											{
-												// Remove booking detail icon
-											}
-											<button onClick={() => handleRemoveBookingDetail(detailIndex)}>
-												<AiOutlineClose
-													className={`absolute top-5 right-1 hover:scale-125 hover:text-red-500`}
-													size={16}
-												/>
-											</button>
 										</div>
-									</Card>
+									</div>
 								))}
 							</div>
 						) : (
@@ -345,6 +415,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 												className="w-full rounded-lg p-2 text-base border border-gray-300"
 												type="text"
 												name="name"
+												required
 												value={stage.name}
 												onChange={(e) => handleStageChange(e, stageIndex)}
 												placeholder="Giai đoạn xăm"
@@ -405,6 +476,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 																<input
 																	checked={media.isPublicized}
 																	type="checkbox"
+																	readOnly
 																	className="hidden"
 																	disabled={false}
 																/>
@@ -441,6 +513,19 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 							))}
 						</div>
 					</div>
+					{
+						// Save or reset tattoo
+					}
+					<div className="flex justify-end flex-wrap gap-2">
+						<div className="w-16">
+							<Button outline onClick={handleResetChange}>
+								Reset
+							</Button>
+						</div>
+						<div className="w-16">
+							<Button onClick={handleSaveChange}>Lưu</Button>
+						</div>
+					</div>
 				</CardBody>
 			</Card>
 		</div>
@@ -450,7 +535,8 @@ function TattooDetailsPage({ bookingId, artTattoo, artist }) {
 TattooDetailsPage.propTypes = {
 	bookingId: PropTypes.string,
 	artist: PropTypes.object.isRequired,
-	artTattoo: PropTypes.object
+	artTattoo: PropTypes.object,
+	handleSubmit: PropTypes.func.isRequired
 };
 
 export default TattooDetailsPage;
