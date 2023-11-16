@@ -6,6 +6,8 @@ import Router, { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Loading } from 'ui';
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASEURL;
+
 const TattooDetails = () => {
 	// Check authenticated
 	const { status, data } = useSession();
@@ -20,9 +22,39 @@ const TattooDetails = () => {
 	});
 
 	if (id !== 'new' && !artTattoo) {
-		fetcher('/api/studioTattooArt').then((data) => {
-			setArtTattoo(data);
-			setArtist(data.artist);
+		fetcher(`${BASE_URL}/TattooArts/Details?id=${id}&is`).then((data) => {
+			const stageMap = new Map(
+				data.medias.map((obj) => {
+					return [
+						obj.tattooArtStageId,
+						{
+							id: obj.tattooArtStageId,
+							name: obj.stageName,
+							description: obj.description ? obj.description : '',
+							medias: []
+						}
+					];
+				})
+			);
+			data.medias.map((obj) => {
+				const value = stageMap.get(obj.tattooArtStageId);
+				value.medias.push({ ...obj, saved: true }); // saved field to note that this image has been saved to db
+				stageMap.set(obj.tattooArtStageId, value);
+			});
+			const renderData = {
+				...data,
+				stages: Array.from(stageMap, ([id, value]) => value)
+			};
+			if (renderData.stages.length === 0) {
+				renderData.stages.push({
+					id: 1,
+					name: 'Sau khi xăm',
+					description: '',
+					medias: []
+				});
+			}
+			setArtTattoo(renderData);
+			setArtist(renderData.artist);
 		});
 	}
 
