@@ -138,3 +138,37 @@ export const stringPlacements = [
 	'Mạn sườn',
 	'Hông'
 ];
+
+export const enum SERVICE_PLACEMENT {
+	ANY = 0,
+	FULL_BACK = 1,
+	HALF_BACK = 2,
+	FULL_CHEST = 3,
+	HALF_CHEST = 4,
+	FULL_BELLY = 5,
+	HALF_BELLY = 6,
+	FULL_LEG = 7,
+	HALF_LEG = 8,
+	FULL_ARM = 9,
+	HALF_ARM = 10,
+	FULL_SHOULDER = 11,
+	HALF_SHOULDER = 12,
+	BODYSUIT = 13
+}
+
+export const stringServicePlacement = [
+	'Vị trí khác',
+	'Full lưng',
+	'Nửa lưng',
+	'Full ngực',
+	'Nửa ngực',
+	'Full bụng',
+	'Nửa bụng',
+	'Full chân',
+	'Nửa chân',
+	'Full tay',
+	'Full tay',
+	'Full vai',
+	'Nửa vai',
+	'Bodysuit'
+]
