@@ -1,12 +1,11 @@
 import TattooDetailsPage from 'layout/Studio/TattooDetailsPage';
 import { fetcher } from 'lib';
+import { BASE_URL } from 'lib/env';
 import { ROLE } from 'lib/status';
 import { useSession } from 'next-auth/react';
 import Router, { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Loading } from 'ui';
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASEURL;
 
 const TattooDetails = () => {
 	// Check authenticated

@@ -1,10 +1,18 @@
 import Login from '../../components/Login';
-import { signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
 import Router from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Alert } from 'ui';
 
 const LoginPage = () => {
+	const { status, data } = useSession();
+
+	useEffect(() => {
+		if (status === 'authenticated') {
+			Router.replace('/');
+		}
+	}, [status]);
+
 	const [user, setUser] = useState({ email: '', password: '' });
 	const [showAlert, setShowAlert] = useState(false);
 	const [alertContent, setAlertContent] = useState({

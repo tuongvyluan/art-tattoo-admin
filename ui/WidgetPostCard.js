@@ -1,4 +1,4 @@
-import { Card, CardBody } from "./Card";
+import { Card } from "./Card";
 import { Carousel, CarouselIndicators, CarouselSlide } from "./Carousel";
 
 import { BackgroundImg } from "./BackgroundImg";

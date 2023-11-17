@@ -2,8 +2,8 @@ import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { ROLE } from '../../../lib/status';
 import { fetcherPost, readJwt } from 'lib';
+import { BASE_URL } from 'lib/env';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASEURL
 const authOptions = {
 	session: {
 		strategy: 'jwt'

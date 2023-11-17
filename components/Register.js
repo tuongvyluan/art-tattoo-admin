@@ -1,11 +1,12 @@
+import PropTypes from 'prop-types';
 import { Link, Logo } from 'ui';
 
 import Illustration from 'public/images/illustrations/undraw_secure_data_0rwp.svg';
 import Button from './Button';
 
-const Register = ({user, setUser, handleSubmit}) => {
+const Register = ({ user, setUser, handleSubmit }) => {
 	const handleFormChange = (e) => {
-		setUser({ ...user, [e.target.name]: e.target.value })
+		setUser({ ...user, [e.target.name]: e.target.value });
 	};
 
 	return (
@@ -114,11 +115,11 @@ const Register = ({user, setUser, handleSubmit}) => {
 									</div>
 								</div>
 
-								<div className='flex justify-center'>
+								<div className="flex justify-center">
 									<Button>Đăng ký</Button>
 								</div>
 							</form>
-							<div className="text-center">
+							<div className="text-center pb-3">
 								<small className="text-gray-700 text-center">
 									<span>{'Đã có tài khoản?'}</span>{' '}
 									<Link href="/auth/signin">
@@ -132,6 +133,12 @@ const Register = ({user, setUser, handleSubmit}) => {
 			</div>
 		</div>
 	);
+};
+
+Register.propTypes = {
+	user: PropTypes.object.isRequired,
+	setUser: PropTypes.func.isRequired,
+	handleSubmit: PropTypes.func.isRequired
 };
 
 export default Register;

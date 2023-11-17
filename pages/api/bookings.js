@@ -102,16 +102,16 @@ const data = Array(20)
 							][randomFrom0To(3)]
 						},
 						photo: [
-							'https://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/fg3okai6ykckrt3ayhnb.webp',
-							'https://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/jsmevnjedqggvb7ug4ly.webp',
-							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/tmthhhbasigujjqxenl1.webp',
-							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/olc0mzjoybrf1odeynnu.webp',
-							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/v10zlbwlh43gfbsu7ksy.webp',
-							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/tefad0rzugdnekvxd14f.webp',
-							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618040/bucnozik8rmqepiw2gky.webp',
-							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618041/ilgkjxvfhahlfjwckp1i.webp',
-							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618041/iwiyxibenpxfubc5gb54.webp',
-							'http://res.cloudinary.com/didbpuxlt/image/upload/v1699618041/lurefci1dfzvrrahx4sy.webp'
+							'https://res.cloudinary.com/dl9ctj0ul/image/upload/v1700213402/tattoo-7_fww1uk.webp',
+							'https://res.cloudinary.com/dl9ctj0ul/image/upload/v1700213402/tattoo-5_amyhqs.webp',
+							'https://res.cloudinary.com/dl9ctj0ul/image/upload/v1700213402/tattoo-8_vrh3pj.webp',
+							'https://res.cloudinary.com/dl9ctj0ul/image/upload/v1700213402/tattoo-6_ipmvzr.webp',
+							'https://res.cloudinary.com/dl9ctj0ul/image/upload/v1700213402/tattoo-1_cjajwn.webp',
+							'https://res.cloudinary.com/dl9ctj0ul/image/upload/v1700213401/tattoo-4_xb4cjw.webp',
+							'https://res.cloudinary.com/dl9ctj0ul/image/upload/v1700213401/tattoo-10_dwkjap.webp',
+							'https://res.cloudinary.com/dl9ctj0ul/image/upload/v1700213401/tattoo-9_hswcik.webp',
+							'https://res.cloudinary.com/dl9ctj0ul/image/upload/v1700213401/tattoo-2_digj71.webp',
+							'https://res.cloudinary.com/dl9ctj0ul/image/upload/v1700213401/tattoo-3_mznw0h.webp'
 						][randomFrom0To(10)],
 						size: [
 							SERVICE_SIZE.EXTRA,
