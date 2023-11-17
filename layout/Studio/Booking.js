@@ -20,10 +20,7 @@ const COMPLETE_TAB = '3';
 const CANCELLED_TAB = '4';
 
 function BookingPage({ data }) {
-	const router = useRouter();
-	const active =
-		typeof router.query['active'] !== 'undefined' ? router.query['active'] : '1';
-	const [activeTab, setActiveTab] = useState(active);
+	const [activeTab, setActiveTab] = useState('1');
 	const [searchKey, setSearchKey] = useState('');
 
 	let renderData = data;
