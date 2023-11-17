@@ -26,6 +26,7 @@ const authOptions = {
 
 				// Read token from response
 				const jwtObj = readJwt(res.jwt)
+				console.log(jwtObj)
 				// Check role
 				const roleString = jwtObj['role']
 				let role
@@ -47,10 +48,12 @@ const authOptions = {
 				// if everything is fine
 				return {
 					id: res.accountId,
+					studioId: res.studioId,
 					token: res.jwt,
 					role: role,
 					email: jwtObj['emailaddress'],
-					firstName: jwtObj['surname']
+					firstName: jwtObj['surname'],
+					lastName: jwtObj['name']
 				};
 			}
 		})
@@ -63,7 +66,9 @@ const authOptions = {
 					accessToken: user.token,
 					id: user.id,
 					role: user.role,
-					firstName: user.firstName
+					firstName: user.firstName,
+					lastName: user.lastName,
+					studioId: user.studioId
 				}
 			};
 			return token;
@@ -74,6 +79,8 @@ const authOptions = {
 				session.user.id = token.id
 				session.user.accessToken = token.accessToken
 				session.user.firstName = token.firstName
+				session.user.lastName = token.lastName
+				session.user.studioId = token.studioId
 			}
 			return session;
 		}

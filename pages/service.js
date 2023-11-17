@@ -10,7 +10,7 @@ const StudioService = () => {
 	// Check authenticated
 	const { status, data } = useSession();
 
-	const studioId = '6CEB7498-B22A-4A8C-8E4E-499189336EC2';
+	const studioId = data.user.studioId;
 	const { data: services, error } = useSWR(
 		`${BASE_URL}/studios/${studioId}/services?pageSize=100`
 	);
@@ -33,7 +33,11 @@ const StudioService = () => {
 
 	if (status === 'authenticated' && data.user.role === ROLE.STUDIO) {
 		if (!services) {
-			return <Loading />;
+			return (
+				<div className="flex items-center justify-center h-full">
+					<Loading />
+				</div>
+			);
 		}
 
 		return <ServicePage services={services.services} />;

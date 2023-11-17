@@ -1,31 +1,41 @@
 import { useState } from 'react';
-import useSWR from 'swr';
 import { fetcher } from '../../lib/fetcher';
 import { Avatar, Card, CardBody, Loading, WidgetStatCard } from '../../ui';
 import { Users } from 'icons/solid';
+import { useSession } from 'next-auth/react';
+import Router from 'next/router';
 
 function StudioIndexPage() {
-	const { data, error } = useSWR(`/api/dashboard`, fetcher);
-	const [activeTab, setActiveTab] = useState('1');
+	const { status, data } = useSession();
+	const [studio, setStudio] = useState({
+		id: null,
+		ownerId: '',
+		studioName: '',
+		address: '',
+		bioContent: '',
+		openTime: null,
+		closeTime: null,
+		certificate: null,
+		isAuthorized: false,
+		isPrioritized: false,
+		status: 0
+	});
 
-	const toggle = (tab) => {
-		if (activeTab !== tab) {
-			setActiveTab(tab);
-		}
-	};
-
-	if (error)
-		return (
-			<div className="flex items-center justify-center h-full">
-				Failed to load data
-			</div>
-		);
-	if (!data)
+	if (status === 'loading')
 		return (
 			<div className="flex items-center justify-center h-full">
 				<Loading />
 			</div>
 		);
+	if (data.user.studioId && !studio.id) {
+		setStudio({
+			...studio,
+			id: data.user.studioId,
+			ownerId: data.user.id
+		});
+	} else if (!data.user.studioId) {
+		Router.replace('/studio');
+	}
 	return (
 		<>
 			<div className="flex flex-wrap -mx-2">
@@ -65,7 +75,7 @@ function StudioIndexPage() {
 			<div>
 				<Card>
 					<CardBody className="flex">
-          <div className="w-1/4 px-2 mb-3">
+						<div className="w-1/4 px-2 mb-3">
 							<a className="w-full block text-gray-900 dark:text-white">
 								<div className="flex justify-center">
 									<Avatar
@@ -83,7 +93,8 @@ function StudioIndexPage() {
 									</div>
 								</div>
 							</a>
-						</div><div className="w-1/4 px-2 mb-3">
+						</div>
+						<div className="w-1/4 px-2 mb-3">
 							<a className="w-full block text-gray-900 dark:text-white">
 								<div className="flex justify-center">
 									<Avatar

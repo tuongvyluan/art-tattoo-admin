@@ -188,31 +188,20 @@ const Header = ({ toggleOpen }) => {
 
 						<Dropdown className="px-3 relative h-full flex items-center">
 							<DropdownToggle>
-								<Avatar size={28} src={`images/avatar.png`} alt={data ? data.user.firstName : 'Unknown'} />
+								<Avatar
+									size={28}
+									src={`images/avatar.png`}
+									alt={data ? data.user.firstName : 'Unknown'}
+								/>
 							</DropdownToggle>
 							<DropdownMenu>
 								<div className="py-1">
-									<a
-										href="#"
-										className="flex items-center px-5 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-									>
-										<LightningBolt width={16} height={16} />{' '}
-										<span className="ml-3">Hoạt động</span>
-									</a>
-									<a
-										href="#"
-										className="flex items-center px-5 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-									>
-										<User width={16} height={16} />{' '}
-										<span className="ml-3">Hồ sơ</span>
-									</a>
-									<a
-										href="#"
-										className="flex items-center px-5 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out"
-									>
-										<Cog width={16} height={16} />{' '}
-										<span className="ml-3">Cài đặt</span>
-									</a>
+									<Link href="/studio">
+										<div className="flex cursor-pointer items-center px-5 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+											<User width={16} height={16} />{' '}
+											<span className="ml-3">Hồ sơ</span>
+										</div>
+									</Link>
 									<a
 										href="#"
 										onClick={() => signOut()}
