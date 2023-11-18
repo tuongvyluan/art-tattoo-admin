@@ -210,7 +210,9 @@ function BookingPage({ data }) {
 							<div className="cursor-pointer ">
 								<div className="flex justify-between mx-auto border-b border-gray-300 pb-3">
 									<div className="flex gap-3 items-start">
-										<div className="font-semibold">{booking.customer.firstName}</div>
+										<div className="font-semibold">
+											{booking.customer?.firstName}
+										</div>
 									</div>
 									<div>
 										<div className="text-red-500">
@@ -218,6 +220,17 @@ function BookingPage({ data }) {
 										</div>
 									</div>
 								</div>
+								{booking.totalMinPrice && booking.totalMaxPrice && (
+									<div className="mx-auto border-b border-gray-300 py-3">
+										<div className="text-gray-500 pb-2">Mức giá tham khảo</div>
+										<div className="pb-1 flex flex-wrap text-base">
+											<div>
+												{formatPrice(booking.totalMinPrice)} -{' '}
+												{formatPrice(booking.totalMaxPrice)}
+											</div>
+										</div>
+									</div>
+								)}
 								{booking.services && Object.keys(booking.services).length > 0 ? (
 									<div className="mx-auto border-b border-gray-300 py-3">
 										<div className="text-gray-500 pb-2">Dịch vụ tham khảo</div>
@@ -260,7 +273,9 @@ function BookingPage({ data }) {
 								) : (
 									<></>
 								)}
-								<div className="text-gray-500 pt-2">Hình xăm</div>
+								{booking.artTattoos && (
+									<div className="text-gray-500 pt-2">Hình xăm</div>
+								)}
 								{booking.artTattoos?.map((tattoo, tattooIndex) => (
 									<div
 										key={tattoo.id}
@@ -307,18 +322,20 @@ function BookingPage({ data }) {
 												{formatTime(booking.createdAt)}
 											</span>
 										</div>
-										<div>
-											Ngày hoàn tất:{' '}
-											<span className="text-base">
-												{formatTime(booking.meetingDate)}
-											</span>
-										</div>
-										<div>
-											Thành tiền:{' '}
-											<span className="text-lg text-red-500">
-												{formatPrice(booking.total)}
-											</span>
-										</div>
+										{booking.date && (
+											<div>
+												Ngày hẹn:{' '}
+												<span className="text-base">{formatTime(booking.date)}</span>
+											</div>
+										)}
+										{booking.total && (
+											<div>
+												Thành tiền:{' '}
+												<span className="text-lg text-red-500">
+													{formatPrice(booking.total)}
+												</span>
+											</div>
+										)}
 									</div>
 								</div>
 							</div>
@@ -332,6 +349,6 @@ function BookingPage({ data }) {
 
 BookingPage.propTypes = {
 	data: PropTypes.array.isRequired
-}
+};
 
 export default BookingPage;
