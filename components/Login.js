@@ -63,7 +63,7 @@ const Login = ({ handleSubmit, user, setUser }) => {
 								</div>
 
 								<div className="flex justify-center">
-									<Button>Đăng nhập</Button>
+									<Button type='submit'>Đăng nhập</Button>
 								</div>
 							</form>
 							<div className="text-center">

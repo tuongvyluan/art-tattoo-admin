@@ -1,4 +1,5 @@
 import Button from 'components/Button';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Card, CardBody } from 'ui';
@@ -9,15 +10,28 @@ function StudioInfo({ studio, handleSubmit }) {
 		setProfile({ ...profile, [e.target.name]: e.target.value });
 	};
 
-	const handleFormSubmit = () => {
-		handleSubmit(profile);
+	const handleFormSubmit = (e) => {
+		e.preventDefault()
+		const openTime = moment(profile.openTime, 'HH:mm')
+		const closeTime = moment(profile.closeTime, 'HH:mm')
+		handleSubmit({
+			...profile,
+			openTime: {
+				hours: openTime.hour(),
+				minutes: openTime.minute()
+			},
+			closeTime: {
+				hours: closeTime.hour(),
+				minutes: closeTime.minute()
+			}
+		});
 	};
 	return (
 		<div className="sm:px-12 md:px-16 lg:px-32 xl:px-56">
 			<Card>
 				<CardBody>
 					<h1 className='border-b border-gray-300 pb-3 text-base'>Thông tin studio</h1>
-					<form className='pt-3' onSubmit={handleFormSubmit}>
+					<form method='post' className='pt-3' onSubmit={handleFormSubmit}>
 						<div className="flex flex-wrap items-center justify-between mb-3">
 							<div className="w-full sm:w-2/5 lg:w-1/2 sm:pb-0 pb-6">
 								<label>{'Tên'}</label>
@@ -32,7 +46,7 @@ function StudioInfo({ studio, handleSubmit }) {
 									placeholder={'Tên studio'}
 								/>
 							</div>
-							<div className="flex gap-5 mb-3 ">
+							<div className="flex gap-5 mb-3 sm:mb-0 ">
 								<div>
 									<label>{'Giờ mở cửa'}</label>
 									<input
@@ -71,12 +85,12 @@ function StudioInfo({ studio, handleSubmit }) {
 								required
 								rows={5}
 								className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
-								placeholder={'Tên studio'}
+								placeholder={'Nhập bio cho studio'}
 							/>
 						</div>
 						<div className="flex justify-end gap-2">
 							<div className="w-16">
-								<Button outline>Reset</Button>
+								<Button type='reset' outline>Reset</Button>
 							</div>
 							<div className="w-16">
 								<Button>Lưu</Button>

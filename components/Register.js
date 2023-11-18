@@ -116,7 +116,7 @@ const Register = ({ user, setUser, handleSubmit }) => {
 								</div>
 
 								<div className="flex justify-center">
-									<Button>Đăng ký</Button>
+									<Button type='submit'>Đăng ký</Button>
 								</div>
 							</form>
 							<div className="text-center pb-3">

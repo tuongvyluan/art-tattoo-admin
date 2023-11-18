@@ -1,22 +1,21 @@
 import Dashboard from 'components/Dashboard';
-import { useSession } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { Loading } from '../ui';
-import { ROLE } from '../lib/status'
+import { ROLE } from '../lib/status';
 import StudioIndexPage from '../layout/Studio/Index';
 
 const Index = () => {
-
 	// Check authenticated
 	const { status, data } = useSession();
-	
+
 	if (status === 'authenticated') {
 		if (data.user.role === ROLE.ADMIN) {
-			return <div>ADMIN</div>
+			return <div>ADMIN</div>;
 		}
 		if (data.user.role === ROLE.STUDIO) {
-			return <StudioIndexPage />
+			return <StudioIndexPage />;
 		}
-		return <Dashboard />;
+		signOut();
 	}
 	return (
 		<div className="flex items-center justify-center h-full">

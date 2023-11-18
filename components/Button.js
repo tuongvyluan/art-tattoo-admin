@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 
-const Button = ({ children, onClick, outline = false }) => {
+const Button = ({ children, onClick, outline = false, type = 'submit' }) => {
 	return outline ? (
 		<button
-			type="submit"
+			type={type}
 			onClick={onClick}
 			className="text-gray-800 bg-white border border-gray-700 hover:text-white hover:bg-gray-700 font-medium rounded-lg text-sm py-2 px-2 w-full"
 		>
@@ -11,7 +11,7 @@ const Button = ({ children, onClick, outline = false }) => {
 		</button>
 	) : (
 		<button
-			type="submit"
+			type={type}
 			onClick={onClick}
 			className="text-white bg-gray-800 hover:bg-gray-700 font-medium rounded-lg text-sm py-2 px-2 w-full"
 		>
@@ -22,6 +22,7 @@ const Button = ({ children, onClick, outline = false }) => {
 
 Button.propTypes = {
 	children: PropTypes.node.isRequired,
+	type: PropTypes.string,
 	onClick: PropTypes.func,
 	outline: PropTypes.bool
 };
