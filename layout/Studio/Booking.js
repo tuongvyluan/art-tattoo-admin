@@ -72,7 +72,7 @@ function BookingPage({ data }) {
 						<li
 							className={`text-center  cursor-pointer ${
 								activeTab === ALL_TAB
-									? 'border-b-2 border-solid border-indigo-500'
+									? 'border-b-2 border-solid border-gray-700'
 									: ''
 							}`}
 						>
@@ -90,7 +90,7 @@ function BookingPage({ data }) {
 						<li
 							className={`text-center cursor-pointer ${
 								activeTab === PENDING_TAB
-									? 'border-b-2 border-solid border-indigo-500'
+									? 'border-b-2 border-solid border-gray-700'
 									: ''
 							}`}
 						>
@@ -108,7 +108,7 @@ function BookingPage({ data }) {
 						<li
 							className={`text-center cursor-pointer ${
 								activeTab === COMPLETE_TAB
-									? 'border-b-2 border-solid border-indigo-500'
+									? 'border-b-2 border-solid border-gray-700'
 									: ''
 							}`}
 						>
@@ -126,7 +126,7 @@ function BookingPage({ data }) {
 						<li
 							className={`text-center cursor-pointer ${
 								activeTab === CANCELLED_TAB
-									? 'border-b-2 border-solid border-indigo-500'
+									? 'border-b-2 border-solid border-gray-700'
 									: ''
 							}`}
 						>

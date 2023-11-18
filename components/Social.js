@@ -77,7 +77,7 @@ const Social = () => {
               <li
                 className={`text-center  cursor-pointer ${
                   activeTab === "1"
-                    ? "border-b-2 border-solid border-indigo-500"
+                    ? "border-b-2 border-solid border-gray-700"
                     : ""
                 }`}
                 onClick={() => {
@@ -92,7 +92,7 @@ const Social = () => {
               <li
                 className={`text-center cursor-pointer ${
                   activeTab === "2"
-                    ? "border-b-2 border-solid border-indigo-500"
+                    ? "border-b-2 border-solid border-gray-700"
                     : ""
                 }`}
                 onClick={() => {
@@ -107,7 +107,7 @@ const Social = () => {
               <li
                 className={`text-center cursor-pointer ${
                   activeTab === "3"
-                    ? "border-b-2 border-solid border-indigo-500"
+                    ? "border-b-2 border-solid border-gray-700"
                     : ""
                 }`}
                 onClick={() => {
@@ -122,7 +122,7 @@ const Social = () => {
               <li
                 className={`text-center cursor-pointer ${
                   activeTab === "4"
-                    ? "border-b-2 border-solid border-indigo-500"
+                    ? "border-b-2 border-solid border-gray-700"
                     : ""
                 }`}
                 onClick={() => {

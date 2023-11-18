@@ -1,3 +1,4 @@
+import Button from 'components/Button';
 import MoneyInput from 'components/MoneyInput';
 import { Link } from 'i18n';
 import { ChevronLeft } from 'icons/solid';
@@ -74,46 +75,58 @@ function ServicePage({ services }) {
 
 	return (
 		<div className="sm:px-3 md:px-1 lg:px-10 xl:px-36">
-			<div className="mx-auto w-72 ring-1 ring-black ring-opacity-5 bg-white mb-3">
-				<div className="flex flex-row w-0 min-w-full">
-					<ul className="list-none grid col-span-4 grid-flow-col place-items-center overflow-x-auto w-0 min-w-full -mb-10 pb-10">
-						<li
-							className={`text-center  cursor-pointer ${
-								activeTab === SIZE_TAB
-									? 'border-b-2 border-solid border-indigo-500'
-									: ''
-							}`}
-						>
-							<a
-								onClick={() => {
-									toggle(SIZE_TAB);
-								}}
-								href="#"
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
+			<div className="flex justify-between">
+				<div className="w-72 ring-1 ring-black ring-opacity-5 bg-white mb-3">
+					<div className="flex flex-row w-0 min-w-full">
+						<ul className="list-none grid col-span-4 grid-flow-col place-items-center overflow-x-auto w-0 min-w-full -mb-10 pb-10">
+							<li
+								className={`text-center  cursor-pointer ${
+									activeTab === SIZE_TAB
+										? 'border-b-2 border-solid border-gray-700'
+										: ''
+								}`}
 							>
-								Theo size
-								<Ripple color="black" />
-							</a>
-						</li>
-						<li
-							className={`text-center cursor-pointer ${
-								activeTab === PLACEMENT_TAB
-									? 'border-b-2 border-solid border-indigo-500'
-									: ''
-							}`}
-						>
-							<a
-								onClick={() => {
-									toggle(PLACEMENT_TAB);
-								}}
-								href="#"
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
+								<a
+									onClick={() => {
+										toggle(SIZE_TAB);
+									}}
+									href="#"
+									className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
+								>
+									Theo size
+									<Ripple color="black" />
+								</a>
+							</li>
+							<li
+								className={`text-center cursor-pointer ${
+									activeTab === PLACEMENT_TAB
+										? 'border-b-2 border-solid border-gray-700'
+										: ''
+								}`}
 							>
-								Theo vị trí xăm
-								<Ripple color="black" />
-							</a>
-						</li>
-					</ul>
+								<a
+									onClick={() => {
+										toggle(PLACEMENT_TAB);
+									}}
+									href="#"
+									className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
+								>
+									Theo vị trí xăm
+									<Ripple color="black" />
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div className="flex gap-2 items-center">
+					<div className="w-16">
+						<Button outline type="reset">
+							Reset
+						</Button>
+					</div>
+					<div className="w-16">
+						<Button>Lưu</Button>
+					</div>
 				</div>
 			</div>
 			<Card>
@@ -175,10 +188,18 @@ function ServicePage({ services }) {
 															{getDifficult(key) ? 'Phức tạp' : 'Đơn giản'}
 														</td>
 													)}
-													<td className="px-3 py-2 text-base">
+													<td
+														className={`px-3 py-2 text-base ${
+															getColor(key) ? 'bg-blue-50' : ''
+														}`}
+													>
 														{getColor(key) ? 'Màu sắc' : 'Trắng đen'}
 													</td>
-													<td className="px-3 py-2 bg-blue-50 flex justify-center">
+													<td
+														className={`px-3 py-2 flex justify-center ${
+															getColor(key) ? 'bg-blue-50' : ''
+														}`}
+													>
 														<div className="flex gap-2 items-center">
 															<span className="text-base">Từ</span>
 															<div className="w-32">
@@ -265,10 +286,18 @@ function ServicePage({ services }) {
 															{getDifficult(key) ? 'Phức tạp' : 'Đơn giản'}
 														</td>
 													)}
-													<td className="px-3 py-2 text-base">
+													<td
+														className={`px-3 py-2 text-base ${
+															getColor(key) ? 'bg-blue-50' : ''
+														}`}
+													>
 														{getColor(key) ? 'Màu sắc' : 'Trắng đen'}
 													</td>
-													<td className="px-3 py-2 bg-blue-50 flex justify-center">
+													<td
+														className={`px-3 py-2 flex justify-center ${
+															getColor(key) ? 'bg-blue-50' : ''
+														}`}
+													>
 														<div className="flex gap-2 items-center">
 															<span className="text-base">Từ</span>
 															<div className="w-32">

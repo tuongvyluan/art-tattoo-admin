@@ -1,4 +1,3 @@
-import Dashboard from 'components/Dashboard';
 import { signOut, useSession } from 'next-auth/react';
 import { Loading } from '../ui';
 import { ROLE } from '../lib/status';

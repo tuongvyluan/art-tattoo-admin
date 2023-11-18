@@ -1,27 +1,17 @@
 const { useSession } = require('next-auth/react');
 import ServicePage from 'layout/Studio/Service';
+import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
 import { ROLE } from 'lib/status';
 import Router from 'next/router';
-import useSWR from 'swr';
+import { useState } from 'react';
 const { Loading } = require('ui');
 
 const StudioService = () => {
 	// Check authenticated
 	const { status, data } = useSession();
-
-	const studioId = data.user.studioId;
-	const { data: services, error } = useSWR(
-		`${BASE_URL}/studios/${studioId}/services?pageSize=100`
-	);
-
-	if (error) {
-		return (
-			<div className="flex items-center justify-center h-full">
-				Failed to load chart data
-			</div>
-		);
-	}
+	const [loading, setLoading] = useState(true);
+	const [services, setServices] = useState([]);
 
 	if (status === 'loading') {
 		return (
@@ -32,15 +22,29 @@ const StudioService = () => {
 	}
 
 	if (status === 'authenticated' && data.user.role === ROLE.STUDIO) {
-		if (!services) {
+		const studioId = data.user.studioId;
+		if (loading) {
+			fetcher(`${BASE_URL}/studios/${studioId}/services?pageSize=100`)
+				.then((data) => {
+					setServices(data.services);
+					setLoading(false);
+				})
+				.catch((e) => {
+					console.log(e);
+					return (
+						<div className="flex items-center justify-center h-full">
+							Failed to load chart data
+						</div>
+					);
+				});
 			return (
 				<div className="flex items-center justify-center h-full">
 					<Loading />
 				</div>
 			);
+		} else {
+			return <ServicePage services={services} />;
 		}
-
-		return <ServicePage services={services.services} />;
 	} else {
 		Router.replace('/');
 	}

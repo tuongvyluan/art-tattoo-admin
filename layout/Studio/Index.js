@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { fetcher } from '../../lib/fetcher';
 import { Avatar, Card, CardBody, Loading, WidgetStatCard } from '../../ui';
 import { Users } from 'icons/solid';
 import { useSession } from 'next-auth/react';
