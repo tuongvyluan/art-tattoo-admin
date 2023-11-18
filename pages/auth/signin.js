@@ -21,7 +21,7 @@ const LoginPage = () => {
 		isWarn: false
 	});
 	const handleSetUser = (newUser) => {
-		handleAlert(false, '', '')
+		handleAlert(false, '', '');
 		setUser(newUser);
 	};
 	const handleSubmit = async (e) => {
@@ -52,14 +52,15 @@ const LoginPage = () => {
 	};
 	return (
 		<div className="relative">
-			{showAlert ? (
-				<Alert color={alertContent.isWarn ? 'red' : 'blue'} className="bottom-2 right-2 absolute">
-					<strong className="font-bold mr-1">{alertContent.title}</strong>
-					<span className="block sm:inline">{alertContent.content}</span>
-				</Alert>
-			) : (
-				<></>
-			)}
+			<Alert
+				showAlert={showAlert}
+				setShowAlert={setShowAlert}
+				color={alertContent.isWarn ? 'red' : 'blue'}
+				className="bottom-2 right-2 absolute"
+			>
+				<strong className="font-bold mr-1">{alertContent.title}</strong>
+				<span className="block sm:inline">{alertContent.content}</span>
+			</Alert>
 
 			<Login handleSubmit={handleSubmit} user={user} setUser={handleSetUser} />
 		</div>

@@ -52,12 +52,12 @@ const RegisterPage = () => {
 				});
 				Router.replace('/auth/signin');
 			} catch (e) {
-        console.log(e)
-        let mesageTitle = 'Đăng ký tài khoản không thành công.'
-        let messageContent = ''
-        if (e.message.includes('already an account')) {
-          messageContent = 'Email hoặc số điện thoại này đã tồn tại.'
-        }
+				console.log(e);
+				let mesageTitle = 'Đăng ký tài khoản không thành công.';
+				let messageContent = '';
+				if (e.message.includes('already an account')) {
+					messageContent = 'Email hoặc số điện thoại này đã tồn tại.';
+				}
 				handleAlert(true, mesageTitle, messageContent, true);
 			}
 		}
@@ -68,20 +68,21 @@ const RegisterPage = () => {
 		setAlertContent({
 			title: title,
 			content: content,
-      isWarn: isWarn
+			isWarn: isWarn
 		});
 	};
 
 	return (
 		<div className="relative">
-			{showAlert ? (
-				<Alert color={alertContent.isWarn ? 'red' : 'blue'} className="bottom-2 right-2 absolute">
-					<strong className="font-bold mr-1">{alertContent.title}</strong>
-					<span className="block sm:inline">{alertContent.content}</span>
-				</Alert>
-			) : (
-				<></>
-			)}
+			<Alert
+				showAlert={showAlert}
+				setShowAlert={setShowAlert}
+				color={alertContent.isWarn ? 'red' : 'blue'}
+				className="bottom-2 right-2 absolute"
+			>
+				<strong className="font-bold mr-1">{alertContent.title}</strong>
+				<span className="block sm:inline">{alertContent.content}</span>
+			</Alert>
 			<Register user={user} setUser={handleSetUser} handleSubmit={handleSubmit} />
 		</div>
 	);
