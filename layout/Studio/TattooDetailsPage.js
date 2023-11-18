@@ -392,14 +392,12 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 													// Remove booking detail icon
 												}
 												<button
+													className={`absolute -top-3 -right-5 hover:scale-125 hover:text-red-500 ${
+														tattoo.bookingDetails.length > 1 ? '' : 'hidden'
+													}`}
 													onClick={() => handleRemoveBookingDetail(detailIndex)}
 												>
-													<AiOutlineClose
-														className={`absolute -top-3 -right-5 hover:scale-125 hover:text-red-500 ${
-															tattoo.bookingDetails.length > 1 ? '' : 'hidden'
-														}`}
-														size={16}
-													/>
+													<AiOutlineClose size={16} />
 												</button>
 											</div>
 										</div>
@@ -425,13 +423,13 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 										{
 											// Remove stage icon
 										}
-										<button onClick={() => handleRemoveStage(stageIndex)}>
-											<AiOutlineClose
-												className={`absolute top-1 right-1 hover:scale-125 hover:text-red-500 ${
-													stageLength > 1 ? '' : 'hidden'
-												}`}
-												size={16}
-											/>
+										<button
+											className={`absolute top-1 right-1 hover:scale-125 hover:text-red-500 ${
+												stageLength > 1 ? '' : 'hidden'
+											}`}
+											onClick={() => handleRemoveStage(stageIndex)}
+										>
+											<AiOutlineClose size={16} />
 										</button>
 										{
 											//Stage body
