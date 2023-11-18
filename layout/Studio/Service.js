@@ -24,26 +24,28 @@ function ServicePage({ services }) {
 	);
 	const serviceMap = serviceListToMap(serviceList);
 	const defaultMap = defaultServiceMap();
-	[...serviceMap].map(([key, value], index) => {
-		if (key < 30) {
-			defaultMap.set(key, {
-				...defaultMap.get(key),
-				minPrice: value.minPrice,
-				maxPrice: value.maxPrice,
-				ink: value.ink,
-				id: value.id
-			});
-		}
-		if (key >= 100 && getSize(key) === 3) {
-			defaultMap.set(key, {
-				...defaultMap.get(key),
-				minPrice: value.minPrice,
-				maxPrice: value.maxPrice,
-				ink: value.ink,
-				id: value.id
-			});
-		}
-	});
+	if (serviceMap) {
+		[...serviceMap].map(([key, value], index) => {
+			if (key < 30) {
+				defaultMap.set(key, {
+					...defaultMap.get(key),
+					minPrice: value.minPrice,
+					maxPrice: value.maxPrice,
+					ink: value.ink,
+					id: value.id
+				});
+			}
+			if (key >= 100 && getSize(key) === 3) {
+				defaultMap.set(key, {
+					...defaultMap.get(key),
+					minPrice: value.minPrice,
+					maxPrice: value.maxPrice,
+					ink: value.ink,
+					id: value.id
+				});
+			}
+		});
+	}
 	const sizeMap = new Map(
 		[...defaultMap]
 			.filter(([key, value]) => key < 30)

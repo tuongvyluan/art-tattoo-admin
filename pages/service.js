@@ -30,7 +30,7 @@ const StudioService = () => {
 					setLoading(false);
 				})
 				.catch((e) => {
-					console.log(e);
+					setLoading(false);
 					return (
 						<div className="flex items-center justify-center h-full">
 							Failed to load chart data
