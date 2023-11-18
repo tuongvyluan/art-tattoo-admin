@@ -1,6 +1,6 @@
 import AdminStudioPage from 'layout/Admin/Studio';
 import StudioInfo from 'layout/Studio/Profile';
-import { fetcher, fetcherPost } from 'lib';
+import { fetcher, fetcherPost, fetcherPut } from 'lib';
 import { BASE_URL } from 'lib/env';
 import { ROLE } from 'lib/status';
 import { signOut, useSession } from 'next-auth/react';
@@ -11,13 +11,23 @@ const StudioPage = () => {
 	const { status, data } = useSession();
 	const handleSubmit = (newStudio) => {
 		console.log(newStudio);
-		fetcherPost(`${BASE_URL}/studios`, newStudio)
-			.then((data) => {
-				console.log(data);
-			})
-			.catch((e) => {
-				console.log(e);
-			});
+		if (newStudio.id) {
+			fetcherPut(`${BASE_URL}/studios/${newStudio.id}`, newStudio)
+				.then((data) => {
+					console.log(data);
+				})
+				.catch((e) => {
+					console.log(e);
+				});
+		} else {
+			fetcherPost(`${BASE_URL}/studios`, newStudio)
+				.then((data) => {
+					console.log(data);
+				})
+				.catch((e) => {
+					console.log(e);
+				});
+		}
 	};
 	if (status === 'loading') {
 		return (
@@ -37,7 +47,7 @@ const StudioPage = () => {
 				});
 			} else {
 				const studio = {
-					id: null,
+					id: undefined,
 					ownerId: data.user.id,
 					studioName: '',
 					address: '',
