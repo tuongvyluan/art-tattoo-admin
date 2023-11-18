@@ -65,17 +65,21 @@ export const enum ARTIST_STATUS {
 }
 
 export const enum BOOKING_STATUS {
-	PENDING = 0,
-	COMPLETED = 1,
-	CANCELLED = 2,
-	DELETED = 3
+	WAITING = 0,
+	CONFIRMED = 1,
+	PENDING = 2,
+	COMPLETED = 3,
+	CUSTOMER_CANCELLED = 4,
+	STUDIO_CANCELLED = 5
 }
 
 export const stringBookingStatuses = [
+	'Chờ xác nhận',
+	'Đã xác nhận',
 	'Đang thực hiện',
 	'Đã hoàn thành',
-	'Đã huỷ',
-	'Đã xoá'
+	'Khách hàng huỷ',
+	'Studio huỷ'
 ];
 
 export const operationNames = [

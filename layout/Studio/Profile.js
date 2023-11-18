@@ -1,12 +1,30 @@
 import Button from 'components/Button';
+import { fetcherPost, fetcherPut } from 'lib';
+import { BASE_URL } from 'lib/env';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Card, CardBody } from 'ui';
 
-function StudioInfo({ studio, handleSubmit }) {
+function StudioInfo({ studio }) {
 	const [profile, setProfile] = useState(JSON.parse(JSON.stringify(studio)));
 	const handleFormChange = (e) => {
 		setProfile({ ...profile, [e.target.name]: e.target.value });
+	};
+
+	const handleSubmit = (newStudio) => {
+		if (newStudio.id) {
+			fetcherPut(`${BASE_URL}/studios/${newStudio.id}`, newStudio).catch((e) => {
+				console.log(e);
+			});
+		} else {
+			fetcherPost(`${BASE_URL}/studios`, newStudio)
+				.then((response) => {
+					data.user.studioId = response.studioId;
+				})
+				.catch((e) => {
+					console.log(e);
+				});
+		}
 	};
 
 	const handleFormSubmit = (e) => {
@@ -115,8 +133,7 @@ function StudioInfo({ studio, handleSubmit }) {
 }
 
 StudioInfo.propTypes = {
-	studio: PropTypes.object.isRequired,
-	handleSubmit: PropTypes.func
+	studio: PropTypes.object.isRequired
 };
 
 export default StudioInfo;

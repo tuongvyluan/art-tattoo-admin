@@ -1,5 +1,5 @@
+import PropTypes from 'prop-types';
 import { formatPrice, formatTime } from 'lib';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Card, CardBody, Link, Ripple } from 'ui';
 import { Search } from 'icons/outline';
@@ -15,9 +15,11 @@ import {
 import Image from 'next/image';
 
 const ALL_TAB = '1';
-const PENDING_TAB = '2';
-const COMPLETE_TAB = '3';
-const CANCELLED_TAB = '4';
+const WAITING_TAB = '2';
+const CONFIRMED_TAB = '3';
+const PENDING_TAB = '4';
+const COMPLETE_TAB = '5';
+const CANCELLED_TAB = '6';
 
 function BookingPage({ data }) {
 	const [activeTab, setActiveTab] = useState('1');
@@ -31,6 +33,11 @@ function BookingPage({ data }) {
 				(booking) => booking.status === BOOKING_STATUS.PENDING
 			);
 			break;
+		case WAITING_TAB:
+			renderData = data.filter(
+				(booking) => booking.status === BOOKING_STATUS.WAITING
+			);
+			break;
 		case COMPLETE_TAB:
 			renderData = data.filter(
 				(booking) => booking.status === BOOKING_STATUS.COMPLETED
@@ -38,7 +45,9 @@ function BookingPage({ data }) {
 			break;
 		case CANCELLED_TAB:
 			renderData = data.filter(
-				(booking) => booking.status === BOOKING_STATUS.CANCELLED
+				(booking) =>
+					booking.status === BOOKING_STATUS.CUSTOMER_CANCELLED ||
+					booking.status === BOOKING_STATUS.STUDIO_CANCELLED
 			);
 			break;
 	}
@@ -84,6 +93,42 @@ function BookingPage({ data }) {
 								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
 							>
 								Tất cả
+								<Ripple color="black" />
+							</a>
+						</li>
+						<li
+							className={`text-center cursor-pointer ${
+								activeTab === WAITING_TAB
+									? 'border-b-2 border-solid border-gray-700'
+									: ''
+							}`}
+						>
+							<a
+								onClick={() => {
+									toggle(WAITING_TAB);
+								}}
+								href="#"
+								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
+							>
+								Chờ xác nhận
+								<Ripple color="black" />
+							</a>
+						</li>
+						<li
+							className={`text-center cursor-pointer ${
+								activeTab === CONFIRMED_TAB
+									? 'border-b-2 border-solid border-gray-700'
+									: ''
+							}`}
+						>
+							<a
+								onClick={() => {
+									toggle(CONFIRMED_TAB);
+								}}
+								href="#"
+								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
+							>
+								Đã xác nhận
 								<Ripple color="black" />
 							</a>
 						</li>
@@ -183,20 +228,24 @@ function BookingPage({ data }) {
 												className="pb-1 flex flex-wrap text-base"
 											>
 												<div>{serviceIndex + 1}</div>
-												<div className='pr-1'>. {stringSize.at(service.size)},</div>
+												<div className="pr-1">. {stringSize.at(service.size)},</div>
 
 												{service.placement ? (
-													<div className='pr-1'>Vị trí xăm: {stringPlacements.at(service.placement)},</div>
+													<div className="pr-1">
+														Vị trí xăm: {stringPlacements.at(service.placement)},
+													</div>
 												) : (
 													<></>
 												)}
 
-												<div className='pr-1'>{stringColor(service.hasColor)},</div>
+												<div className="pr-1">{stringColor(service.hasColor)},</div>
 
-												<div className='pr-1'>{stringDifficult(service.isDifficult)},</div>
+												<div className="pr-1">
+													{stringDifficult(service.isDifficult)},
+												</div>
 
 												{service.ink && service.ink.length > 0 ? (
-													<div className='pr-1'>{service.ink},</div>
+													<div className="pr-1">{service.ink},</div>
 												) : (
 													<></>
 												)}
@@ -279,6 +328,10 @@ function BookingPage({ data }) {
 			))}
 		</div>
 	);
+}
+
+BookingPage.propTypes = {
+	data: PropTypes.array.isRequired
 }
 
 export default BookingPage;

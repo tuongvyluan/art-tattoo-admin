@@ -26,7 +26,6 @@ const BookingDetails = () => {
 	}
 	if (status === 'authenticated' && data.user.role === ROLE.STUDIO) {
     if (error) {
-			console.log(bookingId, bookingData, error)
 			return (
 				<div className="flex items-center justify-center h-full">
 					Failed to load data
