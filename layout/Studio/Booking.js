@@ -1,5 +1,4 @@
 import { formatPrice, formatTime } from 'lib';
-import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Card, CardBody, Link, Ripple } from 'ui';
 import { Search } from 'icons/outline';
