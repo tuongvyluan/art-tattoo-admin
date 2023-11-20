@@ -397,12 +397,16 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 										<div
 											className={'bg-gray-50 py-4 px-6 flex flex-row items-center'}
 										>
-											<div className="relative flex flex-wrap justify-between w-full">
+											<div className="relative flex flex-wrap justify-between items-center w-full">
 												<Dropdown className={'relative'}>
 													<DropdownToggle>
 														<div className="text-base w-40 flex flex-row items-center rounded-lg p-2 border border-gray-300 relative">
-															<ChevronDown className="absolute right-1" width={20} height={20} />
-															<div>{detail.operationName}</div>
+															<ChevronDown
+																className="absolute right-1"
+																width={20}
+																height={20}
+															/>
+															<div className='h-6'>{detail.operationName}</div>
 														</div>
 													</DropdownToggle>
 													<DropdownMenu>
@@ -462,122 +466,124 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 							{tattoo.stages.map((stage, stageIndex) => (
 								<Card className={'pt-3'} key={stage.id}>
 									<CardBody className={'shadow-md bg-gray-50 relative'}>
-										{
-											// Remove stage icon
-										}
-										<button onClick={() => handleRemoveStage(stageIndex)}>
-											<AiOutlineClose
-												className={`absolute top-1 right-1 hover:scale-125 hover:text-red-500 ${
-													stageLength > 1 ? '' : 'hidden'
-												}`}
-												size={16}
-											/>
-										</button>
-										{
-											//Stage body
-										}
-										<div key={stage.id}>
-											<input
-												className="w-full rounded-lg p-2 text-base border border-gray-300"
-												type="text"
-												name="name"
-												required
-												value={stage.name}
-												onChange={(e) => handleStageChange(e, stageIndex)}
-												placeholder="Giai đoạn xăm"
-											/>
-											<div>
-												<label className="pt-2 block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-													Thêm mô tả
-												</label>
-												<textarea
+										<div className='w-full relative'>
+											{
+												// Remove stage icon
+											}
+											<button onClick={() => handleRemoveStage(stageIndex)}>
+												<AiOutlineClose
+													className={`absolute -top-2 -right-2 hover:scale-125 hover:text-red-500 ${
+														stageLength > 1 ? '' : 'hidden'
+													}`}
+													size={16}
+												/>
+											</button>
+											{
+												//Stage body
+											}
+											<div key={stage.id}>
+												<input
 													className="w-full rounded-lg p-2 text-base border border-gray-300"
 													type="text"
-													rows={5}
-													value={stage.description}
-													name="description"
+													name="name"
+													required
+													value={stage.name}
 													onChange={(e) => handleStageChange(e, stageIndex)}
-													placeholder="Mô tả cho hình xăm"
+													placeholder="Giai đoạn xăm"
 												/>
-											</div>
-											{
-												// Add media section
-											}
-											<div>
-												<label className="pt-2 block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-													Thêm ảnh/video cho hình xăm
-												</label>
-												<div className="flex">
-													<div>
-														<CldUploadButton
-															onSuccess={(result, options) =>
-																handleUploadImage(result, options, stageIndex)
-															}
-															uploadPreset={UPLOAD_PRESET}
-														>
-															<Button outline>
-																<div className="flex gap-1 items-center">
-																	<MdUpload size={16} />
-																	<div>Upload</div>
-																</div>
-															</Button>
-														</CldUploadButton>
-													</div>
+												<div>
+													<label className="pt-2 block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+														Thêm mô tả
+													</label>
+													<textarea
+														className="w-full rounded-lg p-2 text-base border border-gray-300"
+														type="text"
+														rows={5}
+														value={stage.description}
+														name="description"
+														onChange={(e) => handleStageChange(e, stageIndex)}
+														placeholder="Mô tả cho hình xăm"
+													/>
 												</div>
-												<p
-													className="mt-1 mb-5 text-sm text-gray-500 dark:text-gray-300"
-													id="file_input_help"
-												>
-													PNG, JPG hoặc GIF.
-												</p>
-											</div>
-											{
-												//Show media section
-											}
-											<div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-												{stage.medias.map((media, mediaIndex) => (
-													<div className="relative" key={media.id}>
-														<div className="absolute top-0 left-0 flex items-center cursor-pointer gap-2">
-															<div className="text-gray-500">Public:</div>
-															<div
-																onClick={() =>
-																	handlePublicImage(stageIndex, mediaIndex)
+												{
+													// Add media section
+												}
+												<div>
+													<label className="pt-2 block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+														Thêm ảnh/video cho hình xăm
+													</label>
+													<div className="flex">
+														<div>
+															<CldUploadButton
+																onSuccess={(result, options) =>
+																	handleUploadImage(result, options, stageIndex)
 																}
-																className="relative"
+																uploadPreset={UPLOAD_PRESET}
 															>
-																<input
-																	checked={media.isPublicized}
-																	type="checkbox"
-																	readOnly
-																	className="hidden"
-																	disabled={false}
-																/>
-																<div className="toggle__bar h-4 bg-gray-400 rounded-full shadow-inner"></div>
-																<div className="toggle__handle absolute bg-white rounded-full shadow-sm transform transition duration-150 ease-in-out"></div>
-															</div>
+																<Button outline>
+																	<div className="flex gap-1 items-center">
+																		<MdUpload size={16} />
+																		<div>Upload</div>
+																	</div>
+																</Button>
+															</CldUploadButton>
 														</div>
-														<button
-															onClick={() =>
-																handleDeleteCloudinaryImage(
-																	media.url,
-																	stageIndex,
-																	mediaIndex
-																)
-															}
-														>
-															<AiOutlineClose
-																className="absolute top-0 right-0 hover:scale-125 hover:text-red-500"
-																size={16}
-															/>
-														</button>
-														<BackgroundImg
-															key={media.id}
-															className="relative w-full bg-center bg-cover bg-fallback mt-1"
-															image={media.url}
-															height={150}
-														/>
 													</div>
-												))}
+													<p
+														className="mt-1 mb-5 text-sm text-gray-500 dark:text-gray-300"
+														id="file_input_help"
+													>
+														PNG, JPG hoặc GIF.
+													</p>
+												</div>
+												{
+													//Show media section
+												}
+												<div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+													{stage.medias.map((media, mediaIndex) => (
+														<div className="relative" key={media.id}>
+															<div className="absolute top-0 left-0 flex items-center cursor-pointer gap-2">
+																<div className="text-gray-500">Public:</div>
+																<div
+																	onClick={() =>
+																		handlePublicImage(stageIndex, mediaIndex)
+																	}
+																	className="relative"
+																>
+																	<input
+																		checked={media.isPublicized}
+																		type="checkbox"
+																		readOnly
+																		className="hidden"
+																		disabled={false}
+																	/>
+																	<div className="toggle__bar h-4 bg-gray-400 rounded-full shadow-inner"></div>
+																	<div className="toggle__handle absolute bg-white rounded-full shadow-sm transform transition duration-150 ease-in-out"></div>
+																</div>
+															</div>
+															<button
+																onClick={() =>
+																	handleDeleteCloudinaryImage(
+																		media.url,
+																		stageIndex,
+																		mediaIndex
+																	)
+																}
+															>
+																<AiOutlineClose
+																	className="absolute top-0 right-0 hover:scale-125 hover:text-red-500"
+																	size={16}
+																/>
+															</button>
+															<BackgroundImg
+																key={media.id}
+																className="relative w-full bg-center bg-cover bg-fallback mt-1"
+																image={media.url}
+																height={150}
+															/>
+														</div>
+													))}
+												</div>
 											</div>
 										</div>
 									</CardBody>
