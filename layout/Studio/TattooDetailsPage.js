@@ -1,5 +1,7 @@
-import { ChevronLeft } from 'icons/solid';
+import { ChevronDown, ChevronLeft } from 'icons/solid';
+import { MdUpload } from 'react-icons/md';
 import {
+	Avatar,
 	BackgroundImg,
 	Card,
 	CardBody,
@@ -177,7 +179,11 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 					operationName: value
 			  };
 		bookingDetails[detailIndex] = detail;
-		setTattoo({ ...tattoo, bookingDetails: bookingDetails });
+		let price = 0;
+		bookingDetails.map((d) => {
+			price += d.price;
+		});
+		setTattoo({ ...tattoo, bookingDetails: bookingDetails, price: price });
 	};
 
 	const setTattooState = (key, newValue) => {
@@ -239,86 +245,129 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 					{
 						// Tattoo info
 					}
-					<div className="pt-3 border-b border-gray-300">
-						<div className="font-semibold text-lg pb-2">Thông tin hình xăm</div>
-						<div className="pb-3 flex items-center gap-1">
-							<div className="w-20">Nghệ sĩ xăm:</div>
-							<span className="font-semibold">
-								{/* {tattoo.artist.firstName} */}
-							</span>
+					<div className="py-3 border-b border-gray-300 flex gap-5 flex-wrap">
+						<div className="w-full min-w-min sm:w-1/2 md:w-1/3 lg:w-1/4">
+							<div className="flex justify-center">
+								<di>
+									<Avatar
+										circular={false}
+										src={
+											tattoo.thumbnail ? tattoo.thumbnail : '/images/upload-img.png'
+										}
+										alt={'Thumbnail'}
+										size={150}
+									/>
+								</di>
+							</div>
+							<div className="flex flex-wrap items-center mt-1">
+								<div className="mx-auto">
+									<CldUploadButton
+										onSuccess={(result, options) =>
+											setTattooState('thumbnail', result.info?.thumbnail)
+										}
+										uploadPreset={UPLOAD_PRESET}
+									>
+										<Button outline>
+											<div className="flex gap-1 items-center">
+												<MdUpload size={16} />
+												<div>Thay thumbnail</div>
+											</div>
+										</Button>
+									</CldUploadButton>
+								</div>
+							</div>
 						</div>
-						<div className="pb-3 flex items-center gap-1">
-							<div className="w-20">Kích thước: </div>
-							<Dropdown className="relative h-full flex items-center">
-								<DropdownToggle>
-									<div className="w-28 rounded-lg p-1 border border-gray-300">
-										{stringSize.at(tattoo.size)}
-									</div>
-								</DropdownToggle>
-								<DropdownMenu>
-									{stringSize.map((size, sizeIndex) => (
-										<div
-											key={size}
-											onClick={() => setTattooState('size', sizeIndex)}
-											className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
-												tattoo.size === sizeIndex ? 'bg-indigo-100' : ''
-											}`}
-										>
-											{size}
+						<div className="">
+							<div className="font-semibold text-lg pb-2">Thông tin hình xăm</div>
+							<div className="pb-3 flex items-center gap-1">
+								<div className="w-20">Nghệ sĩ xăm:</div>
+								<span className="font-semibold">
+									{/* {tattoo.artist.firstName} */}
+								</span>
+							</div>
+							<div className="pb-3 flex items-center gap-1">
+								<div className="w-20">Kích thước: </div>
+								<Dropdown className="relative h-full flex items-center">
+									<DropdownToggle>
+										<div className="w-28 rounded-lg p-1 border border-gray-300">
+											{stringSize.at(tattoo.size)}
 										</div>
-									))}
-								</DropdownMenu>
-							</Dropdown>
-						</div>
-						<div className="pb-3 flex gap-1 items-center">
-							<div className="w-20">Vị trí xăm:</div>
-							<Dropdown className="relative h-full flex items-center">
-								<DropdownToggle>
-									<div className="w-28 rounded-lg p-1 border border-gray-300">
-										{stringPlacements.at(tattoo.placement)}
-									</div>
-								</DropdownToggle>
-								<DropdownMenu className={'top-2 left-2'}>
-									<div className="h-40 overflow-y-auto">
-										{stringPlacements.map((placement, placementIndex) => (
+									</DropdownToggle>
+									<DropdownMenu>
+										{stringSize.map((size, sizeIndex) => (
 											<div
-												key={placement}
-												onClick={() => setTattooState('placement', placementIndex)}
+												key={size}
+												onClick={() => setTattooState('size', sizeIndex)}
 												className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
-													tattoo.placement === placementIndex ? 'bg-indigo-100' : ''
+													tattoo.size === sizeIndex ? 'bg-indigo-100' : ''
 												}`}
 											>
-												{placement}
+												{size}
 											</div>
 										))}
-									</div>
-								</DropdownMenu>
-							</Dropdown>
-						</div>
-						<div className="pb-3 flex gap-1 items-center">
-							<div className="w-20">Style:</div>
-							<Dropdown className="relative h-full flex items-center">
-								<DropdownToggle>
-									<div className="w-28 md:w-48 rounded-lg p-1 border border-gray-300">
-										{tattooStyleById(tattoo.styleId)?.name}
-									</div>
-								</DropdownToggle>
-								<DropdownMenu className={'top-2 left-2'}>
-									<div className="h-40 overflow-y-auto">
-										{tattooStylesWithoutDescription.map((style, styleIndex) => (
-											<div
-												key={style.id}
-												onClick={() => setTattooState('styleId', style.id)}
-												className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
-													tattoo.styleId === style.id ? 'bg-indigo-100' : ''
-												}`}
-											>
-												{style.name}
-											</div>
-										))}
-									</div>
-								</DropdownMenu>
-							</Dropdown>
+									</DropdownMenu>
+								</Dropdown>
+							</div>
+							<div className="pb-3 flex gap-1 items-center">
+								<div className="w-20">Vị trí xăm:</div>
+								<Dropdown className="relative h-full flex items-center">
+									<DropdownToggle>
+										<div className="w-28 rounded-lg p-1 border border-gray-300">
+											{stringPlacements.at(tattoo.placement)}
+										</div>
+									</DropdownToggle>
+									<DropdownMenu className={'top-2 left-2'}>
+										<div className="h-40 overflow-y-auto">
+											{stringPlacements.map((placement, placementIndex) => (
+												<div
+													key={placement}
+													onClick={() => setTattooState('placement', placementIndex)}
+													className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
+														tattoo.placement === placementIndex
+															? 'bg-indigo-100'
+															: ''
+													}`}
+												>
+													{placement}
+												</div>
+											))}
+										</div>
+									</DropdownMenu>
+								</Dropdown>
+							</div>
+							<div className="pb-3 flex gap-1 items-center">
+								<div className="w-20">Style:</div>
+								<Dropdown className="relative h-full flex items-center">
+									<DropdownToggle>
+										<div className="w-28 md:w-48 rounded-lg p-1 border border-gray-300">
+											{tattooStyleById(tattoo.styleId)?.name}
+										</div>
+									</DropdownToggle>
+									<DropdownMenu className={'top-2 left-2'}>
+										<div className="h-40 overflow-y-auto">
+											{tattooStylesWithoutDescription.map((style, styleIndex) => (
+												<div
+													key={style.id}
+													onClick={() => setTattooState('styleId', style.id)}
+													className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
+														tattoo.styleId === style.id ? 'bg-indigo-100' : ''
+													}`}
+												>
+													{style.name}
+												</div>
+											))}
+										</div>
+									</DropdownMenu>
+								</Dropdown>
+							</div>
+							<div className="pb-3 flex gap-1 items-center">
+								<div className="w-20">Giá:</div>
+								<MoneyInput
+									value={tattoo.price}
+									disabled={bookingId}
+									onAccept={(value, mask) => setTattooState('price', value)}
+								/>
+							</div>
 						</div>
 					</div>
 					{
@@ -351,19 +400,10 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 											<div className="relative flex flex-wrap justify-between w-full">
 												<Dropdown className={'relative'}>
 													<DropdownToggle>
-														<input
-															onChange={(e) =>
-																handleBookingDetail(
-																	e.target.value,
-																	detailIndex,
-																	false
-																)
-															}
-															required
-															placeholder="Tên dịch vụ"
-															value={detail.operationName}
-															className="text-base flex flex-row items-center rounded-lg p-2 border border-gray-300"
-														/>
+														<div className="text-base w-40 flex flex-row items-center rounded-lg p-2 border border-gray-300 relative">
+															<ChevronDown className="absolute right-1" width={20} height={20} />
+															<div>{detail.operationName}</div>
+														</div>
 													</DropdownToggle>
 													<DropdownMenu>
 														{operationNames.map((op, opIndex) => (
@@ -372,7 +412,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 																onClick={() =>
 																	handleBookingDetail(op, detailIndex, false)
 																}
-																className={`px-2 py-1 cursor-pointer hover:bg-gray-100`}
+																className={`px-2 py-1 w-40 cursor-pointer hover:bg-gray-100`}
 															>
 																{op}
 															</div>
@@ -473,9 +513,15 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 															onSuccess={(result, options) =>
 																handleUploadImage(result, options, stageIndex)
 															}
-															className="text-white bg-gray-800 hover:bg-gray-700 font-medium rounded-lg text-sm py-2 px-2 w-full dark:bg-indigo-600 dark:hover:bg-indigo-500 focus:outline-none dark:focus:ring-blue-800"
 															uploadPreset={UPLOAD_PRESET}
-														/>
+														>
+															<Button outline>
+																<div className="flex gap-1 items-center">
+																	<MdUpload size={16} />
+																	<div>Upload</div>
+																</div>
+															</Button>
+														</CldUploadButton>
 													</div>
 												</div>
 												<p
