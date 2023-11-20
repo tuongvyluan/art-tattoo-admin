@@ -2,13 +2,11 @@ import PropTypes from "prop-types";
 import { Transition } from "@headlessui/react";
 import { X } from "icons/solid";
 import classNames from "classnames";
-import { useState } from "react";
 
-export const Alert = ({ color = "blue", children, className, ...props }) => {
-  const [shown, setShown] = useState(true);
+export const Alert = ({ color = "blue", children, className, showAlert = true, setShowAlert, ...props}) => {
   return (
     <Transition
-      show={shown}
+      show={showAlert}
       appear={true}
       enter="transition ease-out duration-300"
       enterFrom="transform opacity-0"
@@ -26,7 +24,7 @@ export const Alert = ({ color = "blue", children, className, ...props }) => {
       {children}
       <span
         className="absolute top-0 bottom-0 right-0 rtl:left-0 px-4 py-3 cursor-pointer"
-        onClick={() => setShown(false)}
+        onClick={() => setShowAlert(false)}
       >
         <X width={16} height={16} />
       </span>
@@ -49,4 +47,6 @@ Alert.propTypes = {
   ]),
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
+  showAlert: PropTypes.bool,
+  setShowAlert: PropTypes.func
 };
