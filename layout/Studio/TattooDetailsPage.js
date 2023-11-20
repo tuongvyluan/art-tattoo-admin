@@ -406,7 +406,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 																width={20}
 																height={20}
 															/>
-															<div className='h-6'>{detail.operationName}</div>
+															<div className="h-6">{detail.operationName}</div>
 														</div>
 													</DropdownToggle>
 													<DropdownMenu>
@@ -466,17 +466,17 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 							{tattoo.stages.map((stage, stageIndex) => (
 								<Card className={'pt-3'} key={stage.id}>
 									<CardBody className={'shadow-md bg-gray-50 relative'}>
-										<div className='w-full relative'>
+										<div className="w-full relative">
 											{
 												// Remove stage icon
 											}
-											<button onClick={() => handleRemoveStage(stageIndex)}>
-												<AiOutlineClose
-													className={`absolute -top-2 -right-2 hover:scale-125 hover:text-red-500 ${
-														stageLength > 1 ? '' : 'hidden'
-													}`}
-													size={16}
-												/>
+											<button
+												className={`absolute -top-4 -right-4 hover:scale-125 hover:text-red-500 ${
+													stageLength > 1 ? '' : 'hidden'
+												}`}
+												onClick={() => handleRemoveStage(stageIndex)}
+											>
+												<AiOutlineClose size={16} />
 											</button>
 											{
 												//Stage body
