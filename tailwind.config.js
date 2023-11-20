@@ -6,6 +6,7 @@ module.exports = {
 	content: [
 		'./node_modules/flowbite-react/**/*.js',
 		'./pages/**/*.{ts,js}',
+		'./components/**/*.{ts,js}',
 		'./public/**/*.html'
 	],
 	darkMode: 'class',

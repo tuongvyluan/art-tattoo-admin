@@ -470,14 +470,16 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 											{
 												// Remove stage icon
 											}
-											<button
-												className={`absolute -top-4 -right-4 hover:scale-125 hover:text-red-500 ${
-													stageLength > 1 ? '' : 'hidden'
-												}`}
-												onClick={() => handleRemoveStage(stageIndex)}
-											>
-												<AiOutlineClose size={16} />
-											</button>
+											<div className='w-full pb-3 flex justify-end'>
+												<button
+													className={`hover:scale-125 hover:text-red-500 ${
+														stageLength > 1 ? '' : 'hidden'
+													}`}
+													onClick={() => handleRemoveStage(stageIndex)}
+												>
+													<AiOutlineClose size={16} />
+												</button>
+											</div>
 											{
 												//Stage body
 											}
