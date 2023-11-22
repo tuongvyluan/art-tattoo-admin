@@ -22,11 +22,7 @@ import MoneyInput from 'components/MoneyInput';
 import { operationNames, stringPlacements, stringSize } from 'lib/status';
 import { tattooStyleById, tattooStylesWithoutDescription } from 'lib/tattooStyle';
 import { v4 } from 'uuid';
-
-const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-const API_KEY = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
-const API_SECRET = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
+import { API_KEY, API_SECRET, CLOUD_NAME, UPLOAD_PRESET } from 'lib/env';
 
 function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 	let defaultTattoo =
