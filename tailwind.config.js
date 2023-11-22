@@ -31,6 +31,11 @@ module.exports = {
 			}
 		}
 	},
+	experimental: {
+		images: {
+			allowFutureImage: true
+		}
+	},
 	variants: {
 		backgroundColor: ['dark', 'hover'],
 		borderColor: ['dark', 'hover'],

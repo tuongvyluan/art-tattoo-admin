@@ -1,81 +1,42 @@
-import { Card } from "./Card";
-import { Carousel, CarouselIndicators, CarouselSlide } from "./Carousel";
+import { Card } from './Card';
 
-import { BackgroundImg } from "./BackgroundImg";
-import PropTypes from "prop-types";
-import { useState } from "react";
+import { BackgroundImg } from './BackgroundImg';
+import PropTypes from 'prop-types';
+import Link from 'next/link';
+import Image from 'next/future/image';
 
-export const WidgetPostCard = ({
-  title,
-  subtitle,
-  children,
-  images,
-  imageHeight,
-}) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [animating, setAnimating] = useState(false);
+export const WidgetPostCard = ({ children, image, imageHeight, link = '#' }) => {
+	return (
+		<Card>
+			<Link href={link}>
+				<div className="relative w-full">
+					{imageHeight ? (
+						<BackgroundImg
+							className="relative w-full bg-center bg-cover bg-fallback"
+							image={image}
+							height={imageHeight}
+						/>
+					) : (
+						<Image
+							className="relative w-full h-auto"
+							src={image}
+							width={0}
+							height={0}
+							sizes="100vw"
+							alt="image"
+						/>
+					)}
+				</div>
+			</Link>
 
-  const next = () => {
-    if (animating) return;
-    const nextIndex = activeIndex === images.length - 1 ? 0 : activeIndex + 1;
-    setActiveIndex(nextIndex);
-  };
-
-  const previous = () => {
-    if (animating) return;
-    const nextIndex = activeIndex === 0 ? images.length - 1 : activeIndex - 1;
-    setActiveIndex(nextIndex);
-  };
-
-  const goToIndex = (newIndex) => {
-    if (animating) return;
-    setActiveIndex(newIndex);
-  };
-
-  return (
-    <Card>
-      <div className="relative w-full">
-        <Carousel
-          next={next}
-          previous={previous}
-          className="rounded-t-lg overflow-hidden"
-          style={{
-            height: imageHeight,
-          }}
-        >
-          {images.map((image, index) => (
-            <CarouselSlide key={index} index={index} activeIndex={activeIndex}>
-              <BackgroundImg
-                className="relative w-full bg-center bg-cover bg-fallback"
-                image={image}
-                height={imageHeight}
-              />
-            </CarouselSlide>
-          ))}
-          <CarouselIndicators
-            items={images}
-            activeIndex={activeIndex}
-            onClickHandler={goToIndex}
-          />
-        </Carousel>
-        <div
-          className="absolute bottom-0 left-0 w-full p-4 z-0 bg-gradient-to-b from-transparent to-black"
-
-        >
-          <h6 className="mb-0 text-white">{title}</h6>
-          <small className="mb-0 text-gray-400">{subtitle}</small>
-        </div>
-      </div>
-
-      <div className={'p-2 bg-white'}>{children}</div>
-    </Card>
-  );
+			<div className={'p-2 bg-white'}>{children}</div>
+		</Card>
+	);
 };
 
 WidgetPostCard.propTypes = {
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
-  children: PropTypes.node.isRequired,
-  images: PropTypes.array.isRequired,
-  imageHeight: PropTypes.number.isRequired,
+	link: PropTypes.string,
+	children: PropTypes.node.isRequired,
+	image: PropTypes.string.isRequired,
+	imageHeight: PropTypes.number
 };

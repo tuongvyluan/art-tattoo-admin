@@ -1,6 +1,8 @@
 import { formatDate } from 'lib';
 import { stringPlacements } from 'lib/status';
 import { usePaginate } from 'lib/usePagination';
+import debounce from 'lodash.debounce';
+import { useCallback, useEffect, useState } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { Link, Loading, WidgetPostCard } from 'ui';
 
@@ -9,6 +11,30 @@ const TattooIndexPage = () => {
 		'/api/tattooArt',
 		20
 	);
+
+	const [tattooCol, setTattooCol] = useState(2);
+
+	const onResize = useCallback((event) => {
+		const { innerWidth } = window;
+		let cols = 2;
+		if (innerWidth >= 640) {
+			cols = 3;
+		}
+		if (innerWidth >= 1024) {
+			cols = 5;
+		}
+		setTattooCol(cols);
+	}, []);
+
+	useEffect(() => {
+		//add eventlistener to window
+		onResize();
+		window.addEventListener('resize', debounce(onResize, 100, true));
+		// remove event on unmount to prevent a memory leak with the cleanup
+		return () => {
+			window.removeEventListener('resize', debounce(onResize, 100, true));
+		};
+	}, []);
 
 	if (error)
 		return (
@@ -32,40 +58,38 @@ const TattooIndexPage = () => {
 				loader={<Loading />}
 				className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2"
 			>
-				{items.map((item) => (
-					<WidgetPostCard
-						key={item.id}
-						title={item.artist.artistName}
-						images={item.tattooMedias.map((media) => media.url)}
-						imageHeight={200}
-					>
-						<Link href={`/tattoo/${item.id}`}>
-							<div className='cursor-pointer'>
-                <div className="text-gray-400">
-                  Khách hàng:{' '}
-                  <span className="text-black">{item.customer?.firstName}</span>
-                </div>
-                <div className="text-gray-400">
-                  Ngày tạo:{' '}
-                  <span className="text-black">
-                    {formatDate(new Date(item.createdAt))}
-                  </span>
-                </div>
-                <div className="text-gray-400">
-                  Vị trí xăm:{' '}
-                  <span className="text-black">
-                    {stringPlacements.at(item.placement)}
-                  </span>
-                </div>
-                <div className="text-gray-400">
-                  Style:{' '}
-                  <span className="text-black">
-                    {item.style?.name}
-                  </span>
-                </div>
-              </div>
-						</Link>
-					</WidgetPostCard>
+				{Array.from({ length: tattooCol }).map((col, colIndex) => (
+					<div key={colIndex}>
+						{items.map((item, index) => (
+							<div key={index}>
+								{index % tattooCol === colIndex && (
+									<WidgetPostCard image={item.thumbnail} link={`/tattoo/${item.id}`}>
+										<div>
+											<Link href={`/artist/${item.artist.id}`}>
+												<div className="cursor-pointer font-semibold">
+													{item.artist.name}
+												</div>
+											</Link>
+										</div>
+										<Link href={`/tattoo/${item.id}`}>
+											<div className="cursor-pointer">
+												<div className="text-gray-400">
+													Vị trí xăm:{' '}
+													<span className="text-black">
+														{stringPlacements.at(item.placement)}
+													</span>
+												</div>
+												<div className="text-gray-400">
+													Style:{' '}
+													<span className="text-black">{item.style?.name}</span>
+												</div>
+											</div>
+										</Link>
+									</WidgetPostCard>
+								)}
+							</div>
+						))}
+					</div>
 				))}
 			</InfiniteScroll>
 		</div>
