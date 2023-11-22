@@ -14,7 +14,6 @@ const StudioPage = () => {
 	const [studio, setStudio] = useState(undefined);
 
 	const handleSubmit = (newStudio) => {
-		console.log(newStudio);
 		if (newStudio.id) {
 			fetcherPut(`${BASE_URL}/studios/${newStudio.id}`, newStudio)
 				.then((data) => {
@@ -58,6 +57,9 @@ const StudioPage = () => {
 					studioName: '',
 					address: '',
 					bioContent: '',
+					owner: {
+						phoneNumber: ''
+					},
 					openTime: '08:00:00',
 					closeTime: '20:00:00',
 					certificate: null,
@@ -74,7 +76,6 @@ const StudioPage = () => {
 					</div>
 				);
 			} else {
-				console.log(studio);
 				return <StudioInfo handleSubmit={handleSubmit} studio={studio} />;
 			}
 		} else {

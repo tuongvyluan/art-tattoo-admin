@@ -145,6 +145,21 @@ function StudioInfo({ studio }) {
 									placeholder={'Địa chỉ'}
 								/>
 							</div>
+
+							<div className="block mb-3">
+								<label>{'Điện thoại'}</label>
+								<input
+									aria-label={'phoneNumber'}
+									name="owner.phoneNumber"
+									type="tel"
+									value={profile.owner.phoneNumber}
+									onChange={handleFormChange}
+									required
+									className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
+									placeholder={'Điện thoại'}
+								/>
+							</div>
+
 							<div className="block mb-3">
 								<label>{'Bio'}</label>
 								<textarea

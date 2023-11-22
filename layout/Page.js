@@ -38,19 +38,19 @@ const FooterHidden = [
 
 const Page = ({ children }) => {
 	const [state] = useAppState();
-	const [open, setOpened] = useState(true);
+	const [open, setOpen] = useState(true);
 	const { pathname, asPath } = useRouter();
 
 	useEffect(() => {
-		setOpened(state.mobile ? false : true);
+		setOpen(!state.mobile);
 	}, [state.mobile]);
 
 	const onSetOpen = (open) => {
-		setOpened(open);
+		setOpen(open);
 	};
 
 	const toggleOpen = (ev) => {
-		setOpened(!open);
+		setOpen(!open);
 
 		if (ev) {
 			ev.preventDefault();
@@ -61,7 +61,7 @@ const Page = ({ children }) => {
 		NProgress.start();
 	};
 	Router.onRouteChangeComplete = () => {
-		if (state.mobile) setOpened(false);
+		if (state.mobile) setOpen(false);
 		NProgress.done();
 		document.querySelector('body').scrollTop = 0;
 	};
@@ -100,20 +100,18 @@ const Page = ({ children }) => {
 				dir={state.rtl ? 'rtl' : 'ltr'}
 			>
 				{!isNotDashboard ? (
-					<>
-						<Sidebar {...sidebarProps}>
-							<Header toggleOpen={toggleOpen} />
+					<Sidebar {...sidebarProps}>
+					<Header toggleOpen={toggleOpen} />
 
-							<div
-								className={`w-full flex-1 relative pt-4 pr-4 pl-4 mx-auto ${
-									pathname === '/messages' ? 'p-0' : ''
-								}`}
-							>
-								{children}
-							</div>
-							{!isFooterHidden && <Footer />}
-						</Sidebar>
-					</>
+					<div
+						className={`w-full flex-1 relative pt-4 pr-4 pl-4 mx-auto ${
+							pathname === '/messages' ? 'p-0' : ''
+						}`}
+					>
+						{children}
+					</div>
+					{!isFooterHidden && <Footer />}
+				</Sidebar>
 				) : (
 					children
 				)}
