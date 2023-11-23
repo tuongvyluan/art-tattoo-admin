@@ -32,19 +32,19 @@ export const enum SERVICE_SIZE {
 }
 
 export const stringSize = [
-  'Size S (<8cm)',
-  'Size M (8 - 15cm)',
-  'Size L (15 - 30cm)',
-  'Size XL (>30cm)',
-]
+	'Size S (<8cm)',
+	'Size M (8 - 15cm)',
+	'Size L (15 - 30cm)',
+	'Size XL (>30cm)'
+];
 
-export const stringColor = (isColor : boolean) => {
-  return isColor ? 'Có màu' : 'Trắng đen'
-}
+export const stringColor = (isColor: boolean) => {
+	return isColor ? 'Có màu' : 'Trắng đen';
+};
 
-export const stringDifficult = (isDifficult : boolean) => {
-  return isDifficult ? 'Phức tạp' : 'Đơn giản'
-}
+export const stringDifficult = (isDifficult: boolean) => {
+	return isDifficult ? 'Phức tạp' : 'Đơn giản';
+};
 
 export const enum PACKAGE_STATUS {
 	PENDING = 0,
@@ -68,18 +68,18 @@ export const enum BOOKING_STATUS {
 	WAITING = 0,
 	CONFIRMED = 1,
 	PENDING = 2,
-	COMPLETED = 3,
-	CUSTOMER_CANCEL = 4,
-	STUDIO_CANCEL = 5
+	CUSTOMER_CANCEL = 3,
+	STUDIO_CANCEL = 4,
+	COMPLETED = 5
 }
 
 export const stringBookingStatuses = [
 	'Chờ xác nhận',
 	'Đã xác nhận',
 	'Đang thực hiện',
-	'Đã hoàn thành',
 	'Khách hàng huỷ',
-	'Studio huỷ'
+	'Studio huỷ',
+	'Đã hoàn thành'
 ];
 
 export const operationNames = [
@@ -91,7 +91,7 @@ export const operationNames = [
 	'Xăm dặm lại',
 	'Đi nét viền',
 	'Tô màu'
-]
+];
 
 export const enum TATTOO_ART_STATUS {
 	AVAILABLE = 0,
@@ -175,4 +175,4 @@ export const stringServicePlacement = [
 	'Full vai',
 	'Nửa vai',
 	'Bodysuit'
-]
+];
