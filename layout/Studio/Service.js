@@ -22,7 +22,7 @@ function ServicePage({ services, studioId, onReload }) {
 	const [serviceList, setServiceList] = useState(
 		JSON.parse(JSON.stringify(services))
 	);
-	const [loadingFirst, setLoadingFirst] = useState(true)
+	const [loadingFirst, setLoadingFirst] = useState(true);
 	const serviceMap = serviceListToMap(serviceList);
 	const [defaultMap, setDefaultMap] = useState(defaultServiceMap());
 
@@ -49,7 +49,7 @@ function ServicePage({ services, studioId, onReload }) {
 				}
 			});
 		}
-		setLoadingFirst(false)
+		setLoadingFirst(false);
 	}
 
 	const sizeMap = new Map(
@@ -97,7 +97,7 @@ function ServicePage({ services, studioId, onReload }) {
 	};
 
 	const handleSubmit = () => {
-		handleAlert(true, 'Đang cập nhật bảng giá');
+		handleAlert(true, 'Đang cập nhật bảng giá', '');
 
 		const entries = defaultMap.entries();
 		let hasChange = false;
@@ -113,8 +113,8 @@ function ServicePage({ services, studioId, onReload }) {
 			if (minPrice > 0 && maxPrice > 0) {
 				// Check TH minPrice > maxPrice
 				if (minPrice > maxPrice) {
-					service.minPrice = minPrice;
-					service.maxPrice = maxPrice;
+					service.minPrice = maxPrice;
+					service.maxPrice = minPrice;
 					defaultMap.set(key, service);
 				}
 
@@ -141,7 +141,7 @@ function ServicePage({ services, studioId, onReload }) {
 			i = entries.next().value;
 		}
 		if (hasChange) {
-			handleAlert(true, 'Cập nhật bảng giá thành công');
+			handleAlert(true, 'Cập nhật bảng giá thành công', '');
 			setTimeout(() => {
 				onReload();
 			}, 2000);
