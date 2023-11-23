@@ -49,7 +49,9 @@ function BookingPage({ data }) {
 			break;
 		case CANCELLED_TAB:
 			renderData = data.filter(
-				(booking) => booking.status === BOOKING_STATUS.CUSTOMER_CANCEL || booking.status === BOOKING_STATUS.STUDIO_CANCEL
+				(booking) =>
+					booking.status === BOOKING_STATUS.CUSTOMER_CANCEL ||
+					booking.status === BOOKING_STATUS.STUDIO_CANCEL
 			);
 			break;
 	}
@@ -246,12 +248,6 @@ function BookingPage({ data }) {
 													{stringDifficult(service.isDifficult)},
 												</div>
 
-												{service.ink && service.ink.length > 0 ? (
-													<div className="pr-1">{service.ink},</div>
-												) : (
-													<></>
-												)}
-
 												<div>
 													{formatPrice(service.minPrice)} -{' '}
 													{formatPrice(service.maxPrice)}
@@ -309,18 +305,20 @@ function BookingPage({ data }) {
 												{formatTime(booking.createdAt)}
 											</span>
 										</div>
-										<div>
-											Ngày hoàn tất:{' '}
-											<span className="text-base">
-												{formatTime(booking.meetingDate)}
-											</span>
-										</div>
-										<div>
-											Thành tiền:{' '}
-											<span className="text-lg text-red-500">
-												{formatPrice(booking.total)}
-											</span>
-										</div>
+										{booking.date && (
+											<div>
+												Ngày hoàn tất:{' '}
+												<span className="text-base">{formatTime(booking.date)}</span>
+											</div>
+										)}
+										{booking.total && (
+											<div>
+												Thành tiền:{' '}
+												<span className="text-lg text-red-500">
+													{formatPrice(booking.total)}
+												</span>
+											</div>
+										)}
 									</div>
 								</div>
 							</div>
