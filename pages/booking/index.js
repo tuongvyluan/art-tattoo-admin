@@ -4,7 +4,6 @@ import { ROLE } from 'lib/status';
 import { useSession } from 'next-auth/react';
 import Router from 'next/router';
 import { useState } from 'react';
-import useSWR from 'swr';
 import { Loading } from 'ui';
 
 const Booking = () => {
