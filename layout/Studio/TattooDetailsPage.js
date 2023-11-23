@@ -402,7 +402,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 																width={20}
 																height={20}
 															/>
-															<div className="h-6">{detail.operationName}</div>
+															<div className="h-6">{operationNames.at(detail.operationId)}</div>
 														</div>
 													</DropdownToggle>
 													<DropdownMenu>

@@ -25,7 +25,7 @@ function ServicePage({ services }) {
 	const serviceMap = serviceListToMap(serviceList);
 	const defaultMap = defaultServiceMap();
 	if (serviceMap) {
-		[...serviceMap].map(([key, value], index) => {
+		[...serviceMap].forEach(([key, value], index) => {
 			if (key < 30) {
 				defaultMap.set(key, {
 					...defaultMap.get(key),
