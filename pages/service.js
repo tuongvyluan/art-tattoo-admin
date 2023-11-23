@@ -43,7 +43,13 @@ const StudioService = () => {
 				</div>
 			);
 		} else {
-			return <ServicePage services={services} />;
+			return (
+				<ServicePage
+					onReload={() => setLoading(true)}
+					studioId={studioId}
+					services={services}
+				/>
+			);
 		}
 	} else {
 		Router.replace('/');
