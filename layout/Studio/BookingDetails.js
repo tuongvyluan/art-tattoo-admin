@@ -263,7 +263,9 @@ function BookingDetailsPage({ data, studioId }) {
 												: 'w-20'
 										}`}
 									>
-										<Button onClick={confirmBooking}>Xác nhận</Button>
+										<Button onClick={confirmBooking}>
+											{data.date ? 'Thay đổi' : 'Xác nhận'}
+										</Button>
 									</div>
 								</div>
 							</div>

@@ -467,36 +467,6 @@ function TattooDetailsPage({
 									</Dropdown>
 								</div>
 								<div className="pb-3 flex gap-1 items-center">
-									<div className="w-20">Màu xăm:</div>
-									<Dropdown className="relative h-full flex items-center">
-										<DropdownToggle>
-											<div className="w-28 rounded-lg p-1 border border-gray-300">
-												{stringColor(tattoo.hasColor)}
-											</div>
-										</DropdownToggle>
-										<DropdownMenu className={'top-2 left-2'}>
-											<div className="h-16 overflow-y-auto">
-												<div
-													onClick={() => setTattooState('hasColor', false)}
-													className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
-														tattoo.hasColor === false ? 'bg-indigo-100' : ''
-													}`}
-												>
-													Trắng đen
-												</div>
-												<div
-													onClick={() => setTattooState('hasColor', true)}
-													className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
-														tattoo.hasColor === true ? 'bg-indigo-100' : ''
-													}`}
-												>
-													Màu sắc
-												</div>
-											</div>
-										</DropdownMenu>
-									</Dropdown>
-								</div>
-								<div className="pb-3 flex gap-1 items-center">
 									<div className="w-20">Style:</div>
 									<Dropdown className="relative h-full flex items-center">
 										<DropdownToggle>
