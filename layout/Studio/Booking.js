@@ -14,9 +14,9 @@ import {
 import Image from 'next/image';
 
 const ALL_TAB = '1';
-const WAITING_TAB = '2';
+const PENDING_TAB = '2';
 const CONFIRMED_TAB = '3';
-const PENDING_TAB = '4';
+const IN_PROGRESS_TAB = '4';
 const COMPLETE_TAB = '5';
 const CANCELLED_TAB = '6';
 
@@ -27,9 +27,9 @@ function BookingPage({ data }) {
 	let renderData = data;
 
 	switch (activeTab) {
-		case WAITING_TAB:
+		case PENDING_TAB:
 			renderData = data.filter(
-				(booking) => booking.status === BOOKING_STATUS.WAITING
+				(booking) => booking.status === BOOKING_STATUS.PENDING
 			);
 			break;
 		case CONFIRMED_TAB:
@@ -37,9 +37,9 @@ function BookingPage({ data }) {
 				(booking) => booking.status === BOOKING_STATUS.CONFIRMED
 			);
 			break;
-		case PENDING_TAB:
+		case IN_PROGRESS_TAB:
 			renderData = data.filter(
-				(booking) => booking.status === BOOKING_STATUS.PENDING
+				(booking) => booking.status === BOOKING_STATUS.IN_PROGRESS
 			);
 			break;
 		case COMPLETE_TAB:
@@ -102,14 +102,14 @@ function BookingPage({ data }) {
 						</li>
 						<li
 							className={`text-center cursor-pointer ${
-								activeTab === WAITING_TAB
+								activeTab === PENDING_TAB
 									? 'border-b-2 border-solid border-gray-700'
 									: ''
 							}`}
 						>
 							<a
 								onClick={() => {
-									toggle(WAITING_TAB);
+									toggle(PENDING_TAB);
 								}}
 								href="#"
 								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
@@ -138,14 +138,14 @@ function BookingPage({ data }) {
 						</li>
 						<li
 							className={`text-center cursor-pointer ${
-								activeTab === PENDING_TAB
+								activeTab === IN_PROGRESS_TAB
 									? 'border-b-2 border-solid border-gray-700'
 									: ''
 							}`}
 						>
 							<a
 								onClick={() => {
-									toggle(PENDING_TAB);
+									toggle(IN_PROGRESS_TAB);
 								}}
 								href="#"
 								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
@@ -312,7 +312,7 @@ function BookingPage({ data }) {
 										</div>
 										{booking.date && (
 											<div>
-												Ngày hoàn tất:{' '}
+												Ngày hẹn:{' '}
 												<span className="text-base">{formatTime(booking.date)}</span>
 											</div>
 										)}

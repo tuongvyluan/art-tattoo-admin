@@ -1,17 +1,34 @@
 import PropTypes from 'prop-types';
 
-const Button = ({ children, onClick, outline = false, type = 'submit' }) => {
+const Button = ({
+	children,
+	onClick,
+	outline = false,
+	warn = false,
+	reset = false
+}) => {
+	if (warn) {
+		return (
+			<button
+				type={reset ? 'reset' : 'submit'}
+				onClick={onClick}
+				className="text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm py-2 px-2 w-full"
+			>
+				{children}
+			</button>
+		);
+	}
 	return outline ? (
 		<button
-			type={type}
+			type={reset ? 'reset' : 'submit'}
 			onClick={onClick}
-			className="text-gray-800 bg-white border border-gray-700 hover:text-white hover:bg-gray-700 font-medium rounded-lg text-sm py-2 px-2 w-full"
+			className="text-gray-800 bg-white ring-1 ring-gray-300 hover:text-white hover:bg-gray-700 font-medium rounded-lg text-sm py-2 px-2 w-full"
 		>
 			{children}
 		</button>
 	) : (
 		<button
-			type={type}
+			type={reset ? 'reset' : 'submit'}
 			onClick={onClick}
 			className="text-white bg-gray-800 hover:bg-gray-700 font-medium rounded-lg text-sm py-2 px-2 w-full"
 		>
@@ -22,9 +39,10 @@ const Button = ({ children, onClick, outline = false, type = 'submit' }) => {
 
 Button.propTypes = {
 	children: PropTypes.node.isRequired,
-	type: PropTypes.string,
+	reset: PropTypes.bool,
 	onClick: PropTypes.func,
-	outline: PropTypes.bool
+	outline: PropTypes.bool,
+	warn: PropTypes.bool
 };
 
 export default Button;

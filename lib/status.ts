@@ -47,7 +47,7 @@ export const stringDifficult = (isDifficult: boolean) => {
 };
 
 export const enum PACKAGE_STATUS {
-	PENDING = 0,
+	IN_PROGRESS = 0,
 	AVAILABLE = 1,
 	EXPIRED = 2,
 	CANCELLED = 3
@@ -65,9 +65,9 @@ export const enum ARTIST_STATUS {
 }
 
 export const enum BOOKING_STATUS {
-	WAITING = 0,
+	PENDING = 0,
 	CONFIRMED = 1,
-	PENDING = 2,
+	IN_PROGRESS = 2,
 	CUSTOMER_CANCEL = 3,
 	STUDIO_CANCEL = 4,
 	COMPLETED = 5

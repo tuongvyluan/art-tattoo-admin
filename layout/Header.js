@@ -51,7 +51,7 @@ const Header = ({ toggleOpen }) => {
 						<MenuAlt1 width={18} height={18} strokeWidth={2} />
 					</a>
 					<div className="inset-y-0 right-0 items-center px-4 sm:static sm:inset-auto flex h-full">
-						<Dropdown className="px-3 static sm:relative h-full flex items-center">
+						{/* <Dropdown className="px-3 static sm:relative h-full flex items-center">
 							<DropdownToggle className="h-full">
 								<Pencil width={18} height={18} />
 							</DropdownToggle>
@@ -184,7 +184,7 @@ const Header = ({ toggleOpen }) => {
 							<DropdownMenu className="notification-dropdown px-0 dark:text-gray-800 overflow-hidden right-0 left-0">
 								<Notifications title={t('notifications')} />
 							</DropdownMenu>
-						</Dropdown>
+						</Dropdown> */}
 
 						<Dropdown className="px-3 relative h-full flex items-center">
 							<DropdownToggle>

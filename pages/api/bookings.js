@@ -131,7 +131,7 @@ const data = Array(20)
 					};
 				}),
 			status: [
-				BOOKING_STATUS.PENDING,
+				BOOKING_STATUS.IN_PROGRESS,
 				BOOKING_STATUS.COMPLETED,
 				BOOKING_STATUS.CANCELLED
 			][randomFrom0To(3)],
