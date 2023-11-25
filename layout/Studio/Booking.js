@@ -78,7 +78,7 @@ function BookingPage({ data }) {
 	};
 
 	return (
-		<div className="sm:px-8 md:px-10 lg:px-32 xl:px-56">
+		<div className="sm:px-8 md:px-1 lg:px-6 xl:px-56">
 			<div className="mx-auto ring-1 ring-black ring-opacity-5 bg-white">
 				<div className="flex flex-row w-0 min-w-full">
 					<ul className="list-none grid col-span-4 grid-flow-col place-items-center overflow-x-auto w-0 min-w-full -mb-10 pb-10">
@@ -94,7 +94,7 @@ function BookingPage({ data }) {
 									toggle(ALL_TAB);
 								}}
 								href="#"
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
+								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
 							>
 								Tất cả
 								<Ripple color="black" />
@@ -112,7 +112,7 @@ function BookingPage({ data }) {
 									toggle(PENDING_TAB);
 								}}
 								href="#"
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
+								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
 							>
 								Chờ xác nhận
 								<Ripple color="black" />
@@ -130,7 +130,7 @@ function BookingPage({ data }) {
 									toggle(CONFIRMED_TAB);
 								}}
 								href="#"
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
+								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
 							>
 								Đã xác nhận
 								<Ripple color="black" />
@@ -148,7 +148,7 @@ function BookingPage({ data }) {
 									toggle(IN_PROGRESS_TAB);
 								}}
 								href="#"
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
+								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
 							>
 								Đang thực hiện
 								<Ripple color="black" />
@@ -166,7 +166,7 @@ function BookingPage({ data }) {
 								onClick={() => {
 									toggle(COMPLETE_TAB);
 								}}
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
+								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
 							>
 								Hoàn thành
 								<Ripple color="black" />
@@ -184,7 +184,7 @@ function BookingPage({ data }) {
 								onClick={() => {
 									toggle(CANCELLED_TAB);
 								}}
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
+								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
 							>
 								Đã huỷ
 								<Ripple color="black" />
@@ -259,7 +259,7 @@ function BookingPage({ data }) {
 									<></>
 								)}
 								{booking.tattooArts && booking.tattooArts.length > 0 && (
-									<div>
+									<div className=' pb-3 border-b border-gray-300'>
 										<div className="text-gray-500 pt-2">Hình xăm</div>
 										{booking.tattooArts?.map((tattoo, tattooIndex) => (
 											<div
