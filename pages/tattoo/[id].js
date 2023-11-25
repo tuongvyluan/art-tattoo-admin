@@ -15,10 +15,26 @@ const TattooDetails = () => {
 		typeof router.query['booking'] !== 'undefined' ? router.query['booking'] : '';
 	const { id } = router.query;
 	const [artTattoo, setArtTattoo] = useState(undefined);
-	const [artist, setArtist] = useState({
-		artistId: [Math.floor(Math.random() * 900)],
-		artistName: 'Vy'
-	});
+	const [artist, setArtist] = useState(undefined);
+	const [artistList, setArtistList] = useState(undefined);
+
+	if (status === 'loading') {
+		return (
+			<div className="flex items-center justify-center h-full">
+				<Loading />
+			</div>
+		);
+	}
+
+	if (!artistList) {
+		fetcher(`${BASE_URL}/artists/${data.user.studioId}/artist-studio-list`)
+			.then((data) => {
+				setArtistList(data);
+			})
+			.catch((e) => {
+				setArtistList([]);
+			});
+	}
 
 	if (id !== 'new' && !artTattoo) {
 		fetcher(`${BASE_URL}/TattooArts/Details?id=${id}&is`).then((data) => {
@@ -67,16 +83,8 @@ const TattooDetails = () => {
 		console.log(newArtTattoo);
 	};
 
-	if (status === 'loading') {
-		return (
-			<div className="flex items-center justify-center h-full">
-				<Loading />
-			</div>
-		);
-	}
-
 	if (status === 'authenticated' && data.user.role === ROLE.STUDIO) {
-		if (id !== 'new' && (!artTattoo || !artist)) {
+		if ((id !== 'new' && (!artTattoo || !artist)) || !artistList) {
 			return (
 				<div className="flex items-center justify-center h-full">
 					<Loading />
@@ -85,6 +93,7 @@ const TattooDetails = () => {
 		}
 		return (
 			<TattooDetailsPage
+				artistList={artistList}
 				bookingId={booking}
 				artTattoo={artTattoo}
 				artist={artist}

@@ -26,7 +26,7 @@ import {
 	stringPlacements,
 	stringSize
 } from 'lib/status';
-import { tattooStyleById, tattooStyleList } from 'lib/tattooStyle';
+import { tattooStyleById, tattooStyles } from 'lib/tattooStyle';
 import { v4 } from 'uuid';
 import { BASE_URL } from 'lib/env';
 
@@ -35,17 +35,20 @@ const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 const API_KEY = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
 const API_SECRET = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
 
-function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
+function TattooDetailsPage({
+	bookingId,
+	artTattoo,
+	artist,
+	handleSubmit,
+	artistList
+}) {
 	let defaultTattoo =
 		typeof artTattoo !== 'undefined'
 			? artTattoo
 			: {
 					id: '',
 					bookingId: bookingId,
-					artist: {
-						id: artist.id,
-						firstName: artist.firstName
-					},
+					artist: {},
 					styleId: 14,
 					stages: [
 						{
@@ -67,12 +70,14 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 					isPublicized: false,
 					hasColor: false,
 					size: 0,
-					placement: 0
+					placement: 0,
+					bookingDetails: []
 			  };
 
 	const [tattoo, setTattoo] = useState(JSON.parse(JSON.stringify(defaultTattoo)));
 	const [thumbnailKey, setThumbnailKey] = useState(tattoo.thumbnail);
 	const [showAlert, setShowAlert] = useState(false);
+	const [selectedArtist, setSelectedArtist] = useState(artistList.at(0).id);
 
 	const [alertContent, setAlertContent] = useState({
 		title: '',
@@ -210,7 +215,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 		bookingDetails.map((d) => {
 			price += d.price;
 		});
-		setTattoo({ ...tattoo, bookingDetails: bookingDetails, price: price });
+		setTattoo({ ...tattoo, bookingDetails: bookingDetails, totalRevenue: price });
 	};
 
 	const setTattooState = (key, newValue) => {
@@ -251,12 +256,13 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 		if (tattoo.id === '') {
 			handleAlert(true, 'Đang tạo hình xăm...');
 			const newTattoo = {
-				artistId: tattoo.artist.id,
+				artistId: artistList.at(selectedArtist).id,
 				styleId: tattoo.styleId,
 				size: tattoo.size,
 				placement: tattoo.placement,
 				thumbnail: tattoo.thumbnail,
-				isPublicized: tattoo.isPublicized
+				isPublicized: tattoo.isPublicized,
+				bookingId: bookingId
 			};
 			fetcherPost(`${BASE_URL}/TattooArts/CreateTattoo`, newTattoo)
 				.then((data) => {
@@ -387,7 +393,26 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 								<div className="font-semibold text-lg pb-2">Thông tin hình xăm</div>
 								<div className="pb-3 flex items-center gap-1">
 									<div className="w-20">Nghệ sĩ xăm:</div>
-									<span className="font-semibold">{tattoo.artist.firstName}</span>
+									<Dropdown className={'relative'}>
+										<DropdownToggle>
+											<div className="w-28 rounded-lg p-1 border border-gray-300">
+												Chọn nghệ sĩ
+											</div>
+										</DropdownToggle>
+										<DropdownMenu>
+											{artistList.map((a, aIndex) => (
+												<div
+													key={a.id}
+													onClick={() => setSelectedArtist(a.id)}
+													className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
+														a.id === selectedArtist ? 'bg-indigo-100' : ''
+													}`}
+												>
+													{a.id}
+												</div>
+											))}
+										</DropdownMenu>
+									</Dropdown>
 								</div>
 								<div className="pb-3 flex items-center gap-1">
 									<div className="w-20">Kích thước: </div>
@@ -481,7 +506,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 										</DropdownToggle>
 										<DropdownMenu className={'top-2 left-2'}>
 											<div className="h-40 overflow-y-auto">
-												{tattooStyleList.map((style, styleIndex) => (
+												{tattooStyles.map((style, styleIndex) => (
 													<div
 														key={style.id}
 														onClick={() => setTattooState('styleId', style.id)}
@@ -566,7 +591,7 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 
 													<div className="text-base relative">
 														<MoneyInput
-															value={detail.totalRevenue}
+															value={detail.price}
 															onAccept={(value, mask) =>
 																handleBookingDetail(value, detailIndex)
 															}
@@ -754,9 +779,10 @@ function TattooDetailsPage({ bookingId, artTattoo, artist, handleSubmit }) {
 
 TattooDetailsPage.propTypes = {
 	bookingId: PropTypes.string,
-	artist: PropTypes.object.isRequired,
+	artist: PropTypes.object,
 	artTattoo: PropTypes.object,
-	handleSubmit: PropTypes.func.isRequired
+	handleSubmit: PropTypes.func.isRequired,
+	artistList: PropTypes.array.isRequired
 };
 
 export default TattooDetailsPage;
