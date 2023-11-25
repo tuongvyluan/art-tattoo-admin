@@ -1,6 +1,7 @@
+import PropTypes from 'prop-types';
 import { formatPrice, formatTime } from 'lib';
 import { useState } from 'react';
-import { Card, CardBody, Link, Ripple } from 'ui';
+import { Card, CardBody, Link, Loading, Ripple } from 'ui';
 import { Search } from 'icons/outline';
 import debounce from 'lodash.debounce';
 import {
@@ -12,6 +13,7 @@ import {
 	stringSize
 } from 'lib/status';
 import Image from 'next/image';
+import MyInfiniteScroll from 'ui/MyInfiniteScroll';
 
 const ALL_TAB = '1';
 const PENDING_TAB = '2';
@@ -20,41 +22,35 @@ const IN_PROGRESS_TAB = '4';
 const COMPLETE_TAB = '5';
 const CANCELLED_TAB = '6';
 
-function BookingPage({ data }) {
+function BookingPage({ studioId }) {
+	const [data, setData] = useState([]);
 	const [activeTab, setActiveTab] = useState('1');
 	const [searchKey, setSearchKey] = useState('');
+	const [page, setPage] = useState(1);
+	const pageSize = 5;
 
-	let renderData = data;
-
-	switch (activeTab) {
-		case PENDING_TAB:
-			renderData = data.filter(
-				(booking) => booking.status === BOOKING_STATUS.PENDING
-			);
-			break;
-		case CONFIRMED_TAB:
-			renderData = data.filter(
-				(booking) => booking.status === BOOKING_STATUS.CONFIRMED
-			);
-			break;
-		case IN_PROGRESS_TAB:
-			renderData = data.filter(
-				(booking) => booking.status === BOOKING_STATUS.IN_PROGRESS
-			);
-			break;
-		case COMPLETE_TAB:
-			renderData = data.filter(
-				(booking) => booking.status === BOOKING_STATUS.COMPLETED
-			);
-			break;
-		case CANCELLED_TAB:
-			renderData = data.filter(
-				(booking) =>
-					booking.status === BOOKING_STATUS.CUSTOMER_CANCEL ||
-					booking.status === BOOKING_STATUS.STUDIO_CANCEL
-			);
-			break;
-	}
+	const renderData = (data) => {
+		switch (activeTab) {
+			case PENDING_TAB:
+				return data.filter((booking) => booking.status === BOOKING_STATUS.PENDING);
+			case CONFIRMED_TAB:
+				return data.filter((booking) => booking.status === BOOKING_STATUS.CONFIRMED);
+			case IN_PROGRESS_TAB:
+				return data.filter(
+					(booking) => booking.status === BOOKING_STATUS.IN_PROGRESS
+				);
+			case COMPLETE_TAB:
+				return data.filter((booking) => booking.status === BOOKING_STATUS.COMPLETED);
+			case CANCELLED_TAB:
+				return data.filter(
+					(booking) =>
+						booking.status === BOOKING_STATUS.CUSTOMER_CANCEL ||
+						booking.status === BOOKING_STATUS.STUDIO_CANCEL
+				);
+			default:
+				return data;
+		}
+	};
 
 	const onSearch = (e) => {
 		setSearchKey(e.target.value);
@@ -207,132 +203,160 @@ function BookingPage({ data }) {
 					/>
 				</div>
 			</div>
-			{renderData.map((booking, index) => (
-				<Card key={booking.id}>
-					<CardBody>
-						<Link href={`/booking/${booking.id}`}>
-							<div className="cursor-pointer ">
-								<div className="flex justify-between mx-auto border-b border-gray-300 pb-3">
-									<div className="flex gap-3 items-start">
-										<div className="font-semibold">{booking.customer.firstName}</div>
-									</div>
-									<div>
-										<div className="text-red-500">
-											{stringBookingStatuses.at(booking.status)}
-										</div>
-									</div>
-								</div>
-								{booking.services && Object.keys(booking.services).length > 0 ? (
-									<div className="mx-auto border-b border-gray-300 py-3">
-										<div className="text-gray-500 pb-2">Dịch vụ đã đặt</div>
-										{booking.services.map((service, serviceIndex) => (
-											// Booking service
-											<div
-												key={`${booking.id}-${service.id}`}
-												className="pb-1 flex flex-wrap text-base"
-											>
-												<div>{serviceIndex + 1}</div>
-												<div className="pr-1">. {stringSize.at(service.size)},</div>
-
-												{service.placement ? (
-													<div className="pr-1">
-														Vị trí xăm: {stringPlacements.at(service.placement)},
+			<div className="relative">
+				<MyInfiniteScroll
+					url={`https://arttattoolover-web-sea-dev-001.azurewebsites.net/bookings-user?studioId=${studioId}`}
+					parentPage={page}
+					setParentPage={setPage}
+					pageSize={pageSize}
+					parentItems={data}
+					setParentItems={setData}
+					loader={
+						<div className="absolute w-full flex justify-center -bottom-12 pb-3">
+							<Loading />
+						</div>
+					}
+				>
+					<div className="relative">
+						{renderData(data).map((booking, index) => (
+							<Card key={booking.id}>
+								<CardBody>
+									<Link href={`/booking/${booking.id}`}>
+										<div className="cursor-pointer ">
+											<div className="flex justify-between mx-auto border-b border-gray-300 pb-3">
+												<div className="flex gap-3 items-start">
+													<div className="font-semibold">
+														{booking.customer.firstName}
 													</div>
-												) : (
-													<></>
-												)}
-
-												<div className="pr-1">{stringColor(service.hasColor)},</div>
-
-												<div className="pr-1">
-													{stringDifficult(service.isDifficult)},
 												</div>
-
 												<div>
-													{formatPrice(service.minPrice)} -{' '}
-													{formatPrice(service.maxPrice)}
+													<div className="text-red-500">
+														{stringBookingStatuses.at(booking.status)}
+													</div>
 												</div>
 											</div>
-										))}
-									</div>
-								) : (
-									<></>
-								)}
-								{booking.tattooArts && booking.tattooArts.length > 0 && (
-									<div className=' pb-3 border-b border-gray-300'>
-										<div className="text-gray-500 pt-2">Hình xăm</div>
-										{booking.tattooArts?.map((tattoo, tattooIndex) => (
-											<div
-												key={tattoo.id}
-												className="py-2 flex flex-row justify-start gap-3 flex-wrap"
-											>
-												<div className="relative w-24 h-24">
-													<Image
-														layout="fill"
-														src={tattoo.thumbnail}
-														alt={tattoo.id}
-														className="object-contain"
-													/>
+											{booking.services &&
+											Object.keys(booking.services).length > 0 ? (
+												<div className="mx-auto border-b border-gray-300 py-3">
+													<div className="text-gray-500 pb-2">Dịch vụ đã đặt</div>
+													{booking.services.map((service, serviceIndex) => (
+														// Booking service
+														<div
+															key={`${booking.id}-${service.id}`}
+															className="pb-1 flex flex-wrap text-base"
+														>
+															<div>{serviceIndex + 1}</div>
+															<div className="pr-1">
+																. {stringSize.at(service.size)},
+															</div>
+															{service.placement ? (
+																<div className="pr-1">
+																	Vị trí xăm:{' '}
+																	{stringPlacements.at(service.placement)},
+																</div>
+															) : (
+																<></>
+															)}
+															<div className="pr-1">
+																{stringColor(service.hasColor)},
+															</div>
+															<div className="pr-1">
+																{stringDifficult(service.isDifficult)},
+															</div>
+															<div>
+																{formatPrice(service.minPrice)} -{' '}
+																{formatPrice(service.maxPrice)}
+															</div>
+														</div>
+													))}
 												</div>
-												<div className="flex-grow">
+											) : (
+												<></>
+											)}
+											{booking.tattooArts && booking.tattooArts.length > 0 && (
+												<div className=" pb-3 border-b border-gray-300">
+													<div className="text-gray-500 pt-2">Hình xăm</div>
+													{booking.tattooArts?.map((tattoo, tattooIndex) => (
+														<div
+															key={tattoo.id}
+															className="py-2 flex flex-row justify-start gap-3 flex-wrap"
+														>
+															<div className="relative w-24 h-24">
+																<Image
+																	layout="fill"
+																	src={tattoo.thumbnail}
+																	alt={tattoo.id}
+																	className="object-contain"
+																/>
+															</div>
+															<div className="flex-grow">
+																<div>
+																	<span>Nghệ sĩ xăm: </span>
+																	<span className="font-semibold">
+																		{tattoo.artist?.firstName}{' '}
+																		{tattoo.artist?.lastName}
+																	</span>
+																</div>
+																{tattoo.bookingDetails.map(
+																	(bookingDetail, bookingDetailIndex) => (
+																		<div
+																			key={bookingDetail.id}
+																			className="flex justify-between items-center"
+																		>
+																			<div className="text-base">
+																				{bookingDetail.operationName}
+																			</div>
+																			<div className="text-lg">
+																				{formatPrice(bookingDetail.price)}
+																			</div>
+																		</div>
+																	)
+																)}
+															</div>
+														</div>
+													))}
+												</div>
+											)}
+											<div className="flex justify-end pt-3 items-start">
+												<div className="text-right">
 													<div>
-														<span>Nghệ sĩ xăm: </span>
-														<span className="font-semibold">
-															{tattoo.artist?.firstName} {tattoo.artist?.lastName}
+														Ngày tạo đơn:{' '}
+														<span className="text-base">
+															{formatTime(booking.createdAt)}
 														</span>
 													</div>
-													{tattoo.bookingDetails.map(
-														(bookingDetail, bookingDetailIndex) => (
-															<div
-																key={bookingDetail.id}
-																className="flex justify-between items-center"
-															>
-																<div className="text-base">
-																	{bookingDetail.operationName}
-																</div>
-																<div className="text-lg">
-																	{formatPrice(bookingDetail.price)}
-																</div>
-															</div>
-														)
+													{booking.date && (
+														<div>
+															Ngày hẹn:{' '}
+															<span className="text-base">
+																{formatTime(booking.date)}
+															</span>
+														</div>
+													)}
+													{booking.total && (
+														<div>
+															Thành tiền:{' '}
+															<span className="text-lg text-red-500">
+																{formatPrice(booking.total)}
+															</span>
+														</div>
 													)}
 												</div>
 											</div>
-										))}
-									</div>
-								)}
-
-								<div className="flex justify-end pt-3 items-start">
-									<div className="text-right">
-										<div>
-											Ngày tạo đơn:{' '}
-											<span className="text-base">
-												{formatTime(booking.createdAt)}
-											</span>
 										</div>
-										{booking.date && (
-											<div>
-												Ngày hẹn:{' '}
-												<span className="text-base">{formatTime(booking.date)}</span>
-											</div>
-										)}
-										{booking.total && (
-											<div>
-												Thành tiền:{' '}
-												<span className="text-lg text-red-500">
-													{formatPrice(booking.total)}
-												</span>
-											</div>
-										)}
-									</div>
-								</div>
-							</div>
-						</Link>
-					</CardBody>
-				</Card>
-			))}
+									</Link>
+								</CardBody>
+							</Card>
+						))}
+					</div>
+				</MyInfiniteScroll>
+			</div>
 		</div>
 	);
 }
+
+BookingPage.propTypes = {
+	studioId: PropTypes
+};
 
 export default BookingPage;
