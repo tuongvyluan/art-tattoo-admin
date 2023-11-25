@@ -258,10 +258,10 @@ function BookingPage({ data }) {
 								) : (
 									<></>
 								)}
-								{booking.artTattoos && (
+								{booking.tattooArts && booking.tattooArts.length > 0 && (
 									<div>
 										<div className="text-gray-500 pt-2">Hình xăm</div>
-										{booking.artTattoos?.map((tattoo, tattooIndex) => (
+										{booking.tattooArts?.map((tattoo, tattooIndex) => (
 											<div
 												key={tattoo.id}
 												className="py-2 flex flex-row justify-start gap-3 flex-wrap"
@@ -269,7 +269,7 @@ function BookingPage({ data }) {
 												<div className="relative w-24 h-24">
 													<Image
 														layout="fill"
-														src={tattoo.photo}
+														src={tattoo.thumbnail}
 														alt={tattoo.id}
 														className="object-contain"
 													/>
@@ -278,7 +278,7 @@ function BookingPage({ data }) {
 													<div>
 														<span>Nghệ sĩ xăm: </span>
 														<span className="font-semibold">
-															{tattoo.artist?.firstName}
+															{tattoo.artist?.firstName} {tattoo.artist?.lastName}
 														</span>
 													</div>
 													{tattoo.bookingDetails.map(
