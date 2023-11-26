@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
-import { formatPrice, formatTime } from 'lib';
-import { useState } from 'react';
+import { fetcher, formatPrice, formatTime } from 'lib';
+import { useEffect, useState } from 'react';
 import { Card, CardBody, Link, Loading, Ripple } from 'ui';
 import { Search } from 'icons/outline';
 import debounce from 'lodash.debounce';
@@ -13,7 +13,7 @@ import {
 	stringSize
 } from 'lib/status';
 import Image from 'next/image';
-import MyInfiniteScroll from 'ui/MyInfiniteScroll';
+import MyPagination from 'ui/MyPagination';
 
 const ALL_TAB = '1';
 const PENDING_TAB = '2';
@@ -27,30 +27,11 @@ function BookingPage({ studioId }) {
 	const [activeTab, setActiveTab] = useState('1');
 	const [searchKey, setSearchKey] = useState('');
 	const [page, setPage] = useState(1);
-	const pageSize = 5;
-
-	const renderData = (data) => {
-		switch (activeTab) {
-			case PENDING_TAB:
-				return data.filter((booking) => booking.status === BOOKING_STATUS.PENDING);
-			case CONFIRMED_TAB:
-				return data.filter((booking) => booking.status === BOOKING_STATUS.CONFIRMED);
-			case IN_PROGRESS_TAB:
-				return data.filter(
-					(booking) => booking.status === BOOKING_STATUS.IN_PROGRESS
-				);
-			case COMPLETE_TAB:
-				return data.filter((booking) => booking.status === BOOKING_STATUS.COMPLETED);
-			case CANCELLED_TAB:
-				return data.filter(
-					(booking) =>
-						booking.status === BOOKING_STATUS.CUSTOMER_CANCEL ||
-						booking.status === BOOKING_STATUS.STUDIO_CANCEL
-				);
-			default:
-				return data;
-		}
-	};
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState(false);
+	const [filter, setFilter] = useState(undefined);
+	const [total, setTotal] = useState(0);
+	const pageSize = 4;
 
 	const onSearch = (e) => {
 		setSearchKey(e.target.value);
@@ -72,6 +53,56 @@ function BookingPage({ studioId }) {
 			console.log(tab);
 		}
 	};
+
+	useEffect(() => {
+		setLoading(true);
+		setError(false);
+		fetcher(
+			`https://arttattoolover-web-sea-dev-001.azurewebsites.net/bookings-user?studioId=${studioId}&page=${page}&pageSize=${pageSize}${
+				filter ? `&status=${filter}` : ''
+			}`
+		)
+			.then((data) => {
+				setData(data.data);
+				setTotal(Math.ceil(data.total / pageSize));
+				setLoading(false);
+			})
+			.catch((e) => {
+				setData([])
+				setTotal(0)
+				setError(true);
+				setLoading(false);
+			});
+	}, [filter, page]);
+
+	useEffect(() => {
+		switch (activeTab) {
+			case PENDING_TAB:
+				setPage(1)
+				setFilter(BOOKING_STATUS.PENDING);
+				break;
+			case CONFIRMED_TAB:
+				setPage(1)
+				setFilter(BOOKING_STATUS.CONFIRMED);
+				break;
+			case IN_PROGRESS_TAB:
+				setPage(1)
+				setFilter(BOOKING_STATUS.IN_PROGRESS);
+				break;
+			case COMPLETE_TAB:
+				setPage(1)
+				setFilter(BOOKING_STATUS.COMPLETED);
+				break;
+			case CANCELLED_TAB:
+				setPage(1)
+				setFilter(BOOKING_STATUS.CUSTOMER_CANCEL);
+				break;
+			default:
+				setPage(1)
+				setFilter(undefined);
+				break;
+		}
+	}, [activeTab]);
 
 	return (
 		<div className="sm:px-8 md:px-1 lg:px-6 xl:px-56">
@@ -199,26 +230,24 @@ function BookingPage({ studioId }) {
 						onChange={onSearch}
 						onKeyDown={onKeyDown}
 						className="my-2 appearance-none relative block w-full pl-3 pr-3 border-0 border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 leading-none h-5 bg-transparent"
-						placeholder="Bạn có thể tìm theo tên hình xăm, tên khách hàng, hoặc ID đơn hàng"
+						placeholder="Bạn có thể tìm theo tên hình xăm, tên khách hàng, hoặc ID lịch hẹn"
 					/>
 				</div>
 			</div>
-			<div className="relative">
-				<MyInfiniteScroll
-					url={`https://arttattoolover-web-sea-dev-001.azurewebsites.net/bookings-user?studioId=${studioId}`}
-					parentPage={page}
-					setParentPage={setPage}
-					pageSize={pageSize}
-					parentItems={data}
-					setParentItems={setData}
-					loader={
-						<div className="absolute w-full flex justify-center -bottom-12 pb-3">
-							<Loading />
-						</div>
-					}
-				>
+			{error && (
+				<div className="flex items-center justify-center h-full">
+					Không tồn tại đơn hẹn xăm
+				</div>
+			)}
+			{loading && (
+				<div className="flex items-center justify-center h-full">
+					<Loading />
+				</div>
+			)}
+			{!loading && (
+				<div className="relative">
 					<div className="relative">
-						{renderData(data).map((booking, index) => (
+						{data.map((booking, index) => (
 							<Card key={booking.id}>
 								<CardBody>
 									<Link href={`/booking/${booking.id}`}>
@@ -226,7 +255,7 @@ function BookingPage({ studioId }) {
 											<div className="flex justify-between mx-auto border-b border-gray-300 pb-3">
 												<div className="flex gap-3 items-start">
 													<div className="font-semibold">
-														{booking.customer.firstName}
+														{booking.customer.firstName} {booking.customer.lastName}
 													</div>
 												</div>
 												<div>
@@ -349,14 +378,18 @@ function BookingPage({ studioId }) {
 							</Card>
 						))}
 					</div>
-				</MyInfiniteScroll>
-			</div>
+
+					{total > 0 && (
+						<MyPagination current={page} setCurrent={setPage} totalPage={total} />
+					)}
+				</div>
+			)}
 		</div>
 	);
 }
 
 BookingPage.propTypes = {
-	studioId: PropTypes
+	studioId: PropTypes.string
 };
 
 export default BookingPage;

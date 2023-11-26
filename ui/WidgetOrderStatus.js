@@ -5,7 +5,7 @@ export const WidgetOrderStatus = ({ timeline }) => {
 	timeline.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 	return (
-		<div className="relative">
+		<div className="relative text-base">
 			{timeline?.map((item, index) => (
 				<div
 					key={index}

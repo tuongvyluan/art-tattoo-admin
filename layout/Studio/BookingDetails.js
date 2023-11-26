@@ -17,21 +17,21 @@ import PropTypes from 'prop-types';
 import Image from 'next/image';
 import { Alert, Card, CardBody, Link } from 'ui';
 import { WidgetOrderStatus } from 'ui/WidgetOrderStatus';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Button from 'components/Button';
 import { BASE_URL } from 'lib/env';
 import MyModal from 'components/MyModal';
 import cancelReasons from 'lib/cancelReasons';
-import Router from 'next/router';
 
-function BookingDetailsPage({ data, studioId }) {
+function BookingDetailsPage({ data, studioId, setLoading }) {
 	const timeline = extractBookingStatusTimeline(data);
 	const [bookingStatus, setBookingStatus] = useState(data.status);
 
 	// Cancel related vars
 	const [cancelStatus, setCancelStatus] = useState(BOOKING_STATUS.CUSTOMER_CANCEL);
 	const [confirmCancelBookingModal, setConfirmCancelBookingModal] = useState(false);
-	const [cancelReason, setCancelReason] = useState('');
+	const [cancelReason, setCancelReason] = useState(cancelReasons.at(0).reason);
+	const [cancelReasonMore, setCancelReasonMore] = useState('');
 
 	const handleCancelReason = ({ status, reason }) => {
 		setCancelReason(reason);
@@ -68,6 +68,7 @@ function BookingDetailsPage({ data, studioId }) {
 			.then((data) => {
 				setBookingStatus(BOOKING_STATUS.CONFIRMED);
 				handleAlert(true, 'Xác nhận đơn hàng thành công');
+				setLoading(true);
 			})
 			.catch((e) => {
 				handleAlert(true, 'Xác nhận đơn hàng thất bại', '', true);
@@ -80,15 +81,16 @@ function BookingDetailsPage({ data, studioId }) {
 			status: status
 		};
 		if (status === BOOKING_STATUS.CUSTOMER_CANCEL) {
-			body.customerCancelReason = cancelReason;
+			body.customerCancelReason = cancelReason.concat(` ${cancelReasonMore}`);
 		}
 		if (status === BOOKING_STATUS.STUDIO_CANCEL) {
-			body.studioCancelReason = cancelReason;
+			body.studioCancelReason = cancelReason.concat(` ${cancelReasonMore}`);
 		}
 		fetcherPut(`${BASE_URL}/studios/${studioId}/bookings/${data.id}`, body)
 			.then((data) => {
 				setBookingStatus(status);
 				handleAlert(true, 'Cập nhật trạng thái đơn hàng thành công');
+				setLoading(true);
 			})
 			.catch((e) => {
 				handleAlert(true, 'Cập nhật trạng thái đơn hàng thành công');
@@ -111,10 +113,6 @@ function BookingDetailsPage({ data, studioId }) {
 		}
 	};
 
-	useEffect(() => {
-		Router.replace(window.location.href);
-	}, [bookingStatus]);
-
 	return (
 		<div className="relative">
 			<Alert
@@ -134,10 +132,10 @@ function BookingDetailsPage({ data, studioId }) {
 				onSubmit={() => handleAfterConfirmed(cancelStatus)}
 			>
 				<div>
-					<ul className="h-72 pb-6 overflow-y-auto grid grid-cols-1 sm:grid-cols-2">
+					<ul className="h-36 pb-6 overflow-y-auto">
 						{cancelReasons.map((reason, index) => (
 							<li
-								className="my-1 full px-3 flex items-center gap-2 cursor-pointer"
+								className="my-1 full px-3 py-1 gap-2 flex items-center cursor-pointer"
 								onClick={() => handleCancelReason(reason)}
 								key={index}
 							>
@@ -151,6 +149,14 @@ function BookingDetailsPage({ data, studioId }) {
 							</li>
 						))}
 					</ul>
+					<label className="text-sm font-semibold">Mô tả lý do</label>
+					<textarea
+						rows={4}
+						type="text"
+						value={cancelReasonMore}
+						onChange={(e) => setCancelReasonMore(e.target.value)}
+						className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
+					/>
 				</div>
 			</MyModal>
 			<div key={bookingStatus} className="sm:px-12 md:px-16 lg:px-32 xl:px-56">
@@ -233,72 +239,90 @@ function BookingDetailsPage({ data, studioId }) {
 									))}
 								</div>
 							</div>
+							{
+								// Customer description
+							}
+							{data.description && (
+								<div className="pt-3 border-b border-gray-300 pb-3">
+									<div className="font-semibold text-xl pb-2">Mô tả chi tiết</div>
+									<div className="block">
+										{data.description}
+									</div>
+								</div>
+							)}
 
 							{
 								// Confirm ngày hẹn
 							}
 							<div className="pt-3">
 								<div className="font-semibold text-xl pb-2">Xác nhận ngày hẹn</div>
-								<div className="flex justify-between items-center">
-									<div className="min-w-max">
-										<input
-											type="date"
-											readOnly={
+								<div className="flex justify-center items-center">
+									<div>
+										<div className="flex justify-center">
+											<input
+												type="date"
+												readOnly={
+													data.status === BOOKING_STATUS.COMPLETED ||
+													data.status === BOOKING_STATUS.CUSTOMER_CANCEL ||
+													data.status === BOOKING_STATUS.STUDIO_CANCEL
+												}
+												onChange={handleChangeMeetingDate}
+												className="appearance-none relative block w-full text-base mb-2 px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
+												name="meetingDate"
+												value={meetingDate}
+											/>
+										</div>
+
+										<div
+											className={`${
 												data.status === BOOKING_STATUS.COMPLETED ||
 												data.status === BOOKING_STATUS.CUSTOMER_CANCEL ||
 												data.status === BOOKING_STATUS.STUDIO_CANCEL
-											}
-											onChange={handleChangeMeetingDate}
-											className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
-											name="meetingDate"
-											value={meetingDate}
-										/>
-									</div>
-									<div
-										className={`${
-											data.status === BOOKING_STATUS.COMPLETED ||
-											data.status === BOOKING_STATUS.CUSTOMER_CANCEL ||
-											data.status === BOOKING_STATUS.STUDIO_CANCEL
-												? 'hidden'
-												: 'w-20'
-										}`}
-									>
-										<Button onClick={confirmBooking}>
-											{data.date ? 'Thay đổi' : 'Xác nhận'}
-										</Button>
+													? 'hidden'
+													: 'mx-auto pt-3 flex flex-wrap justify-center gap-3'
+											}`}
+										>
+											{(data.status === BOOKING_STATUS.PENDING ||
+												data.status === BOOKING_STATUS.CONFIRMED) && (
+												<div className="w-20 ">
+													<Button
+														warn={true}
+														outline
+														onClick={() => {
+															setCancelReasonMore('');
+															setConfirmCancelBookingModal(true);
+														}}
+													>
+														Huỷ
+													</Button>
+												</div>
+											)}
+											{(data.status === BOOKING_STATUS.CONFIRMED ||
+												data.status === BOOKING_STATUS.PENDING) && (
+												<div className="w-max ">
+													<Button
+														outline={data.status === BOOKING_STATUS.CONFIRMED}
+														onClick={confirmBooking}
+													>
+														{data.date ? 'Thay đổi ngày hẹn' : 'Xác nhận'}
+													</Button>
+												</div>
+											)}
+											{data.status === BOOKING_STATUS.CONFIRMED && (
+												<div className="w-max">
+													<Button
+														onClick={() =>
+															handleAfterConfirmed(BOOKING_STATUS.IN_PROGRESS)
+														}
+													>
+														Bắt đầu thực hiện
+													</Button>
+												</div>
+											)}
+										</div>
 									</div>
 								</div>
 							</div>
-
-							{
-								// Khách hàng tới hẹn và bắt đầu chuyển đơn hàng sang trạng thái thực hiện - IN_PROGRESS
-							}
-							{data.status === BOOKING_STATUS.CONFIRMED && (
-								<div className="mt-5 pt-3 border-t border-gray-300 pb-3">
-									<div className="font-semibold text-xl pb-2">
-										Khách hàng xác nhận đặt đơn
-									</div>
-									<div className="flex flex-wrap gap-5 justify-center items-center w-full">
-										<div className="w-20">
-											<Button
-												outline
-												onClick={() => setConfirmCancelBookingModal(true)}
-											>
-												Từ chối
-											</Button>
-										</div>
-										<div className="w-20">
-											<Button
-												onClick={() =>
-													handleAfterConfirmed(BOOKING_STATUS.IN_PROGRESS)
-												}
-											>
-												Xác nhận
-											</Button>
-										</div>
-									</div>
-								</div>
-							)}
 
 							{
 								// Booking detail list
@@ -414,6 +438,7 @@ function BookingDetailsPage({ data, studioId }) {
 }
 BookingDetailsPage.propTypes = {
 	data: PropTypes.object,
-	studioId: PropTypes.string
+	studioId: PropTypes.string,
+	setLoading: PropTypes.func
 };
 export default BookingDetailsPage;

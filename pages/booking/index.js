@@ -1,9 +1,7 @@
 import BookingPage from 'layout/Studio/Booking';
-import { fetcher } from 'lib';
 import { ROLE } from 'lib/status';
 import { useSession } from 'next-auth/react';
 import Router from 'next/router';
-import { useState } from 'react';
 import { Loading } from 'ui';
 
 const Booking = () => {

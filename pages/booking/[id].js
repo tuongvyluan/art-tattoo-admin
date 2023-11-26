@@ -1,7 +1,7 @@
 import BookingDetailsPage from 'layout/Studio/BookingDetails';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
-import { ROLE } from 'lib/status';
+import { BOOKING_STATUS, ROLE } from 'lib/status';
 import { useSession } from 'next-auth/react';
 import Router, { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -11,7 +11,7 @@ const BookingDetails = () => {
 	// Check authenticated
 	const { status, data } = useSession();
 	const [loading, setLoading] = useState(true);
-	const [bookingData, setBookingData] = useState([]);
+	const [bookingData, setBookingData] = useState(undefined);
 
 	// Get bookingId
 	const router = useRouter();
@@ -49,7 +49,7 @@ const BookingDetails = () => {
 	if (status === 'unauthenticated') {
 		Router.replace('/');
 	} else {
-		return <BookingDetailsPage data={bookingData} studioId={data.user.studioId} />;
+		return <BookingDetailsPage setLoading={setLoading} data={bookingData} studioId={data.user.studioId} />;
 	}
 };
 
