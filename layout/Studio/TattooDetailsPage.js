@@ -396,7 +396,14 @@ function TattooDetailsPage({
 									<Dropdown className={'relative'}>
 										<DropdownToggle>
 											<div className="w-28 rounded-lg p-1 border border-gray-300">
-												Chọn nghệ sĩ
+												{
+													artistList.filter((a) => a.id === selectedArtist).at(0)
+														.firstName
+												}{' '}
+												{
+													artistList.filter((a) => a.id === selectedArtist).at(0)
+														.lastName
+												}
 											</div>
 										</DropdownToggle>
 										<DropdownMenu>
@@ -408,7 +415,8 @@ function TattooDetailsPage({
 														a.id === selectedArtist ? 'bg-indigo-100' : ''
 													}`}
 												>
-													{a.id}
+													{a.firstName}{' '}
+													{a.lastName}
 												</div>
 											))}
 										</DropdownMenu>

@@ -359,10 +359,10 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 											<div key={tattoo.id}>
 												<Link href={`/tattoo/${tattoo.id}?booking=${data.id}`}>
 													<div className="cursor-pointer py-2 flex justify-start gap-3 flex-wrap">
-														<div className="relative w-32 h-32">
+														<div className="relative w-24 h-24">
 															<Image
 																layout="fill"
-																src={tattoo.thumbnail}
+																src={tattoo.thumbnail ? tattoo.thumbnail : '/images/ATL.png'}
 																alt={'a'}
 																className="object-contain rounded-2xl"
 															/>

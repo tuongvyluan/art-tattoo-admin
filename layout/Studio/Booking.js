@@ -313,7 +313,7 @@ function BookingPage({ studioId }) {
 															<div className="relative w-24 h-24">
 																<Image
 																	layout="fill"
-																	src={tattoo.thumbnail}
+																	src={tattoo.thumbnail ? tattoo.thumbnail : '/images/ATL.png'}
 																	alt={tattoo.id}
 																	className="object-contain"
 																/>
