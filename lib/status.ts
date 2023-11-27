@@ -64,6 +64,11 @@ export const enum ARTIST_STATUS {
 	UNAVAILABLE = 1
 }
 
+export const enum BOOKING_MEETING_STATUS {
+	PENDING = 0,
+	COMPLETED = 1
+}
+
 export const enum BOOKING_STATUS {
 	PENDING = 0,
 	CONFIRMED = 1,

@@ -1,10 +1,12 @@
 import { ChevronLeft } from 'icons/solid';
 import {
 	extractBookingStatusTimeline,
+	fetcher,
 	fetcherPut,
 	formatDate,
 	formatDateForInput,
-	formatPrice
+	formatPrice,
+	formatTime
 } from 'lib';
 import {
 	BOOKING_STATUS,
@@ -23,8 +25,11 @@ import Button from 'components/Button';
 import { BASE_URL } from 'lib/env';
 import MyModal from 'components/MyModal';
 import cancelReasons from 'lib/cancelReasons';
+import SelectServicePage from './SelectService';
+import { Modal } from 'flowbite-react';
 
 function BookingDetailsPage({ data, studioId, setLoading }) {
+	const [services, setServices] = useState([]);
 	const [renderData, setRenderData] = useState(data);
 
 	const timeline = extractBookingStatusTimeline(renderData);
@@ -48,6 +53,9 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 			? formatDateForInput(renderData.date)
 			: formatDateForInput(Date.now())
 	);
+
+	// Service related vars
+	const [showServiceModal, setShowServiceModal] = useState(false);
 
 	const [showAlert, setShowAlert] = useState(false);
 
@@ -127,29 +135,50 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	};
 
 	useEffect(() => {
-		renderData.bookingMeetings = [
-			{
-				date: new Date(new Date(data.createdAt).valueOf() + Math.random() * 1e10),
-				status: 'Pending',
-				createdAt: new Date(
-					new Date(data.createdAt).valueOf() + Math.random() * 1e10
-				)
-			},
-			{
-				date: new Date(new Date(data.createdAt).valueOf() + Math.random() * 1e10),
-				status: 'Completed',
-				createdAt: new Date(
-					new Date(data.createdAt).valueOf() + Math.random() * 1e10
-				)
-			},
-			{
-				date: new Date(new Date(data.createdAt).valueOf() + Math.random() * 1e10),
-				status: 'Completed',
-				createdAt: new Date(
-					new Date(data.createdAt).valueOf() + Math.random() * 1e10
-				)
-			}
-		];
+		if (
+			renderData.status === BOOKING_STATUS.CONFIRMED ||
+			renderData.status === BOOKING_STATUS.PENDING
+		) {
+			fetcher(`${BASE_URL}/studios/${studioId}/services?pageSize=100`)
+				.then((data) => {
+					setServices(
+						data.services.map((service) => {
+							return {
+								...service,
+								quantity: 0
+							};
+						})
+					);
+				})
+				.catch((e) => {
+					console.log(e);
+				});
+		}
+		if (renderData.status !== BOOKING_STATUS.PENDING) {
+			renderData.bookingMeetings = [
+				{
+					date: new Date(new Date(data.createdAt).valueOf() + Math.random() * 1e10),
+					status: 'Pending',
+					createdAt: new Date(
+						new Date(data.createdAt).valueOf() + Math.random() * 1e10
+					)
+				},
+				{
+					date: new Date(new Date(data.createdAt).valueOf() + Math.random() * 1e10),
+					status: 'Completed',
+					createdAt: new Date(
+						new Date(data.createdAt).valueOf() + Math.random() * 1e10
+					)
+				},
+				{
+					date: new Date(new Date(data.createdAt).valueOf() + Math.random() * 1e10),
+					status: 'Completed',
+					createdAt: new Date(
+						new Date(data.createdAt).valueOf() + Math.random() * 1e10
+					)
+				}
+			];
+		}
 		renderData.services.map((service, serviceIndex) => {
 			return {
 				...service,
@@ -170,6 +199,19 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 				<span className="block sm:inline">{alertContent.content}</span>
 			</Alert>
 			<MyModal
+				size="7xl"
+				title="Chọn dịch vụ"
+				openModal={showServiceModal}
+				setOpenModal={setShowServiceModal}
+				onSubmit={() => setShowServiceModal(false)}
+				cancelTitle="Huỷ thay đổi"
+				confirmTitle="Xác nhận"
+			>
+				<div className="w-full h-96 overflow-auto">
+					<SelectServicePage services={services} />
+				</div>
+			</MyModal>
+			<MyModal
 				size="md"
 				title={
 					renderData.bookingMeetings?.at(0)?.status === 'Pending'
@@ -181,6 +223,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 				onSubmit={() => handleChangeMeetingDate(currentMeetingDate)}
 				cancelTitle="Huỷ thay đổi"
 				confirmTitle="Xác nhận"
+				noFooter={renderData.bookingMeetings?.at(0)?.status === 'Pending'}
 			>
 				<div className="">
 					<div className="pb-2 text-center">Lịch hẹn mới sẽ vào ngày:</div>
@@ -192,6 +235,21 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							onChange={(e) => setCurrentMeetingDate(e.target.value)}
 						/>
 					</div>
+					{renderData.bookingMeetings?.at(0)?.status === 'Pending' && (
+						<Modal.Footer>
+							<div className="flex justify-center gap-2 w-full">
+								<div className="w-24">
+									<Button outline>Huỷ thay đổi</Button>
+								</div>
+								<div className="w-24">
+									<Button warn>Xoá lịch hẹn</Button>
+								</div>
+								<div className="w-24">
+									<Button>Xác nhận</Button>
+								</div>
+							</div>
+						</Modal.Footer>
+					)}
 				</div>
 			</MyModal>
 			<MyModal
@@ -356,7 +414,17 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								// Customer services
 							}
 							<div className="pt-3">
-								<div className="font-semibold text-xl pb-2">Chi tiết đơn hàng</div>
+								<div className="flex justify-between w-full pb-1">
+									<div className="font-semibold text-xl pb-2">Chi tiết đơn hàng</div>
+									{(renderData.status === BOOKING_STATUS.PENDING ||
+										renderData.status === BOOKING_STATUS.CONFIRMED) && (
+										<div>
+											<Button onClick={() => setShowServiceModal(true)} outline>
+												Sửa dịch vụ
+											</Button>
+										</div>
+									)}
+								</div>
 								<div className="block">
 									{renderData.services.map((service, serviceIndex) => (
 										<div key={service.id}>
@@ -392,25 +460,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 													</div>
 												</div>
 												<div className="pb-1 flex flex-wrap gap-2 items-center text-base">
-													<div>Số lượng:</div>
-													<div className="w-16">
-														<input
-															className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
-															type="number"
-															min={1}
-															step={1}
-															readOnly={
-																!(
-																	bookingStatus === BOOKING_STATUS.CONFIRMED ||
-																	bookingStatus === BOOKING_STATUS.PENDING
-																)
-															}
-															value={
-																1
-																// service.quantity
-															}
-														/>
-													</div>
+													<div>Số lượng: 1</div>
 												</div>
 											</div>
 											<div>
@@ -598,31 +648,70 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							<div className="pt-3">
 								<table className="w-full">
 									<tbody>
-										{renderData.total && (
+										{(renderData.status === BOOKING_STATUS.IN_PROGRESS ||
+											renderData.status === BOOKING_STATUS.COMPLETED) && (
 											<tr className="border-t border-gray-300">
 												<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
 													Tổng tiền
 												</th>
 												<td className="py-3 text-right text-xl text-red-500">
-													{formatPrice(renderData.total)}
+													{/* {formatPrice(renderData.total)} */}
+													{formatPrice(2000000)}
 												</td>
 											</tr>
 										)}
 										{
 											// Button thêm hình xăm cho đơn hàng
-											renderData.status === BOOKING_STATUS.COMPLETED ? (
-												<tr className="border-t border-gray-300">
-													<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
-														Phương thức thanh toán
-													</th>
-													<td className="py-3 text-right text-base">Tiền mặt</td>
-												</tr>
-											) : (
-												<></>
-											)
+											// renderData.status === BOOKING_STATUS.COMPLETED ? (
+											// 	<tr className="border-t border-gray-300">
+											// 		<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
+											// 			Phương thức thanh toán
+											// 		</th>
+											// 		<td className="py-3 text-right text-base">Tiền mặt</td>
+											// 	</tr>
+											// ) : (
+											// 	<></>
+											// )
 										}
+										<tr className="border-t border-gray-300">
+											<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
+												Thanh toán
+											</th>
+											<td className="py-3 text-right text-sm">
+												<div>
+													<span className="text-gray-600">
+														{formatTime(new Date())} - Tiền mặt -{' '}
+													</span>
+													<span className="text-base">{formatPrice(1000000)}</span>
+												</div>
+												<div>
+													<span className="text-gray-600">
+														{formatTime(new Date())} - Ví điện tử -{' '}
+													</span>
+													<span className="text-base">{formatPrice(500000)}</span>
+												</div>
+											</td>
+										</tr>
+										<tr className="border-t border-gray-300">
+											<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
+												Còn lại
+											</th>
+											<td className="py-3 text-right text-xl text-red-500">
+												<div>{formatPrice(500000)}</div>
+											</td>
+										</tr>
 									</tbody>
 								</table>
+							</div>
+							{
+								// Chuyển qua màn hình payment
+							}
+							<div className="flex justify-center">
+								<Link href={`/payment/${renderData.id}`}>
+									<div className="w-32">
+										<Button>Thanh toán</Button>
+									</div>
+								</Link>
 							</div>
 						</div>
 					</CardBody>

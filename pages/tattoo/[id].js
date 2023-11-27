@@ -36,7 +36,7 @@ const TattooDetails = () => {
 			});
 	}
 
-	if (id !== 'new' && !artTattoo) {
+	if (!artTattoo) {
 		fetcher(`${BASE_URL}/TattooArts/Details?id=${id}&is`).then((data) => {
 
 			// Get all stages from medias

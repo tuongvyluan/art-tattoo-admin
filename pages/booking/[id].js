@@ -1,7 +1,7 @@
 import BookingDetailsPage from 'layout/Studio/BookingDetails';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
-import { BOOKING_STATUS, ROLE } from 'lib/status';
+import { ROLE } from 'lib/status';
 import { useSession } from 'next-auth/react';
 import Router, { useRouter } from 'next/router';
 import { useState } from 'react';

@@ -14,7 +14,6 @@ import {
 } from 'lib/status';
 import Image from 'next/image';
 import MyPagination from 'ui/MyPagination';
-import Router, { useRouter } from 'next/router';
 
 const ALL_TAB = '1';
 const PENDING_TAB = '2';
@@ -24,11 +23,10 @@ const COMPLETE_TAB = '5';
 const CANCELLED_TAB = '6';
 
 function BookingPage({ studioId }) {
-	const router = useRouter()
 	const [data, setData] = useState([]);
-	const [activeTab, setActiveTab] = useState(router.query.active ? router.query.active : '1');
+	const [activeTab, setActiveTab] = useState('1');
 	const [searchKey, setSearchKey] = useState('');
-	const [page, setPage] = useState(router.query.page ? router.query.page : 1);
+	const [page, setPage] = useState(1);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
 	const [filter, setFilter] = useState(undefined);
@@ -57,7 +55,6 @@ function BookingPage({ studioId }) {
 	};
 
 	useEffect(() => {
-		Router.push({ query: { page: page, active: activeTab } });
 		setLoading(true);
 		setError(false);
 
@@ -80,7 +77,6 @@ function BookingPage({ studioId }) {
 	}, [filter, page]);
 
 	useEffect(() => {
-		// router.push({query: {active: activeTab}})
 		switch (activeTab) {
 			case PENDING_TAB:
 				setPage(1);
@@ -255,7 +251,7 @@ function BookingPage({ studioId }) {
 						{data.map((booking, index) => (
 							<Card key={booking.id}>
 								<CardBody>
-									<Link href={`/booking/${booking.id}`}>
+									<a className='text-black' href={`/booking/${booking.id}`}>
 										<div className="cursor-pointer ">
 											<div className="flex justify-between mx-auto border-b border-gray-300 pb-3">
 												<div className="flex gap-3 items-start">
@@ -434,7 +430,7 @@ function BookingPage({ studioId }) {
 												</div>
 											</div>
 										</div>
-									</Link>
+									</a>
 								</CardBody>
 							</Card>
 						))}

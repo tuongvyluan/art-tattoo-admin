@@ -13,7 +13,8 @@ const MyModal = ({
 	openModal,
 	setOpenModal,
 	onSubmit,
-	size='lg'
+	size = 'lg',
+	noFooter = false
 }) => {
 	const initialFocus = useRef(null);
 	return (
@@ -30,14 +31,16 @@ const MyModal = ({
 				</div>
 			</Modal.Header>
 			<Modal.Body>{children}</Modal.Body>
-			<Modal.Footer>
-				<Button ref={initialFocus} outline onClick={() => setOpenModal(false)}>
-					{cancelTitle}
-				</Button>
-				<Button warn={warn} onClick={onSubmit}>
-					{confirmTitle}
-				</Button>
-			</Modal.Footer>
+			{!noFooter && (
+				<Modal.Footer>
+					<Button ref={initialFocus} outline onClick={() => setOpenModal(false)}>
+						{cancelTitle}
+					</Button>
+					<Button warn={warn} onClick={onSubmit}>
+						{confirmTitle}
+					</Button>
+				</Modal.Footer>
+			)}
 		</Modal>
 	);
 };
