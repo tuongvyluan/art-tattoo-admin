@@ -1,19 +1,15 @@
 import { Avatar, Badge, Dropdown, DropdownMenu, DropdownToggle, Link } from 'ui';
 import { signOut, useSession } from 'next-auth/react';
 import {
-	Bell,
-	Cog,
-	LightningBolt,
 	Logout,
 	MenuAlt1,
-	Pencil,
 	User
 } from 'icons/solid';
 import { useTranslation } from 'i18n';
 
-import Notifications from './Notifications';
 import PropTypes from 'prop-types';
 import { useAppState } from 'components/AppProvider';
+import { ROLE } from 'lib/status';
 
 const colors = [
 	'gray',
@@ -188,11 +184,16 @@ const Header = ({ toggleOpen }) => {
 
 						<Dropdown className="px-3 relative h-full flex items-center">
 							<DropdownToggle>
-								<Avatar
-									size={28}
-									src={`images/avatar.png`}
-									alt={data ? data.user.firstName : 'Unknown'}
-								/>
+								<div className="mx-auto">
+									<div className='flex justify-center'>
+										<Avatar
+											size={28}
+											src={`/images/avatar.png`}
+											alt={data ? data.user.firstName : 'Unknown'}
+										/>
+									</div>
+									{data?.user.role === ROLE.STUDIO ? 'Quản lí tiệm xăm' : 'Admin'}
+								</div>
 							</DropdownToggle>
 							<DropdownMenu>
 								<div className="py-1">

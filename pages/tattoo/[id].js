@@ -38,6 +38,8 @@ const TattooDetails = () => {
 
 	if (id !== 'new' && !artTattoo) {
 		fetcher(`${BASE_URL}/TattooArts/Details?id=${id}&is`).then((data) => {
+
+			// Get all stages from medias
 			const stageMap = new Map(
 				data.medias.map((obj) => {
 					return [
@@ -46,11 +48,14 @@ const TattooDetails = () => {
 							id: obj.tattooArtStageId,
 							name: obj.stageName,
 							description: obj.description ? obj.description : '',
-							medias: []
+							medias: [],
+							saved: true
 						}
 					];
 				})
 			);
+
+			// Push medias to related stage
 			data.medias.map((obj) => {
 				const value = stageMap.get(obj.tattooArtStageId);
 				value.medias.push({ ...obj, saved: true }); // saved field to note that this image has been saved to db
@@ -65,7 +70,8 @@ const TattooDetails = () => {
 					id: 1,
 					name: 'Sau khi xăm',
 					description: '',
-					medias: []
+					medias: [],
+					saved: false
 				});
 			}
 			setArtTattoo(renderData);
@@ -74,11 +80,6 @@ const TattooDetails = () => {
 	}
 
 	const handleSubmit = (newArtTattoo) => {
-		if (id === 'new') {
-			console.log('Create');
-		} else {
-			console.log('Update');
-		}
 		setArtTattoo(newArtTattoo);
 		console.log(newArtTattoo);
 	};

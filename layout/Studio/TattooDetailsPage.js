@@ -42,37 +42,7 @@ function TattooDetailsPage({
 	handleSubmit,
 	artistList
 }) {
-	let defaultTattoo =
-		typeof artTattoo !== 'undefined'
-			? artTattoo
-			: {
-					id: '',
-					bookingId: bookingId,
-					artist: {},
-					styleId: 14,
-					stages: [
-						{
-							id: 1,
-							name: 'Sau khi xăm',
-							description: '',
-							medias: [
-								// {
-								// id: '',
-								// url: '',
-								// description: '',
-								// isPublicized: false
-								// }
-							]
-						}
-					],
-					thumbnail: '',
-					price: 0,
-					isPublicized: false,
-					hasColor: false,
-					size: 0,
-					placement: 0,
-					bookingDetails: []
-			  };
+	const [defaultTattoo, setDefaultTattoo] = useState(artTattoo)
 
 	const [tattoo, setTattoo] = useState(JSON.parse(JSON.stringify(defaultTattoo)));
 	const [thumbnailKey, setThumbnailKey] = useState(tattoo.thumbnail);
@@ -172,7 +142,8 @@ function TattooDetailsPage({
 			id: stages.at(stageLength - 1).id + 1,
 			name: '',
 			description: '',
-			medias: []
+			medias: [],
+			saved: false
 		});
 		setTattoo({ ...tattoo, stages: stages });
 	};
@@ -252,7 +223,13 @@ function TattooDetailsPage({
 		);
 	};
 
-	const handleSaveChange = () => {
+	// const handleSaveStagesChange = async (tattooId) => {
+	// 	const newStages = tattoo.stages
+	// 	const oldStages = defaultTattoo.stages
+	// 	const removedStages = oldStages.filter((stage) => (stage.saved === true && (newStages.filter((newStage) => ))))
+	// }
+
+	const handleSaveChange = async () => {
 		if (tattoo.id === '') {
 			handleAlert(true, 'Đang tạo hình xăm...');
 			const newTattoo = {
@@ -265,10 +242,11 @@ function TattooDetailsPage({
 				bookingId: bookingId
 			};
 			fetcherPost(`${BASE_URL}/TattooArts/CreateTattoo`, newTattoo)
-				.then((data) => {
+				.then(async (data) => {
+					// await handleSaveStagesChange(data.id)
 					handleSubmit(newTattoo);
 					handleAlert(true, 'Tạo hình xăm thành công');
-					defaultTattoo = JSON.parse(JSON.stringify(tattoo));
+					setDefaultTattoo(JSON.parse(JSON.stringify(tattoo)))
 				})
 				.catch((e) => {
 					handleAlert(true, 'Tạo hình xăm thất bại', '', true);
@@ -290,8 +268,9 @@ function TattooDetailsPage({
 					isPublicized: tattoo.isPublicized
 				};
 				fetcherPut(`${BASE_URL}/TattooArts/UpdateTattoo`, newTattoo)
-					.then((data) => {
-						defaultTattoo = JSON.parse(JSON.stringify(tattoo));
+					.then(async (data) => {
+						// await handleSaveStagesChange(tattoo.id)
+						setDefaultTattoo(JSON.parse(JSON.stringify(tattoo)))
 						handleSubmit(newTattoo);
 						handleAlert(true, 'Cập nhật hình xăm thành công');
 					})

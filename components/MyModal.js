@@ -12,7 +12,8 @@ const MyModal = ({
 	warn = false,
 	openModal,
 	setOpenModal,
-	onSubmit
+	onSubmit,
+	size='lg'
 }) => {
 	const initialFocus = useRef(null);
 	return (
@@ -20,6 +21,7 @@ const MyModal = ({
 			initialFocus={initialFocus}
 			show={openModal}
 			onClose={() => setOpenModal(false)}
+			size={size}
 		>
 			<Modal.Header>
 				<div className="flex flex-wrap items-center gap-2">
@@ -48,7 +50,8 @@ MyModal.propTypes = {
 	warn: PropTypes.bool,
 	openModal: PropTypes.bool.isRequired,
 	setOpenModal: PropTypes.func.isRequired,
-	onSubmit: PropTypes.func.isRequired
+	onSubmit: PropTypes.func.isRequired,
+	size: PropTypes.string
 };
 
 export default MyModal;
