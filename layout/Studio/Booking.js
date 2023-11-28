@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { fetcher, formatPrice, formatTime } from 'lib';
 import { useEffect, useState } from 'react';
-import { Card, CardBody, Link, Loading, Ripple } from 'ui';
+import { Card, CardBody, Loading, Ripple } from 'ui';
 import { Search } from 'icons/outline';
 import debounce from 'lodash.debounce';
 import {

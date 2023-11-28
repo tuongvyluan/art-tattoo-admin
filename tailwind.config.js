@@ -2,7 +2,6 @@ const defaultTheme = require('tailwindcss/defaultTheme');
 const plugin = require('tailwindcss/plugin');
 
 module.exports = {
-	purge: ['./**/*.js'],
 	content: [
 		'./node_modules/flowbite-react/**/*.js',
 		'./pages/**/*.{ts,js}',
