@@ -198,19 +198,6 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 				<strong className="font-bold mr-1">{alertContent.title}</strong>
 				<span className="block sm:inline">{alertContent.content}</span>
 			</Alert>
-			{/* <MyModal
-				size="7xl"
-				title="Chọn dịch vụ"
-				openModal={showServiceModal}
-				setOpenModal={setShowServiceModal}
-				onSubmit={() => setShowServiceModal(false)}
-				cancelTitle="Huỷ thay đổi"
-				confirmTitle="Xác nhận"
-			>
-				<div className="w-full h-96 overflow-auto">
-					<SelectServicePage services={services} />
-				</div>
-			</MyModal> */}
 			<MyModal
 				size="md"
 				title={
