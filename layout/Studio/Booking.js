@@ -59,7 +59,7 @@ function BookingPage({ studioId }) {
 		setError(false);
 
 		fetcher(
-			`https://arttattoolover-web-sea-dev-001.azurewebsites.net/bookings-user?studioId=${studioId}&page=${page}&pageSize=${pageSize}${
+			`https://arttattoolover-web-sea-dev-001.azurewebsites.net/bookings-studio?studioId=${studioId}&page=${page}&pageSize=${pageSize}${
 				filter >= 0 ? `&status=${filter}` : ''
 			}`
 		)
