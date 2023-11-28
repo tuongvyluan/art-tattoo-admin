@@ -14,6 +14,7 @@ import {
 } from 'lib/status';
 import Image from 'next/image';
 import MyPagination from 'ui/MyPagination';
+import { BASE_URL } from 'lib/env';
 
 const ALL_TAB = '1';
 const PENDING_TAB = '2';
@@ -59,7 +60,7 @@ function BookingPage({ studioId }) {
 		setError(false);
 
 		fetcher(
-			`https://arttattoolover-web-sea-dev-001.azurewebsites.net/bookings-studio?studioId=${studioId}&page=${page}&pageSize=${pageSize}${
+			`${BASE_URL}/bookings-studio?studioId=${studioId}&page=${page}&pageSize=${pageSize}${
 				filter >= 0 ? `&status=${filter}` : ''
 			}`
 		)
