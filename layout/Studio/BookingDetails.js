@@ -198,7 +198,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 				<strong className="font-bold mr-1">{alertContent.title}</strong>
 				<span className="block sm:inline">{alertContent.content}</span>
 			</Alert>
-			<MyModal
+			{/* <MyModal
 				size="7xl"
 				title="Chọn dịch vụ"
 				openModal={showServiceModal}
@@ -210,7 +210,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 				<div className="w-full h-96 overflow-auto">
 					<SelectServicePage services={services} />
 				</div>
-			</MyModal>
+			</MyModal> */}
 			<MyModal
 				size="md"
 				title={
@@ -415,15 +415,15 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							}
 							<div className="pt-3">
 								<div className="flex justify-between w-full pb-1">
-									<div className="font-semibold text-xl pb-2">Chi tiết đơn hàng</div>
-									{(renderData.status === BOOKING_STATUS.PENDING ||
+									<div className="font-semibold text-xl pb-2">Dịch vụ tham khảo</div>
+									{/* {(renderData.status === BOOKING_STATUS.PENDING ||
 										renderData.status === BOOKING_STATUS.CONFIRMED) && (
 										<div>
 											<Button onClick={() => setShowServiceModal(true)} outline>
 												Sửa dịch vụ
 											</Button>
 										</div>
-									)}
+									)} */}
 								</div>
 								<div className="block">
 									{renderData.services.map((service, serviceIndex) => (
@@ -459,11 +459,8 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 														{formatPrice(service.maxPrice)}
 													</div>
 												</div>
-												<div className="pb-1 flex flex-wrap gap-2 items-center text-base">
-													<div>Số lượng: 1</div>
-												</div>
 											</div>
-											<div>
+											{/* <div>
 												{renderData.tattooArts?.at(serviceIndex) && (
 													<div
 														key={renderData.tattooArts?.at(serviceIndex).id}
@@ -525,7 +522,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 														</Link>
 													</div>
 												)}
-											</div>
+											</div> */}
 										</div>
 									))}
 								</div>
@@ -534,7 +531,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							{
 								// Booking detail list
 							}
-							{/* {
+							{
 								// Đơn hàng đã huỷ nhưng đã có tattoo art
 								(((data.status === BOOKING_STATUS.CUSTOMER_CANCEL ||
 									data.status === BOOKING_STATUS.STUDIO_CANCEL) &&
@@ -569,7 +566,11 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 														<div className="relative w-24 h-24">
 															<Image
 																layout="fill"
-																src={tattoo.thumbnail ? tattoo.thumbnail : '/images/ATL.png'}
+																src={
+																	tattoo.thumbnail
+																		? tattoo.thumbnail
+																		: '/images/ATL.png'
+																}
 																alt={'a'}
 																className="object-contain rounded-2xl"
 															/>
@@ -603,7 +604,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 										))}
 									</div>
 								)
-							} */}
+							}
 
 							<div
 								className={`${
@@ -645,11 +646,11 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							{
 								// Final sum
 							}
-							<div className="pt-3">
-								<table className="w-full">
-									<tbody>
-										{(renderData.status === BOOKING_STATUS.IN_PROGRESS ||
-											renderData.status === BOOKING_STATUS.COMPLETED) && (
+							{(renderData.status === BOOKING_STATUS.IN_PROGRESS ||
+								renderData.status === BOOKING_STATUS.COMPLETED) && (
+								<div className="pt-3">
+									<table className="w-full">
+										<tbody>
 											<tr className="border-t border-gray-300">
 												<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
 													Tổng tiền
@@ -659,60 +660,47 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 													{formatPrice(2000000)}
 												</td>
 											</tr>
-										)}
-										{
-											// Button thêm hình xăm cho đơn hàng
-											// renderData.status === BOOKING_STATUS.COMPLETED ? (
-											// 	<tr className="border-t border-gray-300">
-											// 		<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
-											// 			Phương thức thanh toán
-											// 		</th>
-											// 		<td className="py-3 text-right text-base">Tiền mặt</td>
-											// 	</tr>
-											// ) : (
-											// 	<></>
-											// )
-										}
-										<tr className="border-t border-gray-300">
-											<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
-												Thanh toán
-											</th>
-											<td className="py-3 text-right text-sm">
-												<div>
-													<span className="text-gray-600">
-														{formatTime(new Date())} - Tiền mặt -{' '}
-													</span>
-													<span className="text-base">{formatPrice(1000000)}</span>
-												</div>
-												<div>
-													<span className="text-gray-600">
-														{formatTime(new Date())} - Ví điện tử -{' '}
-													</span>
-													<span className="text-base">{formatPrice(500000)}</span>
-												</div>
-											</td>
-										</tr>
-										<tr className="border-t border-gray-300">
-											<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
-												Còn lại
-											</th>
-											<td className="py-3 text-right text-xl text-red-500">
-												<div>{formatPrice(500000)}</div>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-							{
-								// Chuyển qua màn hình payment
-							}
-							<div className="flex justify-center">
-								<Link href={`/payment/${renderData.id}`}>
-									<div className="w-32">
-										<Button>Thanh toán</Button>
+											<tr className="border-t border-gray-300">
+												<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
+													Thanh toán
+												</th>
+												<td className="py-3 text-right text-sm">
+													<div>
+														<span className="text-gray-600">
+															{formatTime(new Date())} - Tiền mặt -{' '}
+														</span>
+														<span className="text-base">{formatPrice(1000000)}</span>
+													</div>
+													<div>
+														<span className="text-gray-600">
+															{formatTime(new Date())} - Ví điện tử -{' '}
+														</span>
+														<span className="text-base">{formatPrice(500000)}</span>
+													</div>
+												</td>
+											</tr>
+											<tr className="border-t border-gray-300">
+												<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
+													Còn lại
+												</th>
+												<td className="py-3 text-right text-xl text-red-500">
+													<div>{formatPrice(500000)}</div>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+									{
+										// Chuyển qua màn hình payment
+									}
+									<div className="flex justify-center">
+										<Link href={`/payment/${renderData.id}`}>
+											<div className="w-32">
+												<Button>Thanh toán</Button>
+											</div>
+										</Link>
 									</div>
-								</Link>
-							</div>
+								</div>
+							)}
 						</div>
 					</CardBody>
 				</Card>

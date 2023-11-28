@@ -32,7 +32,7 @@ function BookingPage({ studioId }) {
 	const [error, setError] = useState(false);
 	const [filter, setFilter] = useState(undefined);
 	const [total, setTotal] = useState(0);
-	const pageSize = 4;
+	const pageSize = 10;
 
 	const onSearch = (e) => {
 		setSearchKey(e.target.value);
@@ -60,7 +60,7 @@ function BookingPage({ studioId }) {
 		setError(false);
 
 		fetcher(
-			`${BASE_URL}/bookings-studio?studioId=${studioId}&page=${page}&pageSize=${pageSize}${
+			`${BASE_URL}/bookings/bookings-studio?studioId=${studioId}&page=${page}&pageSize=${pageSize}${
 				filter >= 0 ? `&status=${filter}` : ''
 			}`
 		)
@@ -269,7 +269,7 @@ function BookingPage({ studioId }) {
 											{booking.services &&
 											Object.keys(booking.services).length > 0 ? (
 												<div className="mx-auto border-b border-gray-300 py-3">
-													<div className="text-gray-500 pb-2">Dịch vụ đã đặt</div>
+													<div className="text-gray-500 pb-2">Dịch vụ tham khảo</div>
 													{booking.services.map((service, serviceIndex) => (
 														// Booking service
 														<div key={`${booking.id}-${service.id}`}>
