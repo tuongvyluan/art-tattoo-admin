@@ -1,6 +1,8 @@
 import { Link, Logo } from 'ui';
 import PropTypes from 'prop-types';
 import Button from './Button';
+import GoogleLogo from '/public/svg/google.svg';
+import { signIn } from 'next-auth/react';
 
 const Login = ({ handleSubmit, user, setUser }) => {
 	const handleFormChange = (e) => {
@@ -55,11 +57,19 @@ const Login = ({ handleSubmit, user, setUser }) => {
 										/>
 									</div>
 								</div>
-
 								<div className="flex justify-center">
 									<Button>Đăng nhập</Button>
 								</div>
 							</form>
+
+							<div className="flex justify-center pt-3">
+								<Button outline onClick={() => signIn('google')}>
+									<div className="flex flex-wrap gap-2 items-center justify-center">
+										<GoogleLogo className="w-4 h-4" />
+										<div>Đăng nhập với Google</div>
+									</div>
+								</Button>
+							</div>
 							<div className="text-center">
 								<small className="text-gray-700 text-center">
 									<span>Chưa có tài khoản?</span>{' '}

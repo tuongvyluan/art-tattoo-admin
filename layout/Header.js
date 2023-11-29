@@ -188,7 +188,7 @@ const Header = ({ toggleOpen }) => {
 									<div className='flex justify-center'>
 										<Avatar
 											size={28}
-											src={`/images/avatar.png`}
+											src={data?.user?.avatar ? data?.user?.avatar : `/images/avatar.png`}
 											alt={data ? data.user.firstName : 'Unknown'}
 										/>
 									</div>

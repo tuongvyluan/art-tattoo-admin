@@ -6,6 +6,7 @@ import { useSession } from 'next-auth/react';
 import Router, { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Loading } from 'ui';
+import { v4 } from 'uuid';
 
 const TattooDetails = () => {
 	// Check authenticated
@@ -37,46 +38,67 @@ const TattooDetails = () => {
 	}
 
 	if (!artTattoo) {
-		fetcher(`${BASE_URL}/TattooArts/Details?id=${id}&is`).then((data) => {
+		if (id !== 'new') {
+			fetcher(`${BASE_URL}/TattooArts/Details?id=${id}&is`).then((data) => {
+				// Get all stages from medias
+				const stageMap = new Map(
+					data.medias.map((obj) => {
+						return [
+							obj.tattooArtStageId,
+							{
+								id: obj.tattooArtStageId,
+								name: obj.stageName,
+								description: obj.description ? obj.description : '',
+								medias: [],
+								saved: true
+							}
+						];
+					})
+				);
 
-			// Get all stages from medias
-			const stageMap = new Map(
+				// Push medias to related stage
 				data.medias.map((obj) => {
-					return [
-						obj.tattooArtStageId,
-						{
-							id: obj.tattooArtStageId,
-							name: obj.stageName,
-							description: obj.description ? obj.description : '',
-							medias: [],
+					const value = stageMap.get(obj.tattooArtStageId);
+					value.medias.push({ ...obj, saved: true }); // saved field to note that this image has been saved to db
+					stageMap.set(obj.tattooArtStageId, value);
+				});
+				const renderData = {
+					...data,
+					stages: Array.from(stageMap, ([id, value]) => value),
+					bookingDetails: data.bookingDetails.map((bookingDetail) => {
+						return {
+							...bookingDetail,
 							saved: true
 						}
-					];
-				})
-			);
-
-			// Push medias to related stage
-			data.medias.map((obj) => {
-				const value = stageMap.get(obj.tattooArtStageId);
-				value.medias.push({ ...obj, saved: true }); // saved field to note that this image has been saved to db
-				stageMap.set(obj.tattooArtStageId, value);
+					})
+				};
+				setArtTattoo(renderData);
+				setArtist(renderData.artist);
 			});
-			const renderData = {
-				...data,
-				stages: Array.from(stageMap, ([id, value]) => value)
-			};
-			if (renderData.stages.length === 0) {
-				renderData.stages.push({
-					id: 1,
-					name: 'Sau khi xăm',
-					description: '',
-					medias: [],
-					saved: false
-				});
-			}
-			setArtTattoo(renderData);
-			setArtist(renderData.artist);
-		});
+		} else {
+			setArtTattoo({
+				id: '',
+				artistId: '',
+				styleId: 1,
+				bookingId: booking,
+				description: '',
+				size: 1,
+				placement: 0,
+				isPublicized: false,
+				status: 0,
+				totalRevenue: 0,
+				thumbnail: '',
+				medias: [],
+				bookingDetails: [{
+					bookingDetailsId: v4(),
+					operationType: 0,
+					price: 0,
+					saved: false,
+					paymentId: null
+				}],
+				stages: []
+			});
+		}
 	}
 
 	const handleSubmit = (newArtTattoo) => {

@@ -12,6 +12,7 @@ interface IUser extends DefaultUser {
   firstName?: string;
   lastName?: string;
   studioId?: string;
+  avatar?: string;
 }
 declare module "next-auth" {
   interface User extends IUser {}

@@ -5,6 +5,13 @@ export const enum ROLE {
 	ADMIN = 3
 }
 
+export const roleString = [
+	'Khách hàng',
+	'Nghệ sĩ xăm',
+	'Quản lý tiệm xăm',
+	'Admin'
+]
+
 export const enum ACCOUNT_STATUS {
 	NOT_VERIFIED = 0,
 	VERIFIED = 1,
@@ -64,11 +71,6 @@ export const enum ARTIST_STATUS {
 	UNAVAILABLE = 1
 }
 
-export const enum BOOKING_MEETING_STATUS {
-	PENDING = 0,
-	COMPLETED = 1
-}
-
 export const enum BOOKING_STATUS {
 	PENDING = 0,
 	CONFIRMED = 1,
@@ -88,14 +90,11 @@ export const stringBookingStatuses = [
 ];
 
 export const operationNames = [
-	'Full combo xăm',
-	'Xăm',
-	'Thiết kế',
+	'Khác',
+	'Trọn gói',
 	'Xoá xăm',
-	'Sửa xăm/Xăm đè',
-	'Xăm dặm lại',
-	'Đi nét viền',
-	'Tô màu'
+	'Dặm lại',
+	'Sửa xăm'
 ];
 
 export const enum TATTOO_ART_STATUS {
@@ -181,3 +180,13 @@ export const stringServicePlacement = [
 	'Nửa vai',
 	'Bodysuit'
 ];
+
+export const stringTattooStages = [
+	'Thiết kế',
+	'Đi nét',
+	'Đánh bóng',
+	'Tô màu',
+	'Sau xăm',
+	'Bảo hành',
+	'Khác'
+]

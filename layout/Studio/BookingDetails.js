@@ -1,6 +1,7 @@
 import { ChevronLeft } from 'icons/solid';
 import {
 	extractBookingStatusTimeline,
+	fetcherDelete,
 	fetcherPost,
 	fetcherPut,
 	formatDate,
@@ -21,12 +22,14 @@ import MyModal from 'components/MyModal';
 import cancelReasons from 'lib/cancelReasons';
 import { Modal } from 'flowbite-react';
 import CustomerServices from './CustomerServices';
-import moment from 'moment';
 
 const hasBookingMeeting = (bookingMeetings) => {
 	let result;
-	if (bookingMeetings?.at(0)?.meetingDate && isFuture(bookingMeetings?.at(0)?.meetingDate)) {
-		result = new Date(bookingMeetings?.at(0)?.meetingDate)
+	if (
+		bookingMeetings?.at(0)?.meetingDate &&
+		isFuture(bookingMeetings?.at(0)?.meetingDate)
+	) {
+		result = new Date(bookingMeetings?.at(0)?.meetingDate);
 	}
 	return result;
 };
@@ -50,6 +53,14 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 
 	// Booking meeting related vars
 	const [showBookingMeetingModal, setShowBookingMeetingModal] = useState(false);
+	const onShowBookingModal = () => {
+		setCurrentMeetingDate(
+			hasBookingMeeting(renderData.bookingMeetings)
+				? formatDateForInput(hasBookingMeeting(renderData.bookingMeetings))
+				: formatDateForInput(Date.now())
+		);
+		setShowBookingMeetingModal(true);
+	};
 	const [currentMeetingDate, setCurrentMeetingDate] = useState(
 		hasBookingMeeting(renderData.bookingMeetings)
 			? formatDateForInput(hasBookingMeeting(renderData.bookingMeetings))
@@ -78,6 +89,19 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 		fetcherPost(`${BASE_URL}/booking-meetings`, {
 			bookingId: renderData.id,
 			meetingDate: date
+		});
+	};
+
+	const updateBookingMeeting = (id, date) => {
+		fetcherPut(`${BASE_URL}/booking-meetings`, {
+			id: id,
+			meetingDate: date
+		});
+	};
+
+	const deleteBookingMeeting = (id) => {
+		fetcherDelete(`${BASE_URL}/booking-meetings/${id}`).then(() => {
+			setLoading(true);
 		});
 	};
 
@@ -121,8 +145,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	};
 
 	const handleChangeMeetingDate = (newDate) => {
-		const today = new Date(new Date().getDate() - 1);
-		if (new Date(newDate) < today) {
+		if (!isFuture(newDate)) {
 			handleAlert(
 				true,
 				'Ngày hẹn không hợp lệ',
@@ -130,7 +153,12 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 				true
 			);
 		} else {
-			setCurrentMeetingDate(formatDateForInput(new Date(newDate)));
+			if (hasBookingMeeting(renderData.bookingMeetings)) {
+				updateBookingMeeting(renderData.bookingMeetings.at(0).id, newDate);
+			} else {
+				createBookingMeeting(newDate);
+			}
+			setLoading(true);
 		}
 	};
 
@@ -179,13 +207,31 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 						<Modal.Footer>
 							<div className="flex justify-center gap-2 w-full">
 								<div className="w-24">
-									<Button outline>Huỷ thay đổi</Button>
+									<Button onClick={() => setShowBookingMeetingModal(false)} outline>
+										Huỷ thay đổi
+									</Button>
 								</div>
 								<div className="w-24">
-									<Button warn>Xoá lịch hẹn</Button>
+									<Button
+										onClick={() =>
+											deleteBookingMeeting(renderData.bookingMeetings.at(0).id)
+										}
+										warn
+									>
+										Xoá lịch hẹn
+									</Button>
 								</div>
 								<div className="w-24">
-									<Button>Xác nhận</Button>
+									<Button
+										onClick={() =>
+											updateBookingMeeting(
+												renderData.bookingMeetings.at(0).id,
+												currentMeetingDate
+											)
+										}
+									>
+										Xác nhận
+									</Button>
 								</div>
 							</div>
 						</Modal.Footer>
@@ -284,7 +330,9 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 																		Buổi hẹn kế tiếp vào ngày:
 																	</div>
 																	<div className="font-bold text-lg text-green-500">
-																		{formatDate(hasBookingMeeting(renderData.bookingMeetings))}
+																		{formatDate(
+																			hasBookingMeeting(renderData.bookingMeetings)
+																		)}
 																	</div>
 																</div>
 																<div className="pt-3">
@@ -299,7 +347,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 																					BOOKING_STATUS.CONFIRMED
 																				}
 																				onClick={() =>
-																					setShowBookingMeetingModal(true)
+																					onShowBookingModal()
 																				}
 																			>
 																				Chỉnh sửa lịch hẹn
@@ -315,11 +363,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 																	renderData.status ===
 																		BOOKING_STATUS.IN_PROGRESS) && (
 																	<div className="w-max ">
-																		<Button
-																			onClick={() =>
-																				setShowBookingMeetingModal(true)
-																			}
-																		>
+																		<Button onClick={onShowBookingModal}>
 																			Thêm lịch hẹn
 																		</Button>
 																	</div>
