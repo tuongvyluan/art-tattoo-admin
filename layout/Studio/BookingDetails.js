@@ -1,35 +1,35 @@
 import { ChevronLeft } from 'icons/solid';
 import {
 	extractBookingStatusTimeline,
-	fetcher,
+	fetcherPost,
 	fetcherPut,
 	formatDate,
 	formatDateForInput,
 	formatPrice,
 	formatTime
 } from 'lib';
-import {
-	BOOKING_STATUS,
-	stringBookingStatuses,
-	stringColor,
-	stringDifficult,
-	stringPlacements,
-	stringSize
-} from 'lib/status';
+import { BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import { Alert, Card, CardBody, Link } from 'ui';
 import { WidgetOrderStatus } from 'ui/WidgetOrderStatus';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Button from 'components/Button';
 import { BASE_URL } from 'lib/env';
 import MyModal from 'components/MyModal';
 import cancelReasons from 'lib/cancelReasons';
-import SelectServicePage from './SelectService';
 import { Modal } from 'flowbite-react';
+import CustomerServices from './CustomerServices';
+
+const hasBookingMeeting = (bookingMeetings) => {
+	let result;
+	if (bookingMeetings?.at(0)?.meetingDate && new Date(bookingMeetings?.at(0)?.meetingDate) > new Date(new Date().getDate() - 1)) {
+		result = new Date(bookingMeetings?.at(0)?.meetingDate)
+	}
+	return result;
+};
 
 function BookingDetailsPage({ data, studioId, setLoading }) {
-	const [services, setServices] = useState([]);
 	const [renderData, setRenderData] = useState(data);
 
 	const timeline = extractBookingStatusTimeline(renderData);
@@ -49,14 +49,12 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	// Booking meeting related vars
 	const [showBookingMeetingModal, setShowBookingMeetingModal] = useState(false);
 	const [currentMeetingDate, setCurrentMeetingDate] = useState(
-		renderData.date
-			? formatDateForInput(renderData.date)
+		hasBookingMeeting(renderData.bookingMeetings)
+			? formatDateForInput(hasBookingMeeting(renderData.bookingMeetings))
 			: formatDateForInput(Date.now())
 	);
 
 	// Service related vars
-	const [showServiceModal, setShowServiceModal] = useState(false);
-
 	const [showAlert, setShowAlert] = useState(false);
 
 	const [alertContent, setAlertContent] = useState({
@@ -74,16 +72,17 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 		});
 	};
 
-	const [meetingDate, setMeetingDate] = useState(
-		renderData.date
-			? formatDateForInput(renderData.date)
-			: formatDateForInput(Date.now())
-	);
+	const createBookingMeeting = (date) => {
+		fetcherPost(`${BASE_URL}/booking-meetings`, {
+			bookingId: renderData.id,
+			meetingDate: date
+		});
+	};
 
-	const confirmBooking = () => {
+	const confirmBooking = (meetingDate) => {
 		handleAlert(true, 'Đang xác nhận');
+		createBookingMeeting(meetingDate);
 		fetcherPut(`${BASE_URL}/studios/${studioId}/bookings/${renderData.id}`, {
-			meetingDate: new Date(meetingDate).toISOString(),
 			status: BOOKING_STATUS.CONFIRMED
 		})
 			.then((data) => {
@@ -120,7 +119,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	};
 
 	const handleChangeMeetingDate = (newDate) => {
-		const today = Date.now();
+		const today = new Date(new Date().getDate() - 1);
 		if (new Date(newDate) < today) {
 			handleAlert(
 				true,
@@ -129,63 +128,9 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 				true
 			);
 		} else {
-			setMeetingDate(newDate);
-			setCurrentMeetingDate(JSON.parse(JSON.stringify(newDate)));
+			setCurrentMeetingDate(formatDateForInput(new Date(newDate)));
 		}
 	};
-
-	useEffect(() => {
-		if (
-			renderData.status === BOOKING_STATUS.CONFIRMED ||
-			renderData.status === BOOKING_STATUS.PENDING
-		) {
-			fetcher(`${BASE_URL}/studios/${studioId}/services?pageSize=100`)
-				.then((data) => {
-					setServices(
-						data.services.map((service) => {
-							return {
-								...service,
-								quantity: 0
-							};
-						})
-					);
-				})
-				.catch((e) => {
-					console.log(e);
-				});
-		}
-		if (renderData.status !== BOOKING_STATUS.PENDING) {
-			renderData.bookingMeetings = [
-				{
-					date: new Date(new Date(data.createdAt).valueOf() + Math.random() * 1e10),
-					status: 'Pending',
-					createdAt: new Date(
-						new Date(data.createdAt).valueOf() + Math.random() * 1e10
-					)
-				},
-				{
-					date: new Date(new Date(data.createdAt).valueOf() + Math.random() * 1e10),
-					status: 'Completed',
-					createdAt: new Date(
-						new Date(data.createdAt).valueOf() + Math.random() * 1e10
-					)
-				},
-				{
-					date: new Date(new Date(data.createdAt).valueOf() + Math.random() * 1e10),
-					status: 'Completed',
-					createdAt: new Date(
-						new Date(data.createdAt).valueOf() + Math.random() * 1e10
-					)
-				}
-			];
-		}
-		renderData.services.map((service, serviceIndex) => {
-			return {
-				...service,
-				quantity: 1
-			};
-		});
-	}, []);
 
 	return (
 		<div className="relative">
@@ -201,16 +146,22 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 			<MyModal
 				size="md"
 				title={
-					renderData.bookingMeetings?.at(0)?.status === 'Pending'
+					hasBookingMeeting(renderData.bookingMeetings)
 						? 'Cập nhật lịch hẹn'
-						: 'Thêm lịch hẹn'
+						: 'Tạo lịch hẹn'
 				}
 				openModal={showBookingMeetingModal}
 				setOpenModal={setShowBookingMeetingModal}
-				onSubmit={() => handleChangeMeetingDate(currentMeetingDate)}
+				onSubmit={() => {
+					if (bookingStatus === BOOKING_STATUS.PENDING) {
+						confirmBooking(currentMeetingDate);
+					} else {
+						handleChangeMeetingDate(currentMeetingDate);
+					}
+				}}
 				cancelTitle="Huỷ thay đổi"
 				confirmTitle="Xác nhận"
-				noFooter={renderData.bookingMeetings?.at(0)?.status === 'Pending'}
+				noFooter={hasBookingMeeting(renderData.bookingMeetings)}
 			>
 				<div className="">
 					<div className="pb-2 text-center">Lịch hẹn mới sẽ vào ngày:</div>
@@ -222,7 +173,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							onChange={(e) => setCurrentMeetingDate(e.target.value)}
 						/>
 					</div>
-					{renderData.bookingMeetings?.at(0)?.status === 'Pending' && (
+					{hasBookingMeeting(renderData.bookingMeetings) && (
 						<Modal.Footer>
 							<div className="flex justify-center gap-2 w-full">
 								<div className="w-24">
@@ -316,63 +267,67 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 										{
 											// Confirm ngày hẹn
 										}
-										<div className="pt-3 mt-3 border-t border-gray-300">
-											<div className="font-semibold text-xl pb-2">
-												Cập nhật buổi hẹn
-											</div>
-											<div className="">
-												<div>
-													{renderData.bookingMeetings &&
-													renderData.bookingMeetings.at(0)?.status === 'Pending' ? (
-														<div>
-															<div className="text-base">
-																<div className="pb-2">
-																	Buổi hẹn kế tiếp vào ngày:
+										{(bookingStatus === BOOKING_STATUS.CONFIRMED ||
+											bookingStatus === BOOKING_STATUS.IN_PROGRESS) && (
+											<div className="pt-3 mt-3 border-t border-gray-300">
+												<div className="font-semibold text-xl pb-2">
+													Cập nhật buổi hẹn
+												</div>
+												<div className="">
+													<div>
+														{hasBookingMeeting(renderData.bookingMeetings) ? (
+															<div>
+																<div className="text-base">
+																	<div className="pb-2">
+																		Buổi hẹn kế tiếp vào ngày:
+																	</div>
+																	<div className="font-bold text-lg text-green-500">
+																		{formatDate(hasBookingMeeting(renderData.bookingMeetings))}
+																	</div>
 																</div>
-																<div className="font-bold text-lg text-green-500">
-																	{formatDate(bookingStatus.meetingDate)}
+																<div className="pt-3">
+																	{(renderData.status === BOOKING_STATUS.CONFIRMED ||
+																		renderData.status === BOOKING_STATUS.PENDING ||
+																		renderData.status ===
+																			BOOKING_STATUS.IN_PROGRESS) && (
+																		<div className="w-max">
+																			<Button
+																				outline={
+																					renderData.status ===
+																					BOOKING_STATUS.CONFIRMED
+																				}
+																				onClick={() =>
+																					setShowBookingMeetingModal(true)
+																				}
+																			>
+																				Chỉnh sửa lịch hẹn
+																			</Button>
+																		</div>
+																	)}
 																</div>
 															</div>
-															<div className="pt-3">
+														) : (
+															<div>
 																{(renderData.status === BOOKING_STATUS.CONFIRMED ||
 																	renderData.status === BOOKING_STATUS.PENDING ||
 																	renderData.status ===
 																		BOOKING_STATUS.IN_PROGRESS) && (
-																	<div className="w-max">
+																	<div className="w-max ">
 																		<Button
-																			outline={
-																				renderData.status ===
-																				BOOKING_STATUS.CONFIRMED
-																			}
 																			onClick={() =>
 																				setShowBookingMeetingModal(true)
 																			}
 																		>
-																			Chỉnh sửa lịch hẹn
+																			Thêm lịch hẹn
 																		</Button>
 																	</div>
 																)}
 															</div>
-														</div>
-													) : (
-														<div>
-															{(renderData.status === BOOKING_STATUS.CONFIRMED ||
-																renderData.status === BOOKING_STATUS.PENDING ||
-																renderData.status ===
-																	BOOKING_STATUS.IN_PROGRESS) && (
-																<div className="w-max ">
-																	<Button
-																		onClick={() => setShowBookingMeetingModal(true)}
-																	>
-																		Thêm lịch hẹn
-																	</Button>
-																</div>
-															)}
-														</div>
-													)}
+														)}
+													</div>
 												</div>
 											</div>
-										</div>
+										)}
 									</div>
 									<div className="flex flex-col justify-start flex-grow pt-3 md:pt-0">
 										{timeline.length > 0 ? (
@@ -401,118 +356,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								// Customer services
 							}
 							<div className="pt-3">
-								<div className="flex justify-between w-full pb-1">
-									<div className="font-semibold text-xl pb-2">Dịch vụ tham khảo</div>
-									{/* {(renderData.status === BOOKING_STATUS.PENDING ||
-										renderData.status === BOOKING_STATUS.CONFIRMED) && (
-										<div>
-											<Button onClick={() => setShowServiceModal(true)} outline>
-												Sửa dịch vụ
-											</Button>
-										</div>
-									)} */}
-								</div>
-								<div className="block">
-									{renderData.services.map((service, serviceIndex) => (
-										<div key={service.id}>
-											<div className="flex justify-between items-center w-full">
-												<div
-													key={service.id}
-													className="pb-1 flex flex-wrap text-base"
-												>
-													<div>{serviceIndex + 1}</div>
-													<div className="pr-1">
-														. {stringSize.at(service.size)},
-													</div>
-
-													{service.placement ? (
-														<div className="pr-1">
-															Vị trí xăm: {stringPlacements.at(service.placement)},
-														</div>
-													) : (
-														<></>
-													)}
-
-													<div className="pr-1">
-														{stringColor(service.hasColor)},
-													</div>
-
-													<div className="pr-1">
-														{stringDifficult(service.isDifficult)},
-													</div>
-
-													<div className="pr-1">
-														{formatPrice(service.minPrice)} -{' '}
-														{formatPrice(service.maxPrice)}
-													</div>
-												</div>
-											</div>
-											{/* <div>
-												{renderData.tattooArts?.at(serviceIndex) && (
-													<div
-														key={renderData.tattooArts?.at(serviceIndex).id}
-														className="py-2 flex flex-row justify-start gap-3 flex-wrap"
-													>
-														<Link
-															href={`/tattoo/${
-																renderData.tattooArts?.at(serviceIndex).id
-															}?booking=${data.id}`}
-														>
-															<div className="cursor-pointer py-2 flex justify-start gap-3 flex-wrap">
-																<div className="relative w-24 h-24">
-																	<Image
-																		layout="fill"
-																		src={
-																			renderData.tattooArts?.at(serviceIndex)
-																				.thumbnail
-																				? renderData.tattooArts?.at(serviceIndex)
-																						.thumbnail
-																				: '/images/ATL.png'
-																		}
-																		alt={renderData.tattooArts?.at(serviceIndex).id}
-																		className="object-contain"
-																	/>
-																</div>
-																<div className="flex-grow">
-																	<div>
-																		<span>Nghệ sĩ xăm: </span>
-																		<span className="font-semibold">
-																			{
-																				renderData.tattooArts?.at(serviceIndex)
-																					.artist?.firstName
-																			}{' '}
-																			{
-																				renderData.tattooArts?.at(serviceIndex)
-																					.artist?.lastName
-																			}
-																		</span>
-																	</div>
-																	{renderData.tattooArts
-																		?.at(serviceIndex)
-																		.bookingDetails.map(
-																			(bookingDetail, bookingDetailIndex) => (
-																				<div
-																					key={bookingDetail.id}
-																					className="flex justify-between items-center"
-																				>
-																					<div className="text-base">
-																						{bookingDetail.operationName}
-																					</div>
-																					<div className="text-lg">
-																						{formatPrice(bookingDetail.price)}
-																					</div>
-																				</div>
-																			)
-																		)}
-																</div>
-															</div>
-														</Link>
-													</div>
-												)}
-											</div> */}
-										</div>
-									))}
-								</div>
+								<CustomerServices services={renderData.services} />
 							</div>
 
 							{
@@ -614,6 +458,14 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 											}}
 										>
 											Huỷ
+										</Button>
+									</div>
+								)}
+
+								{renderData.status === BOOKING_STATUS.PENDING && (
+									<div className="w-20">
+										<Button onClick={() => setShowBookingMeetingModal(true)}>
+											Đồng ý
 										</Button>
 									</div>
 								)}
