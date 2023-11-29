@@ -21,6 +21,15 @@ const StudioService = () => {
 		);
 	}
 
+	if (status === 'unauthenticated') {
+		Router.replace('/')
+		return (
+			<div className="flex items-center justify-center h-full">
+				<Loading />
+			</div>
+		);
+	}
+
 	if (status === 'authenticated' && data.user.role === ROLE.STUDIO) {
 		const studioId = data.user.studioId;
 		if (loading) {
@@ -51,8 +60,6 @@ const StudioService = () => {
 				/>
 			);
 		}
-	} else {
-		Router.replace('/');
 	}
 };
 

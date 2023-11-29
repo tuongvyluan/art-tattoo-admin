@@ -15,10 +15,16 @@ const Booking = () => {
 			</div>
 		);
 	}
+	if (status === 'unauthenticated') {
+		Router.replace('/')
+		return (
+			<div className="flex items-center justify-center h-full">
+				<Loading />
+			</div>
+		);
+	}
 	if (status === 'authenticated' && data.user.role === ROLE.STUDIO) {
 		return <BookingPage studioId={data.user.studioId} />;
-	} else {
-		Router.replace('/');
 	}
 };
 

@@ -27,6 +27,15 @@ const TattooDetails = () => {
 		);
 	}
 
+	if (status === 'unauthenticated') {
+		Router.replace('/')
+		return (
+			<div className="flex items-center justify-center h-full">
+				<Loading />
+			</div>
+		);
+	}
+
 	if (!artistList) {
 		fetcher(`${BASE_URL}/artists/${data.user.studioId}/artist-studio-list`)
 			.then((data) => {
@@ -123,8 +132,6 @@ const TattooDetails = () => {
 				handleSubmit={handleSubmit}
 			/>
 		);
-	} else {
-		Router.replace('/');
 	}
 };
 

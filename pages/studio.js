@@ -40,6 +40,14 @@ const StudioPage = () => {
 			</div>
 		);
 	}
+	if (status === 'unauthenticated') {
+		Router.replace('/')
+		return (
+			<div className="flex items-center justify-center h-full">
+				<Loading />
+			</div>
+		);
+	}
 	if (status === 'authenticated') {
 		if (data.user.role === ROLE.ADMIN) {
 			return <AdminStudioPage />;
@@ -81,8 +89,6 @@ const StudioPage = () => {
 		} else {
 			signOut();
 		}
-	} else {
-		Router.replace('/');
 	}
 };
 

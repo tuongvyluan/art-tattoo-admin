@@ -47,7 +47,12 @@ const BookingDetails = () => {
 		);
 	}
 	if (status === 'unauthenticated') {
-		Router.replace('/');
+		Router.replace('/')
+		return (
+			<div className="flex items-center justify-center h-full">
+				<Loading />
+			</div>
+		);
 	} else {
 		return <BookingDetailsPage setLoading={setLoading} data={bookingData} studioId={data.user.studioId} />;
 	}
