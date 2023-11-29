@@ -6,7 +6,8 @@ import {
 	formatDate,
 	formatDateForInput,
 	formatPrice,
-	formatTime
+	formatTime,
+	isFuture
 } from 'lib';
 import { BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
 import PropTypes from 'prop-types';
@@ -20,10 +21,11 @@ import MyModal from 'components/MyModal';
 import cancelReasons from 'lib/cancelReasons';
 import { Modal } from 'flowbite-react';
 import CustomerServices from './CustomerServices';
+import moment from 'moment';
 
 const hasBookingMeeting = (bookingMeetings) => {
 	let result;
-	if (bookingMeetings?.at(0)?.meetingDate && new Date(bookingMeetings?.at(0)?.meetingDate) > new Date(new Date().getDate() - 1)) {
+	if (bookingMeetings?.at(0)?.meetingDate && isFuture(bookingMeetings?.at(0)?.meetingDate)) {
 		result = new Date(bookingMeetings?.at(0)?.meetingDate)
 	}
 	return result;
