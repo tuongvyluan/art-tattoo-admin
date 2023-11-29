@@ -34,6 +34,19 @@ const hasBookingMeeting = (bookingMeetings) => {
 	return result;
 };
 
+const calculateTotal = (tattooArts) => {
+	if (!tattooArts) {
+		return 0
+	}
+	let total = 0
+	tattooArts.forEach((a) => {
+		a.bookingDetails.forEach((b) => {
+			total += b.price
+		})
+	})
+	return total
+}
+
 function BookingDetailsPage({ data, studioId, setLoading }) {
 	const [renderData, setRenderData] = useState(data);
 
@@ -539,7 +552,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 												</th>
 												<td className="py-3 text-right text-xl text-red-500">
 													{/* {formatPrice(renderData.total)} */}
-													{formatPrice(renderData.total ? renderData.total : 0)}
+													{formatPrice(calculateTotal(renderData.tattooArts))}
 												</td>
 											</tr>
 											{/* <tr className="border-t border-gray-300">

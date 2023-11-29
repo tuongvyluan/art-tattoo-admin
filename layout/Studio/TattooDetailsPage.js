@@ -116,7 +116,8 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 			defaultTattoo.size !== tattoo.size ||
 			defaultTattoo.placement !== tattoo.placement ||
 			defaultTattoo.thumbnail !== thumbnail ||
-			defaultTattoo.isPublicized !== tattoo.isPublicized
+			defaultTattoo.isPublicized !== tattoo.isPublicized ||
+			defaultTattoo.artistId !== selectedArtist
 		);
 	};
 
@@ -216,8 +217,6 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 			handleAlert(true, 'Đang cập nhật hình xăm...');
 			if (hasTattooChange()) {
 				handleUpdateTattoo();
-			} else {
-				handleAlert(false, '', '');
 			}
 			handleBookingDetails();
 		}
