@@ -224,10 +224,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								<div className="w-24">
 									<Button
 										onClick={() =>
-											updateBookingMeeting(
-												renderData.bookingMeetings.at(0).id,
-												currentMeetingDate
-											)
+											handleChangeMeetingDate(currentMeetingDate)
 										}
 									>
 										Xác nhận
