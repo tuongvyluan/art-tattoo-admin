@@ -14,7 +14,7 @@ import {
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
 import Button from 'components/Button';
-import { fetcherPost, fetcherPut } from 'lib';
+import { fetcherDelete, fetcherPost, fetcherPut } from 'lib';
 import { CldUploadButton } from 'next-cloudinary';
 import { generateSHA1, generateSignature } from 'lib/cloudinary_signature';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -64,9 +64,10 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 		const bookingDetails = tattoo.bookingDetails;
 		bookingDetails.push({
 			bookingDetailsId: v4(),
-			operationType: 0,
+			operationId: 0,
 			price: 0,
-			saved: false
+			saved: false,
+			paymentId: null
 		});
 		setTattoo({ ...tattoo, bookingDetails: bookingDetails });
 	};
@@ -78,6 +79,7 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 	};
 
 	const handleBookingDetail = (value, detailIndex, changePrice = true) => {
+		console.log(value);
 		const bookingDetails = tattoo.bookingDetails;
 		const detail = changePrice
 			? {
@@ -86,14 +88,14 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 			  }
 			: {
 					...bookingDetails.at(detailIndex),
-					operationType: value
+					operationId: value
 			  };
 		bookingDetails[detailIndex] = detail;
 		let price = 0;
 		bookingDetails.map((d) => {
 			price += d.price;
 		});
-		setTattoo({ ...tattoo, bookingDetails: bookingDetails, totalRevenue: price });
+		setTattoo({ ...tattoo, bookingDetails: bookingDetails, total: price });
 	};
 
 	const setTattooState = (key, newValue) => {
@@ -124,62 +126,100 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 	// 	const removedStages = oldStages.filter((stage) => (stage.saved === true && (newStages.filter((newStage) => ))))
 	// }
 
+	const handleCreateTattoo = () => {
+		const newTattoo = {
+			artistId: selectedArtist,
+			styleId: tattoo.styleId,
+			size: tattoo.size,
+			placement: tattoo.placement,
+			thumbnail: thumbnail,
+			isPublicized: tattoo.isPublicized,
+			bookingId: bookingId
+		};
+		fetcherPost(`${BASE_URL}/TattooArts/CreateTattoo`, newTattoo)
+			.then(async (data) => {
+				// await handleSaveStagesChange(data.id)
+				handleSubmit(newTattoo);
+				handleAlert(true, 'Tạo hình xăm thành công');
+				setDefaultTattoo(JSON.parse(JSON.stringify(tattoo)));
+			})
+			.catch((e) => {
+				handleAlert(true, 'Tạo hình xăm thất bại', '', true);
+			});
+	};
+
+	const handleUpdateTattoo = () => {
+		const newTattoo = {
+			id: tattoo.id,
+			styleId: tattoo.styleId,
+			size: tattoo.size,
+			placement: tattoo.placement,
+			thumbnail: thumbnail,
+			isPublicized: tattoo.isPublicized
+		};
+		fetcherPut(`${BASE_URL}/TattooArts/UpdateTattoo`, newTattoo)
+			.then(async (data) => {
+				// await handleSaveStagesChange(tattoo.id)
+				setDefaultTattoo(JSON.parse(JSON.stringify(tattoo)));
+				handleSubmit(newTattoo);
+				handleAlert(true, 'Cập nhật hình xăm thành công');
+			})
+			.catch((e) => {
+				handleAlert(true, 'Cập nhật hình xăm thất bại', '', true);
+			})
+			.finally(() => {
+				setTimeout(() => {
+					handleAlert(false, '', '');
+				}, 2000);
+			});
+	};
+
+	const createBookingDetail = (bd) => {
+		fetcherPost(`${BASE_URL}/booking-details`, {
+			bookingId: tattoo.bookingId,
+			price: bd.price,
+			operationId: bd.operationId,
+			tattooArtId: tattoo.id,
+			artistId: selectedArtist
+		});
+	};
+
+	const handleBookingDetails = () => {
+		const originalIds = [];
+		const newIds = [];
+		const originalBookingDetails = new Map(
+			defaultTattoo.bookingDetails.map((bd) => {
+				originalIds.push(bd.id);
+				return [bd.id, bd];
+			})
+		);
+		const newBookingDetails = new Map(
+			tattoo.bookingDetails.map((bd) => {
+				newIds.push(bd.id);
+				return [bd.id, bd];
+			})
+		);
+		let i = 0;
+		let newLength = newIds.length;
+		for (i; i < newLength; i++) {
+			if (!originalBookingDetails.has(newIds.at(i))) {
+				createBookingDetail(newBookingDetails.get(newIds.at(i)));
+			}
+		}
+	};
+
 	const handleSaveChange = async () => {
 		if (tattoo.id === '') {
 			handleAlert(true, 'Đang tạo hình xăm...');
-			const newTattoo = {
-				artistId: selectedArtist,
-				styleId: tattoo.styleId,
-				size: tattoo.size,
-				placement: tattoo.placement,
-				thumbnail: thumbnail,
-				isPublicized: tattoo.isPublicized,
-				bookingId: bookingId
-			};
-			fetcherPost(`${BASE_URL}/TattooArts/CreateTattoo`, newTattoo)
-				.then(async (data) => {
-					// await handleSaveStagesChange(data.id)
-					handleSubmit(newTattoo);
-					handleAlert(true, 'Tạo hình xăm thành công');
-					setDefaultTattoo(JSON.parse(JSON.stringify(tattoo)));
-				})
-				.catch((e) => {
-					handleAlert(true, 'Tạo hình xăm thất bại', '', true);
-				})
-				.finally(() => {
-					setTimeout(() => {
-						handleAlert(false, '', '');
-					}, 2000);
-				});
+			handleCreateTattoo();
 		} else {
 			handleAlert(true, 'Đang cập nhật hình xăm...');
 			if (hasTattooChange()) {
-				const newTattoo = {
-					id: tattoo.id,
-					styleId: tattoo.styleId,
-					size: tattoo.size,
-					placement: tattoo.placement,
-					thumbnail: thumbnail,
-					isPublicized: tattoo.isPublicized
-				};
-				fetcherPut(`${BASE_URL}/TattooArts/UpdateTattoo`, newTattoo)
-					.then(async (data) => {
-						// await handleSaveStagesChange(tattoo.id)
-						setDefaultTattoo(JSON.parse(JSON.stringify(tattoo)));
-						handleSubmit(newTattoo);
-						handleAlert(true, 'Cập nhật hình xăm thành công');
-					})
-					.catch((e) => {
-						handleAlert(true, 'Cập nhật hình xăm thất bại', '', true);
-					})
-					.finally(() => {
-						setTimeout(() => {
-							handleAlert(false, '', '');
-						}, 2000);
-					});
+				handleUpdateTattoo();
 			} else {
 				handleAlert(false, '', '');
 			}
+			handleBookingDetails();
 		}
 	};
 
@@ -386,12 +426,12 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 									{
 										// Booking details list
 									}
-									<div className="font-semibold text-lg pb-2">Ghi nhận chi phí dịch vụ</div>
+									<div className="font-semibold text-lg pb-2">
+										Ghi nhận chi phí dịch vụ
+									</div>
 
-									<div className="w-max">
-										<Button onClick={handleAddBookingDetail}>
-											Thêm dịch vụ
-										</Button>
+									<div className="w-max mb-3">
+										<Button onClick={handleAddBookingDetail}>Thêm dịch vụ</Button>
 									</div>
 
 									{tattoo.bookingDetails.map((detail, detailIndex) => (
@@ -407,23 +447,23 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 												<div className="relative flex flex-wrap justify-between items-center w-full">
 													<Dropdown className={'relative'}>
 														<DropdownToggle>
-															<div className="text-base w-40 flex flex-row items-center rounded-lg p-2 border border-gray-300 relative">
+															<div className="text-base w-40 flex flex-row items-center rounded-lg px-2 py-1 border border-gray-300 relative">
 																<ChevronDown
 																	className="absolute right-1"
 																	width={20}
 																	height={20}
 																/>
 																<div className="h-6">
-																	{operationNames.at(detail.operationType)}
+																	{operationNames.at(detail.operationId)}
 																</div>
 															</div>
 														</DropdownToggle>
-														<DropdownMenu>
+														<DropdownMenu className={'h-20 overflow-auto'}>
 															{operationNames.map((op, opIndex) => (
 																<div
 																	key={op}
 																	onClick={() =>
-																		handleBookingDetail(op, detailIndex, false)
+																		handleBookingDetail(opIndex, detailIndex, false)
 																	}
 																	className={`px-2 py-1 w-40 cursor-pointer hover:bg-gray-100`}
 																>
@@ -436,6 +476,7 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 													<div className="text-base relative">
 														<MoneyInput
 															value={detail.price}
+															disabled={detail.paymentId !== null}
 															onAccept={(value, mask) =>
 																handleBookingDetail(value, detailIndex)
 															}
@@ -444,16 +485,18 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 													{
 														// Remove booking detail icon
 													}
-													<button
-														onClick={() => handleRemoveBookingDetail(detailIndex)}
-													>
-														<AiOutlineClose
-															className={`absolute -top-3 -right-5 hover:scale-125 hover:text-red-500 ${
-																tattoo.bookingDetails.length > 1 ? '' : 'hidden'
-															}`}
-															size={16}
-														/>
-													</button>
+													{detail.paymentId === null && (
+														<button
+															onClick={() => handleRemoveBookingDetail(detailIndex)}
+														>
+															<AiOutlineClose
+																className={`absolute -top-3 -right-5 hover:scale-125 hover:text-red-500 ${
+																	tattoo.bookingDetails.length > 1 ? '' : 'hidden'
+																}`}
+																size={16}
+															/>
+														</button>
+													)}
 												</div>
 											</div>
 										</div>
@@ -464,55 +507,53 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 							{
 								// Add tattoo stage, including tattoo medias
 							}
-							{tattoo.stages.length > 0 && (
-								<div className="pt-3 border-t border-gray-300">
-									{tattoo.stages.map((stage, stageIndex) => (
-										<Card className={'pt-3'} key={stage.id}>
-											<CardBody className={'shadow-md bg-gray-50 relative'}>
-												<div className="w-full relative">
+							<div className="pt-3 border-t border-gray-300 mt-3">
+								{tattoo.stages.map((stage, stageIndex) => (
+									<Card className={'pt-3'} key={stage.id}>
+										<CardBody className={'shadow-md bg-gray-50 relative'}>
+											<div className="w-full relative">
+												{
+													//Stage body
+												}
+												<div key={stage.id}>
+													<div className="w-full rounded-lg p-2 text-base border border-gray-300">
+														{stringTattooStages.at(stage.stageStyle)}
+													</div>
+													<div>
+														<label className="pt-2 block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+															Mô tả
+														</label>
+														<textarea
+															className="w-full rounded-lg p-2 text-base border border-gray-300"
+															type="text"
+															rows={5}
+															value={stage.description}
+															name="description"
+															readOnly
+															placeholder="Chưa có mô tả cho giai đoạn"
+														/>
+													</div>
 													{
-														//Stage body
+														//Show media section
 													}
-													<div key={stage.id}>
-														<div className="w-full rounded-lg p-2 text-base border border-gray-300">
-															{stringTattooStages.at(stage.stageStyle)}
-														</div>
-														<div>
-															<label className="pt-2 block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-																Mô tả
-															</label>
-															<textarea
-																className="w-full rounded-lg p-2 text-base border border-gray-300"
-																type="text"
-																rows={5}
-																value={stage.description}
-																name="description"
-																readOnly
-																placeholder="Chưa có mô tả cho giai đoạn"
-															/>
-														</div>
-														{
-															//Show media section
-														}
-														<div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-															{stage.medias.map((media, mediaIndex) => (
-																<div className="relative" key={media.id}>
-																	<BackgroundImg
-																		key={media.id}
-																		className="relative w-full bg-center bg-cover bg-fallback mt-1"
-																		image={media.url}
-																		height={150}
-																	/>
-																</div>
-															))}
-														</div>
+													<div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+														{stage.medias.map((media, mediaIndex) => (
+															<div className="relative" key={media.id}>
+																<BackgroundImg
+																	key={media.id}
+																	className="relative w-full bg-center bg-cover bg-fallback mt-1"
+																	image={media.url}
+																	height={150}
+																/>
+															</div>
+														))}
 													</div>
 												</div>
-											</CardBody>
-										</Card>
-									))}
-								</div>
-							)}
+											</div>
+										</CardBody>
+									</Card>
+								))}
+							</div>
 						</div>
 						{
 							// Save or reset tattoo

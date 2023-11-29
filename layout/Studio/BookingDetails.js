@@ -10,7 +10,7 @@ import {
 	formatTime,
 	isFuture
 } from 'lib';
-import { BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
+import { BOOKING_STATUS, operationNames, stringBookingStatuses } from 'lib/status';
 import PropTypes from 'prop-types';
 import Image from 'next/image';
 import { Alert, Card, CardBody, Link } from 'ui';
@@ -452,7 +452,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 																className="object-contain rounded-2xl"
 															/>
 														</div>
-														<div className="flex-grow">
+														<div className="flex-grow text-base">
 															<div>
 																<span>Nghệ sĩ xăm: </span>
 																<span className="font-semibold">
@@ -466,7 +466,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 																		className="flex justify-between items-center"
 																	>
 																		<div className="text-base">
-																			{bookingDetail.operationName}
+																			{operationNames.at(bookingDetail.operationId)}
 																		</div>
 																		<div className="text-lg">
 																			{formatPrice(bookingDetail.price)}
@@ -533,8 +533,8 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							}
 							{(renderData.status === BOOKING_STATUS.IN_PROGRESS ||
 								renderData.status === BOOKING_STATUS.COMPLETED) && (
-								<div className="pt-3">
-									<table className="w-full">
+								<div>
+									<table className="w-full mb-3">
 										<tbody>
 											<tr className="border-t border-gray-300">
 												<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
@@ -542,10 +542,10 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 												</th>
 												<td className="py-3 text-right text-xl text-red-500">
 													{/* {formatPrice(renderData.total)} */}
-													{formatPrice(2000000)}
+													{formatPrice(renderData.total ? renderData.total : 0)}
 												</td>
 											</tr>
-											<tr className="border-t border-gray-300">
+											{/* <tr className="border-t border-gray-300">
 												<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
 													Thanh toán
 												</th>
@@ -571,7 +571,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 												<td className="py-3 text-right text-xl text-red-500">
 													<div>{formatPrice(500000)}</div>
 												</td>
-											</tr>
+											</tr> */}
 										</tbody>
 									</table>
 									{

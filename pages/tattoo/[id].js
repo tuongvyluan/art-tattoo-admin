@@ -91,7 +91,7 @@ const TattooDetails = () => {
 				medias: [],
 				bookingDetails: [{
 					bookingDetailsId: v4(),
-					operationType: 0,
+					operationId: 0,
 					price: 0,
 					saved: false,
 					paymentId: null
