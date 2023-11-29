@@ -140,9 +140,15 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 		fetcherPost(`${BASE_URL}/TattooArts/CreateTattoo`, newTattoo)
 			.then(async (data) => {
 				// await handleSaveStagesChange(data.id)
-				handleSubmit(newTattoo);
+				setTattoo({
+					...tattoo,
+					id: data.id
+				})
+				handleBookingDetails(data.id)
+				newTattoo.id = data.id
 				handleAlert(true, 'Tạo hình xăm thành công');
 				setDefaultTattoo(JSON.parse(JSON.stringify(tattoo)));
+				handleSubmit(newTattoo);
 			})
 			.catch((e) => {
 				handleAlert(true, 'Tạo hình xăm thất bại', '', true);
@@ -175,17 +181,17 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 			});
 	};
 
-	const createBookingDetail = (bd) => {
+	const createBookingDetail = (bd, tattooId) => {
 		fetcherPost(`${BASE_URL}/booking-details`, {
 			bookingId: tattoo.bookingId,
 			price: bd.price,
 			operationId: bd.operationId,
-			tattooArtId: tattoo.id,
+			tattooArtId: tattooId,
 			artistId: selectedArtist
 		});
 	};
 
-	const handleBookingDetails = () => {
+	const handleBookingDetails = (tattooId) => {
 		const originalIds = [];
 		const newIds = [];
 		const originalBookingDetails = new Map(
@@ -204,7 +210,7 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 		let newLength = newIds.length;
 		for (i; i < newLength; i++) {
 			if (!originalBookingDetails.has(newIds.at(i))) {
-				createBookingDetail(newBookingDetails.get(newIds.at(i)));
+				createBookingDetail(newBookingDetails.get(newIds.at(i)), tattooId);
 			}
 		}
 	};
@@ -218,7 +224,7 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 			if (hasTattooChange()) {
 				handleUpdateTattoo();
 			}
-			handleBookingDetails();
+			handleBookingDetails(tattoo.id);
 		}
 	};
 

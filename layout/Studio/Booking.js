@@ -6,6 +6,7 @@ import { Search } from 'icons/outline';
 import debounce from 'lodash.debounce';
 import {
 	BOOKING_STATUS,
+	operationNames,
 	stringBookingStatuses,
 	stringColor,
 	stringDifficult,
@@ -297,66 +298,13 @@ function BookingPage({ studioId }) {
 																	{formatPrice(service.maxPrice)}
 																</div>
 															</div>
-															{booking.tattooArts?.at(serviceIndex) && (
-																<div
-																	key={booking.tattooArts?.at(serviceIndex).id}
-																	className="py-2 flex flex-row justify-start gap-3 flex-wrap"
-																>
-																	<div className="relative w-24 h-24">
-																		<Image
-																			layout="fill"
-																			src={
-																				booking.tattooArts?.at(serviceIndex)
-																					.thumbnail
-																					? booking.tattooArts?.at(serviceIndex)
-																							.thumbnail
-																					: '/images/ATL.png'
-																			}
-																			alt={booking.tattooArts?.at(serviceIndex).id}
-																			className="object-contain"
-																		/>
-																	</div>
-																	<div className="flex-grow">
-																		<div>
-																			<span>Nghệ sĩ xăm: </span>
-																			<span className="font-semibold">
-																				{
-																					booking.tattooArts?.at(serviceIndex).artist
-																						?.firstName
-																				}{' '}
-																				{
-																					booking.tattooArts?.at(serviceIndex).artist
-																						?.lastName
-																				}
-																			</span>
-																		</div>
-																		{booking.tattooArts
-																			?.at(serviceIndex)
-																			.bookingDetails.map(
-																				(bookingDetail, bookingDetailIndex) => (
-																					<div
-																						key={bookingDetail.id}
-																						className="flex justify-between items-center"
-																					>
-																						<div className="text-base">
-																							{bookingDetail.operationName}
-																						</div>
-																						<div className="text-lg">
-																							{formatPrice(bookingDetail.price)}
-																						</div>
-																					</div>
-																				)
-																			)}
-																	</div>
-																</div>
-															)}
 														</div>
 													))}
 												</div>
 											) : (
 												<></>
 											)}
-											{/* {booking.tattooArts && booking.tattooArts.length > 0 && (
+											{booking.tattooArts && booking.tattooArts.length > 0 && (
 												<div className=" pb-3 border-b border-gray-300">
 													<div className="text-gray-500 pt-2">Hình xăm</div>
 													{booking.tattooArts?.map((tattoo, tattooIndex) => (
@@ -391,7 +339,7 @@ function BookingPage({ studioId }) {
 																			className="flex justify-between items-center"
 																		>
 																			<div className="text-base">
-																				{bookingDetail.operationName}
+																				{operationNames.at(bookingDetail.operationId)}
 																			</div>
 																			<div className="text-lg">
 																				{formatPrice(bookingDetail.price)}
@@ -403,7 +351,7 @@ function BookingPage({ studioId }) {
 														</div>
 													))}
 												</div>
-											)} */}
+											)}
 											<div className="flex justify-end pt-3 items-start">
 												<div className="text-right">
 													<div>

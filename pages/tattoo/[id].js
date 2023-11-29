@@ -111,8 +111,11 @@ const TattooDetails = () => {
 	}
 
 	const handleSubmit = (newArtTattoo) => {
+		if (id === 'new') {
+			Router.replace(`/tattoo/${newArtTattoo.id}?booking=${booking}`)
+			setArtTattoo(undefined)
+		}
 		setArtTattoo(newArtTattoo);
-		console.log(newArtTattoo);
 	};
 
 	if (status === 'authenticated' && data.user.role === ROLE.STUDIO) {
