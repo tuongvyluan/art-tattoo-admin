@@ -102,14 +102,16 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 		fetcherPost(`${BASE_URL}/booking-meetings`, {
 			bookingId: renderData.id,
 			meetingDate: date
-		});
+		}).then((data) => {
+			setLoading(true)
+		})
 	};
 
 	const updateBookingMeeting = (id, date) => {
 		fetcherPut(`${BASE_URL}/booking-meetings`, {
 			id: id,
 			meetingDate: date
-		});
+		})
 	};
 
 	const deleteBookingMeeting = (id) => {
@@ -171,7 +173,6 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 			} else {
 				createBookingMeeting(newDate);
 			}
-			setLoading(true);
 		}
 	};
 
