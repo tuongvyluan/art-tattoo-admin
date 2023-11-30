@@ -11,7 +11,7 @@ const CustomerServices = ({ services }) => {
 	return (
 		<div className="">
 			<div className="flex justify-between w-full pb-1">
-				<div className="font-semibold text-xl pb-2">Yêu cầu của khách hàng</div>
+				<div className="font-semibold text-xl pb-2">Nhu cầu của khách hàng</div>
 			</div>
 			<div className="block">
 				{services.map((service, serviceIndex) => (

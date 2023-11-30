@@ -7,7 +7,6 @@ import {
 	formatDate,
 	formatDateForInput,
 	formatPrice,
-	formatTime,
 	isFuture
 } from 'lib';
 import { BOOKING_STATUS, operationNames, stringBookingStatuses } from 'lib/status';
@@ -299,7 +298,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								</Link>
 								<div>
 									<span>
-										Mã đơn hàng: {renderData.id.split('-').reverse().at(0)} |{' '}
+										Mã đơn hàng: {renderData.id.split('-').at(0)} |{' '}
 									</span>
 									<span className="text-red-500">
 										{stringBookingStatuses[bookingStatus]}

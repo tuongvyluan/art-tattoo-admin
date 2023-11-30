@@ -270,7 +270,7 @@ function BookingPage({ studioId }) {
 											{booking.services &&
 											Object.keys(booking.services).length > 0 ? (
 												<div className="mx-auto border-b border-gray-300 py-3">
-													<div className="text-gray-500 pb-2">Dịch vụ tham khảo</div>
+													<div className="text-gray-500 pb-2">Nhu cầu của khách hàng</div>
 													{booking.services.map((service, serviceIndex) => (
 														// Booking service
 														<div key={`${booking.id}-${service.id}`}>

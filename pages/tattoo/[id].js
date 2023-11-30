@@ -48,7 +48,7 @@ const TattooDetails = () => {
 
 	if (!artTattoo) {
 		if (id !== 'new') {
-			fetcher(`${BASE_URL}/TattooArts/Details?id=${id}&is`).then((data) => {
+			fetcher(`${BASE_URL}/TattooArts/Details?id=${id}`).then((data) => {
 				// Get all stages from medias
 				const stageMap = new Map(
 					data.medias.map((obj) => {
