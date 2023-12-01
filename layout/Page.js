@@ -14,6 +14,7 @@ import { useRouter } from 'next/router';
 const NonDashboardRoutes = [
 	'/auth/signin',
 	'/auth/register',
+	'/auth/verify',
 	'/forgot',
 	'/lockscreen',
 	'/_error',

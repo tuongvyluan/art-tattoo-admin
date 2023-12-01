@@ -13,26 +13,6 @@ const StudioPage = () => {
 	const [loading, setLoading] = useState(true);
 	const [studio, setStudio] = useState(undefined);
 
-	const handleSubmit = (newStudio) => {
-		if (newStudio.id) {
-			fetcherPut(`${BASE_URL}/studios/${newStudio.id}`, newStudio)
-				.then((data) => {
-					console.log(data);
-				})
-				.catch((e) => {
-					console.log(e);
-				});
-		} else {
-			fetcherPost(`${BASE_URL}/studios`, newStudio)
-				.then((response) => {
-					console.log(response);
-					data.user.studioId = response.studioId;
-				})
-				.catch((e) => {
-					console.log(e);
-				});
-		}
-	};
 	if (status === 'loading') {
 		return (
 			<div className="flex items-center justify-center h-full">
@@ -41,7 +21,7 @@ const StudioPage = () => {
 		);
 	}
 	if (status === 'unauthenticated') {
-		Router.replace('/')
+		Router.replace('/');
 		return (
 			<div className="flex items-center justify-center h-full">
 				<Loading />
@@ -54,9 +34,13 @@ const StudioPage = () => {
 		}
 		if (data.user.role === ROLE.STUDIO) {
 			if (data.user.studioId && loading) {
-				fetcher(`${BASE_URL}/studios/${data.user.studioId}`).then((data) => {
+				fetcher(`${BASE_URL}/studios/${data.user.studioId}`).then((response) => {
 					setLoading(false);
-					setStudio(data);
+					const newStudio = {
+						...response,
+						avatar: data.user.avatar
+					};
+					setStudio(newStudio);
 				});
 			} else if (!data.user.studioId) {
 				const studio = {
@@ -70,12 +54,13 @@ const StudioPage = () => {
 					},
 					openTime: '08:00:00',
 					closeTime: '20:00:00',
+					avatar: '',
 					certificate: null,
 					isAuthorized: false,
 					isPrioritized: false,
 					status: 0
 				};
-				return <StudioInfo handleSubmit={handleSubmit} studio={studio} />;
+				return <StudioInfo studio={studio} />;
 			}
 			if (loading) {
 				return (
@@ -84,7 +69,7 @@ const StudioPage = () => {
 					</div>
 				);
 			} else {
-				return <StudioInfo handleSubmit={handleSubmit} studio={studio} />;
+				return <StudioInfo studio={studio} />;
 			}
 		} else {
 			signOut();

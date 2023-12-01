@@ -1,12 +1,15 @@
 import Button from 'components/Button';
-import { fetcherPut } from 'lib';
+import { fetcherPost, fetcherPut } from 'lib';
 import { BASE_URL } from 'lib/env';
+import { useSession } from 'next-auth/react';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Card, CardBody, Alert } from 'ui';
 
 function StudioInfo({ studio }) {
 	const [showAlert, setShowAlert] = useState(false);
+	const { data, update } = useSession();
+	const [avatar, setAvatar] = useState(studio.avatar);
 
 	const [alertContent, setAlertContent] = useState({
 		title: '',
@@ -34,9 +37,10 @@ function StudioInfo({ studio }) {
 
 	const handleReset = () => {
 		setProfile(defaultProfile);
+		setAvatar(studio.avatar)
 	};
 
-	const handleSubmit = (newStudio) => {
+	const handleUpdateStudio = (newStudio) => {
 		fetcherPut(`${BASE_URL}/studios/${newStudio.id}`, newStudio)
 			.then(() => {
 				setDefaultProfile(profile);
@@ -48,13 +52,52 @@ function StudioInfo({ studio }) {
 		handleAlert(true, '', 'Đang cập nhật studio.');
 	};
 
+	const handleCreateStudio = (newStudio) => {
+		fetcherPost(`${BASE_URL}/studios`, {
+			ownerId: studio.ownerId,
+			studioName: newStudio.studioName,
+			address: newStudio.address,
+			bioContent: newStudio.bioContent,
+			openTime: newStudio.openTime,
+			closeTime: newStudio.closeTime,
+			avatar: newStudio.avatar
+		})
+			.then((response) => {
+				update({
+					...data,
+					user: {
+						...data?.user,
+						studioId: response.studioId,
+						avatar: avatar
+					}
+				}).then(() => {
+					setDefaultProfile(profile);
+					handleAlert(true, '', 'Sửa thông tin thành công.');
+				});
+			})
+			.catch((e) => {
+				handleAlert(true, '', 'Sửa thông tin thất bại.', true);
+			});
+		handleAlert(true, '', 'Đang cập nhật studio.');
+	};
+
 	const handleFormSubmit = (e) => {
 		e.preventDefault();
-		handleSubmit({
-			...profile,
-			openTime: profile.openTime,
-			closeTime: profile.closeTime
-		});
+		if (studio.id) {
+			handleUpdateStudio({
+				...profile,
+				openTime: profile.openTime,
+				closeTime: profile.closeTime,
+				avatar: avatar
+			});
+		} else {
+			handleCreateStudio({
+				...profile,
+				openTime: profile.openTime,
+				closeTime: profile.closeTime,
+				avatar: avatar
+			});
+		}
 	};
 
 	return (
