@@ -341,10 +341,10 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							<div className="pt-3">
 								<div className="flex justify-between w-full pb-1">
 									<div className="font-semibold text-xl pb-2">
-										Các dịch vụ đã đặt
+										Các dịch vụ đã đặt ({renderData.services?.length})
 									</div>
 								</div>
-								<CustomerServices canEdit={true} services={renderData.services} />
+								<CustomerServices showMore={true} canEdit={true} services={renderData.services} />
 							</div>
 
 							<div

@@ -268,6 +268,11 @@ function BookingPage({ studioId }) {
 													</div>
 												</div>
 											</div>
+											<div className="flex justify-between w-full pb-1">
+												<div className="text-base font-semibold pb-2">
+													Các dịch vụ đã đặt ({booking.services?.length})
+												</div>
+											</div>
 											<CustomerServices services={booking.services} />
 											<div className="flex justify-end pt-3 items-start">
 												<div className="text-right">

@@ -7,7 +7,7 @@ import MyModal from 'components/MyModal';
 import { useState } from 'react';
 import MoneyInput from 'components/MoneyInput';
 
-const CustomerServices = ({ services, canEdit = false }) => {
+const CustomerServices = ({ services, canEdit = false, showMore = false }) => {
 	const [bookingServiceModal, setBookingServiceModal] = useState(false);
 	const [selectedService, setSelectedService] = useState(undefined);
 	const [selectedMeetingDate, setSelectedMeetingDate] = useState(
@@ -27,7 +27,7 @@ const CustomerServices = ({ services, canEdit = false }) => {
 				openModal={bookingServiceModal}
 				setOpenModal={setBookingServiceModal}
 			>
-				<div className="h-52">
+				<div className="h-52 overflow-auto">
 					{
 						// Tên dịch vụ
 					}
@@ -138,7 +138,12 @@ const CustomerServices = ({ services, canEdit = false }) => {
 			</MyModal>
 			<div className="block">
 				{services.map((service, serviceIndex) => (
-					<Card className={'shadow-lg'} key={service.id}>
+					<Card
+						className={`shadow-lg ${
+							(!showMore && serviceIndex > 2) ? 'hidden' : ''
+						}`}
+						key={service.id}
+					>
 						<div className="w-full flex justify-start gap-2 items-start bg-gray-50 py-5 relative">
 							{canEdit && (
 								<div className="absolute top-4 right-4 cursor-pointer flex flex-wrap gap-2">
