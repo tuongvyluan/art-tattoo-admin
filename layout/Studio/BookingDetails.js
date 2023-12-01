@@ -323,7 +323,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								// Customer description
 							}
 							{renderData.description && (
-								<div className="pt-3 pb-3 border-b border-gray-300 pb-3">
+								<div className="pt-3 pb-3 border-b border-gray-300">
 									<div className="font-semibold text-xl pb-2">
 										Mô tả của khách hàng
 									</div>
