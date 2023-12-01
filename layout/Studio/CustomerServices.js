@@ -1,26 +1,18 @@
 import PropTypes from 'prop-types';
-import {
-	stringPlacements,
-	stringServiceStatus,
-	stringSize
-} from 'lib/status';
+import { stringPlacements, stringServiceStatus, stringSize } from 'lib/status';
 import { formatDateTimeForInput, formatPrice, formatTime } from 'lib';
 import { Avatar, Card, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
-import {
-	MdEdit,
-	MdOutlineCalendarMonth,
-	MdOutlineClose
-} from 'react-icons/md';
-import Link from 'next/link';
-import Image from 'next/image';
+import { MdEdit, MdOutlineCalendarMonth, MdOutlineClose } from 'react-icons/md';
 import MyModal from 'components/MyModal';
 import { useState } from 'react';
 import MoneyInput from 'components/MoneyInput';
 
-const CustomerServices = ({ services }) => {
+const CustomerServices = ({ services, canEdit = false }) => {
 	const [bookingServiceModal, setBookingServiceModal] = useState(false);
 	const [selectedService, setSelectedService] = useState(undefined);
-	const [selectedMeetingDate, setSelectedMeetingDate] = useState(formatDateTimeForInput(new Date()))
+	const [selectedMeetingDate, setSelectedMeetingDate] = useState(
+		formatDateTimeForInput(new Date())
+	);
 
 	const onSelectUpdatedService = (serviceIndex) => {
 		setSelectedService(services.at(serviceIndex));
@@ -129,43 +121,44 @@ const CustomerServices = ({ services }) => {
 					}
 					<div className="flex gap-2 w-full items-center">
 						<div className="flex items-start gap-1 w-full">
-							<div className='w-20'>Ngày hẹn:</div>
-							<div className='w-min'>
+							<div className="w-20">Ngày hẹn:</div>
+							<div className="w-min">
 								<input
 									className="appearance-none relative block w-full text-base mb-2 px-3 py-1 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
 									type="datetime-local"
 									value={selectedMeetingDate}
-									onChange={(e) => setSelectedMeetingDate(formatDateTimeForInput(e.target.value))}
+									onChange={(e) =>
+										setSelectedMeetingDate(formatDateTimeForInput(e.target.value))
+									}
 								/>
 							</div>
 						</div>
 					</div>
 				</div>
 			</MyModal>
-			<div className="flex justify-between w-full pb-1">
-				<div className="font-semibold text-xl pb-2">Các dịch vụ đã đặt</div>
-			</div>
 			<div className="block">
 				{services.map((service, serviceIndex) => (
-					<Card key={service.id}>
+					<Card className={'shadow-lg'} key={service.id}>
 						<div className="w-full flex justify-start gap-2 items-start bg-gray-50 py-5 relative">
-							<div className="absolute top-4 right-4 cursor-pointer flex flex-wrap gap-2">
-								<div
-									onClick={() => onSelectUpdatedService(serviceIndex)}
-									className="relative"
-								>
-									<MdEdit size={20} />
+							{canEdit && (
+								<div className="absolute top-4 right-4 cursor-pointer flex flex-wrap gap-2">
+									<div
+										onClick={() => onSelectUpdatedService(serviceIndex)}
+										className="relative"
+									>
+										<MdEdit size={20} />
+									</div>
+									<div className="relative">
+										<MdOutlineClose size={20} />
+									</div>
 								</div>
-								<div className="relative">
-									<MdOutlineClose size={20} />
-								</div>
-							</div>
+							)}
 							{
 								// Phần hình xăm của booking service
 							}
 							<div className="flex justify-start gap-2 items-center bg-gray-50 pl-5">
 								<div>
-									<Link
+									{/* <Link
 										href=""
 										// href={`/tattoo/${tattoo.id}?booking=${data.id}`}
 									>
@@ -184,13 +177,16 @@ const CustomerServices = ({ services }) => {
 												/>
 											</div>
 										</div>
-									</Link>
+									</Link> */}
+									<div className="border border-black rounded-xl w-24 h-24 cursor-default">
+										<div className="px-2 py-7 text-center">Không có hình xăm</div>
+									</div>
 								</div>
 							</div>
 							{
 								// Phần bên phải của khung booking service
 							}
-							<div className="px-3 pb-5 w-full">
+							<div className="px-3 w-full">
 								<div key={service.id} className="pb-1 flex flex-wrap text-base">
 									<div>{serviceIndex + 1}</div>
 									<div className="pr-1">. {stringSize.at(service.size)},</div>
@@ -245,7 +241,8 @@ const CustomerServices = ({ services }) => {
 };
 
 CustomerServices.propTypes = {
-	services: PropTypes.array
+	services: PropTypes.array,
+	canEdit: PropTypes.bool
 };
 
 export default CustomerServices;

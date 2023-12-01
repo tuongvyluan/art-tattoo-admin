@@ -35,16 +35,16 @@ const hasBookingMeeting = (bookingMeetings) => {
 
 const calculateTotal = (tattooArts) => {
 	if (!tattooArts) {
-		return 0
+		return 0;
 	}
-	let total = 0
+	let total = 0;
 	tattooArts.forEach((a) => {
 		a.bookingDetails.forEach((b) => {
-			total += b.price
-		})
-	})
-	return total
-}
+			total += b.price;
+		});
+	});
+	return total;
+};
 
 function BookingDetailsPage({ data, studioId, setLoading }) {
 	const [renderData, setRenderData] = useState(data);
@@ -65,7 +65,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 
 	// Booking meeting related vars
 	const [showBookingMeetingModal, setShowBookingMeetingModal] = useState(false);
-	
+
 	const [currentMeetingDate, setCurrentMeetingDate] = useState(
 		hasBookingMeeting(renderData.bookingMeetings)
 			? formatDateForInput(hasBookingMeeting(renderData.bookingMeetings))
@@ -95,15 +95,15 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 			bookingId: renderData.id,
 			meetingDate: date
 		}).then((data) => {
-			setLoading(true)
-		})
+			setLoading(true);
+		});
 	};
 
 	const updateBookingMeeting = (id, date) => {
 		fetcherPut(`${BASE_URL}/booking-meetings`, {
 			id: id,
 			meetingDate: date
-		})
+		});
 	};
 
 	const deleteBookingMeeting = (id) => {
@@ -229,9 +229,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								</div>
 								<div className="w-24">
 									<Button
-										onClick={() =>
-											handleChangeMeetingDate(currentMeetingDate)
-										}
+										onClick={() => handleChangeMeetingDate(currentMeetingDate)}
 									>
 										Xác nhận
 									</Button>
@@ -290,9 +288,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 									</div>
 								</Link>
 								<div>
-									<span>
-										Mã đơn hàng: {renderData.id.split('-').at(0)} |{' '}
-									</span>
+									<span>Mã đơn hàng: {renderData.id.split('-').at(0)} | </span>
 									<span className="text-red-500">
 										{stringBookingStatuses[bookingStatus]}
 									</span>
@@ -343,7 +339,12 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								// Customer services
 							}
 							<div className="pt-3">
-								<CustomerServices services={renderData.services} />
+								<div className="flex justify-between w-full pb-1">
+									<div className="font-semibold text-xl pb-2">
+										Các dịch vụ đã đặt
+									</div>
+								</div>
+								<CustomerServices canEdit={true} services={renderData.services} />
 							</div>
 
 							<div
