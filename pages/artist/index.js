@@ -1,10 +1,10 @@
+import StudioArtist from 'layout/Studio/Artist';
+import { ROLE } from 'lib/status';
 import { signOut, useSession } from 'next-auth/react';
-import { Loading } from '../ui';
-import { ROLE } from '../lib/status';
-import StudioIndexPage from '../layout/Studio/Index';
+import Router from 'next/router';
+import { Loading } from 'ui';
 
-const Index = () => {
-	// Check authenticated
+const ArtistPage = () => {
 	const { status, data } = useSession();
 
 	if (status === 'authenticated') {
@@ -13,7 +13,7 @@ const Index = () => {
 		}
 		if (data.user.role === ROLE.STUDIO) {
 			if (data.user.studioId) {
-				return <StudioIndexPage studioId={data.user.studioId} />;
+				return <StudioArtist studioId={data.user.studioId} />;
 			} else {
 				Router.replace('/studio');
 				return (
@@ -32,8 +32,4 @@ const Index = () => {
 	);
 };
 
-Index.getInitialProps = async () => ({
-	namespacesRequired: ['header', 'footer', 'sidebar', 'dashboard']
-});
-
-export default Index;
+export default ArtistPage;

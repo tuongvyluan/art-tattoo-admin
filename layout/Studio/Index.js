@@ -1,13 +1,10 @@
 import { useState } from 'react';
 import { Avatar, Card, CardBody, Loading, WidgetStatCard } from '../../ui';
 import { Users } from 'icons/solid';
-import { useSession } from 'next-auth/react';
-import Router from 'next/router';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
 
-function StudioIndexPage() {
-	const { status, data } = useSession();
+function StudioIndexPage({ studioId }) {
 	const [studio, setStudio] = useState({
 		id: null,
 		ownerId: '',
@@ -24,24 +21,21 @@ function StudioIndexPage() {
 		bookings: []
 	});
 
-	if (status === 'loading')
+	if (studioId && !studio.id) {
+		fetcher(`${BASE_URL}/studios/${studioId}`).then((response) => {
+			setStudio({
+				...studio,
+				id: studioId,
+				ownerId: response.artistId,
+				artists: response.studioArtists,
+				bookings: response.bookings
+			});
+		});
 		return (
 			<div className="flex items-center justify-center h-full">
 				<Loading />
 			</div>
 		);
-	if (data.user.studioId && !studio.id) {
-		fetcher(`${BASE_URL}/studios/${data.user.studioId}`).then((response) => {
-			setStudio({
-				...studio,
-				id: data.user.studioId,
-				ownerId: data.user.id,
-				artists: response.studioArtists,
-				bookings: response.bookings
-			});
-		});
-	} else if (!data.user.studioId) {
-		Router.replace('/studio');
 	} else
 		return (
 			<>
@@ -79,7 +73,7 @@ function StudioIndexPage() {
 						/>
 					</div>
 				</div>
-				{studio.artists && studio.artists.length > 0 && (
+				{studio.artists && studio.artists.length > 0 ? (
 					<div>
 						<Card>
 							<CardBody className="flex">
@@ -89,13 +83,19 @@ function StudioIndexPage() {
 											<div className="flex justify-center">
 												<Avatar
 													size={48}
-													src={artist.artist.avatar ? artist.artist.avatar : '/images/ATL.png'}
+													src={
+														artist.artist.avatar
+															? artist.artist.avatar
+															: '/images/ATL.png'
+													}
 													alt={artist.artist.firstName}
 												/>
 											</div>
 											<div className="mt-1 flex justify-center text-center">
 												<div>
-													<span className="block">{artist.artist.firstName} {artist.artist.lastName}</span>
+													<span className="block">
+														{artist.artist.firstName} {artist.artist.lastName}
+													</span>
 												</div>
 											</div>
 										</a>
@@ -103,6 +103,11 @@ function StudioIndexPage() {
 								))}
 							</CardBody>
 						</Card>
+					</div>
+				) : (
+					<div className="flex items-center justify-center h-full">
+						Bạn đang chưa có nghệ sĩ nào, vào trang nghệ sĩ để nhập key từ nghệ sĩ và
+						thêm họ vào tiệm xăm của mình nhé.
 					</div>
 				)}
 			</>

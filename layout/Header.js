@@ -6,6 +6,7 @@ import { useTranslation } from 'i18n';
 import PropTypes from 'prop-types';
 import { useAppState } from 'components/AppProvider';
 import { ROLE } from 'lib/status';
+import { formatDate } from 'lib';
 
 const colors = [
 	'gray',
@@ -36,12 +37,21 @@ const Header = ({ toggleOpen }) => {
 		>
 			<div className="w-full mx-auto h-full">
 				<div className="relative flex items-center justify-between md:justify-end h-full">
-					<a
-						className="flex md:hidden items-center flex-shrink-0 px-4 cursor-pointer text-gray-900"
-						onClick={toggleOpen}
-					>
-						<MenuAlt1 width={18} height={18} strokeWidth={2} />
-					</a>
+					<div className="flex flex-wrap gap-2 items-center">
+						<a
+							className="flex md:hidden items-center flex-shrink-0 px-4 cursor-pointer text-gray-900"
+							onClick={toggleOpen}
+						>
+							<MenuAlt1 width={18} height={18} strokeWidth={2} />
+						</a>
+
+						{data?.user?.studioId && (
+							<div className="pb-3">
+								Gói hoạt động còn hạn đến ngày {formatDate(new Date())},{' '}
+								<Link href={'/package'}>gia hạn thêm</Link>
+							</div>
+						)}
+					</div>
 					<div className="inset-y-0 right-0 items-center px-4 sm:static sm:inset-auto flex h-full">
 						{/* <Dropdown className="px-3 static sm:relative h-full flex items-center">
 							<DropdownToggle className="h-full">

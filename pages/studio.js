@@ -1,6 +1,6 @@
 import AdminStudioPage from 'layout/Admin/Studio';
 import StudioInfo from 'layout/Studio/Profile';
-import { fetcher, fetcherPost, fetcherPut } from 'lib';
+import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
 import { ROLE } from 'lib/status';
 import { signOut, useSession } from 'next-auth/react';
