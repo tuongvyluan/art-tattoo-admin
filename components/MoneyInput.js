@@ -4,7 +4,7 @@ import { IMaskInput } from 'react-imask';
 const MoneyInput = ({ value, onAccept, currency = '₫', disabled = false }) => {
 	return (
 		<div className="relative">
-			<span className={`absolute left-2 text-sm ${disabled ? 'top-1' : 'top-0.5'}`}>{currency}</span>
+			<span className={`absolute left-2 text-sm top-1`}>{currency}</span>
 			<IMaskInput
 				disabled={disabled}
 				className="text-base text-black flex flex-row items-center rounded-lg py-0.5 pr-2 border border-gray-300 pl-5 w-full"

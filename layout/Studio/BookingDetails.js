@@ -65,14 +65,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 
 	// Booking meeting related vars
 	const [showBookingMeetingModal, setShowBookingMeetingModal] = useState(false);
-	const onShowBookingModal = () => {
-		setCurrentMeetingDate(
-			hasBookingMeeting(renderData.bookingMeetings)
-				? formatDateForInput(hasBookingMeeting(renderData.bookingMeetings))
-				: formatDateForInput(Date.now())
-		);
-		setShowBookingMeetingModal(true);
-	};
+	
 	const [currentMeetingDate, setCurrentMeetingDate] = useState(
 		hasBookingMeeting(renderData.bookingMeetings)
 			? formatDateForInput(hasBookingMeeting(renderData.bookingMeetings))
@@ -322,68 +315,6 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 											<div>{renderData.customer.phoneNumber}</div>
 											<div>{renderData.customer.email}</div>
 										</div>
-										{
-											// Confirm ngày hẹn
-										}
-										{(bookingStatus === BOOKING_STATUS.CONFIRMED ||
-											bookingStatus === BOOKING_STATUS.IN_PROGRESS) && (
-											<div className="pt-3 mt-3 border-t border-gray-300">
-												<div className="font-semibold text-xl pb-2">
-													Cập nhật buổi hẹn
-												</div>
-												<div className="">
-													<div>
-														{hasBookingMeeting(renderData.bookingMeetings) ? (
-															<div>
-																<div className="text-base">
-																	<div className="pb-2">
-																		Buổi hẹn kế tiếp vào ngày:
-																	</div>
-																	<div className="font-bold text-lg text-green-500">
-																		{formatDate(
-																			hasBookingMeeting(renderData.bookingMeetings)
-																		)}
-																	</div>
-																</div>
-																<div className="pt-3">
-																	{(renderData.status === BOOKING_STATUS.CONFIRMED ||
-																		renderData.status === BOOKING_STATUS.PENDING ||
-																		renderData.status ===
-																			BOOKING_STATUS.IN_PROGRESS) && (
-																		<div className="w-max">
-																			<Button
-																				outline={
-																					renderData.status ===
-																					BOOKING_STATUS.CONFIRMED
-																				}
-																				onClick={() =>
-																					onShowBookingModal()
-																				}
-																			>
-																				Chỉnh sửa lịch hẹn
-																			</Button>
-																		</div>
-																	)}
-																</div>
-															</div>
-														) : (
-															<div>
-																{(renderData.status === BOOKING_STATUS.CONFIRMED ||
-																	renderData.status === BOOKING_STATUS.PENDING ||
-																	renderData.status ===
-																		BOOKING_STATUS.IN_PROGRESS) && (
-																	<div className="w-max ">
-																		<Button onClick={onShowBookingModal}>
-																			Thêm lịch hẹn
-																		</Button>
-																	</div>
-																)}
-															</div>
-														)}
-													</div>
-												</div>
-											</div>
-										)}
 									</div>
 									<div className="flex flex-col justify-start flex-grow pt-3 md:pt-0">
 										{timeline.length > 0 ? (
@@ -414,84 +345,6 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							<div className="pt-3">
 								<CustomerServices services={renderData.services} />
 							</div>
-
-							{
-								// Booking detail list
-							}
-							{
-								// Đơn hàng đã huỷ nhưng đã có tattoo art
-								(((data.status === BOOKING_STATUS.CUSTOMER_CANCEL ||
-									data.status === BOOKING_STATUS.STUDIO_CANCEL) &&
-									data.tattooArts.length > 0) ||
-									// Đơn hàng còn chưa bắt đầu
-									data.status === BOOKING_STATUS.IN_PROGRESS ||
-									data.status === BOOKING_STATUS.COMPLETED) && (
-									<div className="mt-6 pt-3 border-t border-gray-300 pb-3">
-										<div className="flex justify-between items-center font-semibold text-xl pb-2">
-											<div>Chi tiết đơn hàng</div>
-											{
-												// Button thêm hình xăm cho đơn hàng
-												data.status === BOOKING_STATUS.IN_PROGRESS ? (
-													<Link href={`/tattoo/new?booking=${data.id}`}>
-														<span className="text-white cursor-pointer bg-gray-800 hover:bg-gray-700 font-medium rounded-lg text-sm py-2 px-2 dark:bg-indigo-600 dark:hover:bg-indigo-500 focus:outline-none dark:focus:ring-blue-800">
-															Thêm hình xăm
-														</span>
-													</Link>
-												) : (
-													<></>
-												)
-											}
-										</div>
-
-										{
-											// List hình xăm
-										}
-										{data.tattooArts?.map((tattoo, tattooIndex) => (
-											<div key={tattoo.id}>
-												<Link href={`/tattoo/${tattoo.id}?booking=${data.id}`}>
-													<div className="cursor-pointer py-2 flex justify-start gap-3 flex-wrap">
-														<div className="relative w-24 h-24">
-															<Image
-																layout="fill"
-																src={
-																	tattoo.thumbnail
-																		? tattoo.thumbnail
-																		: '/images/ATL.png'
-																}
-																alt={'a'}
-																className="object-contain rounded-2xl"
-															/>
-														</div>
-														<div className="flex-grow text-base">
-															<div>
-																<span>Nghệ sĩ xăm: </span>
-																<span className="font-semibold">
-																	{tattoo.artist.firstName} {tattoo.artist.lastName}
-																</span>
-															</div>
-															{tattoo.bookingDetails.map(
-																(bookingDetail, bookingDetailIndex) => (
-																	<div
-																		key={bookingDetail.id}
-																		className="flex justify-between items-center"
-																	>
-																		<div className="text-base">
-																			{operationNames.at(bookingDetail.operationId)}
-																		</div>
-																		<div className="text-lg">
-																			{formatPrice(bookingDetail.price)}
-																		</div>
-																	</div>
-																)
-															)}
-														</div>
-													</div>
-												</Link>
-											</div>
-										))}
-									</div>
-								)
-							}
 
 							<div
 								className={`${

@@ -12,13 +12,11 @@ import {
 	Link
 } from 'ui';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Button from 'components/Button';
-import { fetcherDelete, fetcherPost, fetcherPut } from 'lib';
+import { fetcherPost, fetcherPut } from 'lib';
 import { CldUploadButton } from 'next-cloudinary';
-import { generateSHA1, generateSignature } from 'lib/cloudinary_signature';
 import { AiOutlineClose } from 'react-icons/ai';
-import { extractPublicId } from 'cloudinary-build-url';
 import MoneyInput from 'components/MoneyInput';
 import {
 	operationNames,
@@ -31,9 +29,6 @@ import { v4 } from 'uuid';
 import { BASE_URL } from 'lib/env';
 
 const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-const API_KEY = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
-const API_SECRET = process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET;
 
 function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 	const [defaultTattoo, setDefaultTattoo] = useState(artTattoo);

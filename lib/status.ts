@@ -45,6 +45,12 @@ export const stringSize = [
 	'Size XL (>30cm)'
 ];
 
+export const stringServiceStatus = [
+	'Đang thực hiện',
+	'Hoàn thành',
+	'Đã huỷ'
+]
+
 export const stringColor = (isColor: boolean) => {
 	return isColor ? 'Có màu' : 'Trắng đen';
 };
