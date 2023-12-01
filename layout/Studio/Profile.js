@@ -1,3 +1,4 @@
+import CryptoJS from 'crypto-js';
 import Button from 'components/Button';
 import { fetcherPost, fetcherPut } from 'lib';
 import { BASE_URL } from 'lib/env';
@@ -6,10 +7,13 @@ import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Card, CardBody, Alert } from 'ui';
 
+const ENCRYPT_SECRET = 'qo7r0q3yrwfdngposdgv';
+
 function StudioInfo({ studio }) {
 	const [showAlert, setShowAlert] = useState(false);
 	const { data, update } = useSession();
 	const [avatar, setAvatar] = useState(studio.avatar);
+	const [artistKey, setArtistKey] = useState('');
 
 	const [alertContent, setAlertContent] = useState({
 		title: '',
@@ -37,7 +41,7 @@ function StudioInfo({ studio }) {
 
 	const handleReset = () => {
 		setProfile(defaultProfile);
-		setAvatar(studio.avatar)
+		setAvatar(studio.avatar);
 	};
 
 	const handleUpdateStudio = (newStudio) => {
@@ -97,6 +101,14 @@ function StudioInfo({ studio }) {
 				closeTime: profile.closeTime,
 				avatar: avatar
 			});
+		}
+	};
+
+	const handleAddArtist = () => {
+		const keyValue = CryptoJS.AES.decrypt(artistKey, ENCRYPT_SECRET);
+		const artistId = JSON.parse(keyValue.toString(CryptoJS.enc.Utf8))?.id;
+		if (artistId) {
+			fetcherPost(`${BASE_URL}/artists/${studio.id}/studio-artist/${artistId}`);
 		}
 	};
 
@@ -214,6 +226,18 @@ function StudioInfo({ studio }) {
 								</div>
 							</div>
 						</form>
+						<div className="block mb-3">
+							<label>Nhập key của nghệ sĩ để thêm nghệ sĩ mới</label>
+							<input
+								type="value"
+								value={artistKey}
+								onChange={(e) => setArtistKey(e.target.value)}
+								className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
+							/>
+							<div onClick={() => handleAddArtist()} className="w-16 pt-3">
+								<Button>Thêm</Button>
+							</div>
+						</div>
 					</CardBody>
 				</Card>
 			</div>

@@ -1,83 +1,19 @@
 import Button from 'components/Button';
 import MoneyInput from 'components/MoneyInput';
-import { fetcherPost, fetcherPut } from 'lib';
-import { BASE_URL } from 'lib/env';
-import { stringServicePlacement } from 'lib/status';
-import {
-	defaultServiceMap,
-	getColor,
-	getDifficult,
-	getPlacement,
-	getSize,
-	serviceListToMap
-} from 'lib/studioServiceHelper';
+import MyInput from 'components/MyInput';
+import { Tooltip } from 'flowbite-react';
+import { stringPlacements, stringSize } from 'lib/status';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { Alert, Card, CardBody, Ripple } from 'ui';
-
-const SIZE_TAB = '1';
-const PLACEMENT_TAB = '2';
+import { BsTrash } from 'react-icons/bs';
+import { MdAdd } from 'react-icons/md';
+import { Alert, Card, CardBody, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
+import { v4 } from 'uuid';
 
 function ServicePage({ services, studioId, onReload }) {
-	const [serviceList, setServiceList] = useState(
-		JSON.parse(JSON.stringify(services))
-	);
-	const [loadingFirst, setLoadingFirst] = useState(true);
-	const serviceMap = serviceListToMap(serviceList);
-	const [defaultMap, setDefaultMap] = useState(defaultServiceMap());
+	const [serviceList, setServiceList] = useState(services);
 
-	if (loadingFirst) {
-		if (serviceMap) {
-			[...serviceMap].forEach(([key, value], index) => {
-				if (key < 30) {
-					defaultMap.set(key, {
-						...defaultMap.get(key),
-						minPrice: value.minPrice,
-						maxPrice: value.maxPrice,
-						ink: value.ink,
-						id: value.id
-					});
-				}
-				if (key >= 100 && getSize(key) === 3) {
-					defaultMap.set(key, {
-						...defaultMap.get(key),
-						minPrice: value.minPrice,
-						maxPrice: value.maxPrice,
-						ink: value.ink,
-						id: value.id
-					});
-				}
-			});
-		}
-		setLoadingFirst(false);
-	}
-
-	const sizeMap = new Map(
-		[...defaultMap]
-			.filter(([key, value]) => key < 30)
-			.sort(([key1, value1], [key2, value2]) => key1 - key2)
-	);
-
-	const placementMap = new Map(
-		[...defaultMap]
-			.filter(([key, value]) => key >= 100)
-			.sort(([key1, value1], [key2, value2]) => key1 - key2)
-	);
-	const sizeList = ['Size S (<8cm)', 'Size M (8-15cm)', 'Size L (15-30cm)'];
-
-	const handlePriceChange = (key, fieldKey, fieldValue) => {
-		const service = defaultMap.get(key);
-		service[fieldKey] = fieldValue;
-		defaultMap.set(key, service);
-	};
-
-	const [activeTab, setActiveTab] = useState('1');
-
-	const toggle = (tab) => {
-		if (activeTab !== tab) {
-			setActiveTab(tab);
-		}
-	};
+	const length = serviceList.length;
 
 	const [showAlert, setShowAlert] = useState(false);
 
@@ -86,6 +22,32 @@ function ServicePage({ services, studioId, onReload }) {
 		content: '',
 		isWarn: false
 	});
+
+	const setServiceField = (name, value, index) => {
+		const services = [...serviceList];
+		services[index][name] = value;
+		setServiceList(services);
+	};
+
+	const removeService = (serviceIndex) => {
+		const services = [...serviceList];
+		services.splice(serviceIndex, 1);
+		setServiceList(services);
+	};
+
+	const addService = (serviceIndex) => {
+		const services = [...serviceList];
+		const service = {
+			id: v4(),
+			name: '',
+			size: 0,
+			placement: 0,
+			minPrice: 0,
+			maxPrice: 0
+		};
+		services.splice(serviceIndex, 0, service);
+		setServiceList(services);
+	};
 
 	const handleAlert = (state, title, content, isWarn = false) => {
 		setShowAlert((prev) => state);
@@ -98,56 +60,6 @@ function ServicePage({ services, studioId, onReload }) {
 
 	const handleSubmit = () => {
 		handleAlert(true, 'Đang cập nhật bảng giá', '');
-
-		const entries = defaultMap.entries();
-		let hasChange = false;
-		let i = entries.next().value;
-		let minPrice, maxPrice, service, key, id, oldService;
-		while (i) {
-			key = i[0];
-			minPrice = i[1].minPrice;
-			maxPrice = i[1].maxPrice;
-			id = i[1].id;
-			service = defaultMap.get(key);
-			// Check service trong default map đã có giá tiền chưa
-			if (minPrice > 0 && maxPrice > 0) {
-				// Check TH minPrice > maxPrice
-				if (minPrice > maxPrice) {
-					service.minPrice = maxPrice;
-					service.maxPrice = minPrice;
-					defaultMap.set(key, service);
-				}
-
-				// Check xem service này mới hay cũ (cũ thì sẽ có id)
-				if (id) {
-					// Nếu là service cũ thì check xem minPrice với maxPrice có bị thay đổi không
-					// Nếu thay đổi thì mới gọi api put
-					oldService = serviceMap.get(key);
-					if (
-						oldService.minPrice !== service.minPrice ||
-						oldService.maxPrice !== service.maxPrice
-					) {
-						fetcherPut(
-							`${BASE_URL}/studios/${studioId}/services/${oldService.id}`,
-							service
-						);
-						hasChange = true;
-					}
-				} else {
-					fetcherPost(`${BASE_URL}/studios/${studioId}/services`, service);
-					hasChange = true;
-				}
-			}
-			i = entries.next().value;
-		}
-		if (hasChange) {
-			handleAlert(true, 'Cập nhật bảng giá thành công', '');
-			setTimeout(() => {
-				onReload();
-			}, 2000);
-		} else {
-			handleAlert(false, '');
-		}
 	};
 
 	return (
@@ -161,50 +73,8 @@ function ServicePage({ services, studioId, onReload }) {
 				<strong className="font-bold mr-1">{alertContent.title}</strong>
 				<span className="block sm:inline">{alertContent.content}</span>
 			</Alert>
-			<div className="sm:px-3 md:px-1 lg:px-10 xl:px-36">
-				<div className="flex justify-between">
-					<div className="w-72 ring-1 ring-black ring-opacity-5 bg-white mb-3">
-						<div className="flex flex-row w-0 min-w-full">
-							<ul className="list-none grid col-span-4 grid-flow-col place-items-center overflow-x-auto w-0 min-w-full -mb-10 pb-10">
-								<li
-									className={`text-center  cursor-pointer ${
-										activeTab === SIZE_TAB
-											? 'border-b-2 border-solid border-gray-700'
-											: ''
-									}`}
-								>
-									<a
-										onClick={() => {
-											toggle(SIZE_TAB);
-										}}
-										href="#"
-										className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
-									>
-										Theo size
-										<Ripple color="black" />
-									</a>
-								</li>
-								<li
-									className={`text-center cursor-pointer ${
-										activeTab === PLACEMENT_TAB
-											? 'border-b-2 border-solid border-gray-700'
-											: ''
-									}`}
-								>
-									<a
-										onClick={() => {
-											toggle(PLACEMENT_TAB);
-										}}
-										href="#"
-										className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-4 md:px-6 lg:px-8 block"
-									>
-										Theo vị trí xăm
-										<Ripple color="black" />
-									</a>
-								</li>
-							</ul>
-						</div>
-					</div>
+			<div className="sm:px-3 md:px-1 lg:px-10 xl:px-12">
+				<div className="flex justify-end pb-3 ">
 					<div className="flex gap-2 items-center">
 						<div className="w-16">
 							<Button onClick={handleSubmit}>Lưu</Button>
@@ -213,202 +83,160 @@ function ServicePage({ services, studioId, onReload }) {
 				</div>
 				<Card>
 					<CardBody>
-						{
-							// Bảng giá theo size
-							activeTab === SIZE_TAB && (
-								<div className="pt-1">
-									<h2 className="text-lg font-semibold pb-3 text-center">
-										Bảng giá dịch vụ theo kích thước
-									</h2>
-									<div className="relative overflow-y-auto shadow-md sm:rounded-lg">
-										<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-											<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
-												<tr>
-													<th
-														scope="col"
-														className="w-24 lg:w-40 px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center"
-													>
-														Size
-													</th>
-													<th
-														scope="col"
-														className="w-32 px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center"
-													>
-														Độ khó
-													</th>
-													<th
-														scope="col"
-														className="w-32 px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center"
-													>
-														Màu sắc
-													</th>
-													<th
-														scope="col"
-														className="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center"
-													>
-														Giá
-													</th>
-												</tr>
-											</thead>
-											<tbody>
-												{[...sizeMap].map(([key, value], index) => (
-													<tr
-														key={key}
-														className="border-b border-gray-200 dark:border-gray-700"
-													>
-														{key % 10 === 0 && (
-															<th
-																rowSpan={4}
-																scope="row"
-																className="bg-gray-50 px-3 py-2 text-base font-medium text-gray-900 dark:text-white dark:bg-gray-800"
-															>
-																{sizeList.at(getSize(key))}
-															</th>
-														)}
-														{key % 5 === 0 && (
-															<td rowSpan={2} className="px-3 py-2 text-base">
-																{getDifficult(key) ? 'Phức tạp' : 'Đơn giản'}
-															</td>
-														)}
-														<td
-															className={`px-3 py-2 text-base ${
-																getColor(key) ? 'bg-blue-50' : ''
-															}`}
-														>
-															{getColor(key) ? 'Màu sắc' : 'Trắng đen'}
-														</td>
-														<td
-															className={`px-3 py-2 flex justify-center ${
-																getColor(key) ? 'bg-blue-50' : ''
-															}`}
-														>
-															<div className="flex gap-2 items-center">
-																<span className="text-base">Từ</span>
-																<div className="w-32">
-																	<MoneyInput
-																		onAccept={(value, mask) =>
-																			handlePriceChange(key, 'minPrice', value)
-																		}
-																		value={value.minPrice}
-																	/>
-																</div>
-																<span className="text-base">tới</span>
-																<div className="w-32">
-																	<MoneyInput
-																		onAccept={(value, mask) =>
-																			handlePriceChange(key, 'maxPrice', value)
-																		}
-																		value={value.maxPrice}
-																	/>
-																</div>
+						<div className="pt-1">
+							<h2 className="text-lg font-semibold pb-3 text-center">
+								Bảng giá dịch vụ
+							</h2>
+							<div className="relative shadow-md sm:rounded-lg">
+								<table className="w-full text-sm text-left text-gray-500 pb-20">
+									<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
+										<tr>
+											<th
+												scope="col"
+												className="w-1/4 px-3 py-3 bg-gray-50 text-center"
+											>
+												Tên dịch vụ
+											</th>
+											<th
+												scope="col"
+												className="w-32 px-3 py-3 bg-gray-50 text-center"
+											>
+												Kích thước
+											</th>
+											<th
+												scope="col"
+												className="w-32 px-3 py-3 bg-gray-50 text-center"
+											>
+												Vị trí xăm
+											</th>
+											<th scope="col" className="px-3 py-3 bg-gray-50 text-center">
+												Giá
+											</th>
+											<th
+												scope="col"
+												className="px-3 py-3 bg-gray-50 text-center"
+											></th>
+										</tr>
+									</thead>
+									<tbody className="h-full">
+										{serviceList.map((service, serviceIndex) => (
+											<tr
+												key={service.id}
+												className="bg-white border-b hover:bg-gray-50 text-black"
+											>
+												<td className="px-3 py-4">
+													<MyInput
+														name={'name'}
+														value={service.name}
+														onChange={(e) =>
+															setServiceField('name', e.target.value, serviceIndex)
+														}
+													/>
+												</td>
+												<td className="px-3 py-4">
+													<Dropdown className="relative flex items-center">
+														<DropdownToggle>
+															<div className="w-32 rounded-lg p-1 border border-gray-300">
+																{stringSize.at(service.size)}
 															</div>
-														</td>
-													</tr>
-												))}
-											</tbody>
-										</table>
-									</div>
-								</div>
-							)
-						}
-						{
-							// Bảng giá theo vị trí xăm
-							activeTab === PLACEMENT_TAB && (
-								<div className="pt-1">
-									<h2 className="text-lg font-semibold pb-3 text-center">
-										Bảng giá dịch vụ theo vị trí xăm
-									</h2>
-									<div className="relative overflow-y-auto shadow-md sm:rounded-lg">
-										<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-											<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
-												<tr>
-													<th
-														scope="col"
-														className="w-24 lg:w-40 px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center"
-													>
-														Vị trí xăm
-													</th>
-													<th
-														scope="col"
-														className="w-32 px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center"
-													>
-														Độ khó
-													</th>
-													<th
-														scope="col"
-														className="w-32 px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center"
-													>
-														Màu sắc
-													</th>
-													<th
-														scope="col"
-														className="px-6 py-3 bg-gray-50 dark:bg-gray-800 text-center"
-													>
-														Giá
-													</th>
-												</tr>
-											</thead>
-											<tbody>
-												{[...placementMap].map(([key, value], index) => (
-													<tr
-														key={key}
-														className="border-b border-gray-200 dark:border-gray-700"
-													>
-														{key % 10 === 0 && Math.round(key / 100) > 0 && (
-															<th
-																rowSpan={4}
-																scope="row"
-																className="bg-gray-50 px-3 py-2 text-base font-medium text-gray-900 dark:text-white dark:bg-gray-800"
-															>
-																{stringServicePlacement.at(getPlacement(key))}
-															</th>
-														)}
-														{key % 5 === 0 && (
-															<td rowSpan={2} className="px-3 py-2 text-base">
-																{getDifficult(key) ? 'Phức tạp' : 'Đơn giản'}
-															</td>
-														)}
-														<td
-															className={`px-3 py-2 text-base ${
-																getColor(key) ? 'bg-blue-50' : ''
-															}`}
-														>
-															{getColor(key) ? 'Màu sắc' : 'Trắng đen'}
-														</td>
-														<td
-															className={`px-3 py-2 flex justify-center ${
-																getColor(key) ? 'bg-blue-50' : ''
-															}`}
-														>
-															<div className="flex gap-2 items-center">
-																<span className="text-base">Từ</span>
-																<div className="w-32">
-																	<MoneyInput
-																		onAccept={(value, mask) =>
-																			handlePriceChange(key, 'minPrice', value)
-																		}
-																		value={value.minPrice}
-																	/>
+														</DropdownToggle>
+														<DropdownMenu isBottom={serviceIndex >= length - 3}>
+															{stringSize.map((size, sizeIndex) => (
+																<div
+																	key={size}
+																	onClick={() =>
+																		setServiceField('size', sizeIndex, serviceIndex)
+																	}
+																	className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
+																		service.size === sizeIndex ? 'bg-indigo-100' : ''
+																	}`}
+																>
+																	{size}
 																</div>
-																<span className="text-base">tới</span>
-																<div className="w-32">
-																	<MoneyInput
-																		onAccept={(value, mask) =>
-																			handlePriceChange(key, 'maxPrice', value)
-																		}
-																		value={value.maxPrice}
-																	/>
-																</div>
+															))}
+														</DropdownMenu>
+													</Dropdown>
+												</td>
+												<td className="px-3 py-4">
+													<Dropdown className="relative flex items-center">
+														<DropdownToggle>
+															<div className="w-32 rounded-lg p-1 border border-gray-300">
+																{stringPlacements.at(service.placement)}
 															</div>
-														</td>
-													</tr>
-												))}
-											</tbody>
-										</table>
-									</div>
-								</div>
-							)
-						}
+														</DropdownToggle>
+														<DropdownMenu
+															isBottom={serviceIndex >= length - 3}
+															className={'max-h-28 overflow-y-auto'}
+														>
+															{stringPlacements.map((placement, placementIndex) => (
+																<div
+																	key={placement}
+																	onClick={() =>
+																		setServiceField(
+																			'size',
+																			placementIndex,
+																			serviceIndex
+																		)
+																	}
+																	className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
+																		service.placement === placementIndex
+																			? 'bg-indigo-100'
+																			: ''
+																	}`}
+																>
+																	{placement}
+																</div>
+															))}
+														</DropdownMenu>
+													</Dropdown>
+												</td>
+												<td className="px-3 py-4">
+													<div className="flex flex-wrap max-w-max mx-auto gap-2 items-center">
+														<div className="w-32">
+															<MoneyInput
+																name="minPrice"
+																value={service.minPrice}
+																onAccept={(value, mask) =>
+																	setServiceField('minPrice', value, serviceIndex)
+																}
+															/>
+														</div>
+														<span>tới</span>
+														<div className="w-32">
+															<MoneyInput
+																name="minPrice"
+																value={service.minPrice}
+																onAccept={(value, mask) =>
+																	setServiceField('maxPrice', value, serviceIndex)
+																}
+															/>
+														</div>
+													</div>
+												</td>
+												<td className="px-3 py-4 flex flex-wrap gap-2">
+													<Tooltip content="Xoá dịch vụ" placement="bottom-end">
+														<div
+															onClick={() => removeService(serviceIndex)}
+															className="cursor-pointer"
+														>
+															<BsTrash size={25} />
+														</div>
+													</Tooltip>
+													<Tooltip content="Thêm dịch vụ" placement="bottom-end">
+														<div
+															onClick={() => addService(serviceIndex)}
+															className="cursor-pointer"
+														>
+															<MdAdd size={25} />
+														</div>
+													</Tooltip>
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+						</div>
 					</CardBody>
 				</Card>
 			</div>

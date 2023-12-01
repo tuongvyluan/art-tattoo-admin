@@ -4,14 +4,12 @@ import {
 	fetcherDelete,
 	fetcherPost,
 	fetcherPut,
-	formatDate,
 	formatDateForInput,
 	formatPrice,
 	isFuture
 } from 'lib';
-import { BOOKING_STATUS, operationNames, stringBookingStatuses } from 'lib/status';
+import { BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
 import PropTypes from 'prop-types';
-import Image from 'next/image';
 import { Alert, Card, CardBody, Link } from 'ui';
 import { WidgetOrderStatus } from 'ui/WidgetOrderStatus';
 import { useState } from 'react';
@@ -21,6 +19,7 @@ import MyModal from 'components/MyModal';
 import cancelReasons from 'lib/cancelReasons';
 import { Modal } from 'flowbite-react';
 import CustomerServices from './CustomerServices';
+import useSWR from 'swr';
 
 const hasBookingMeeting = (bookingMeetings) => {
 	let result;
@@ -38,11 +37,6 @@ const calculateTotal = (tattooArts) => {
 		return 0;
 	}
 	let total = 0;
-	tattooArts.forEach((a) => {
-		a.bookingDetails.forEach((b) => {
-			total += b.price;
-		});
-	});
 	return total;
 };
 
@@ -57,6 +51,8 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	const [confirmCancelBookingModal, setConfirmCancelBookingModal] = useState(false);
 	const [cancelReason, setCancelReason] = useState(cancelReasons.at(0).reason);
 	const [cancelReasonMore, setCancelReasonMore] = useState('');
+
+	const {data: artistList, error} = useSWR(`${BASE_URL}/artists/${studioId}/artist-studio-list`)
 
 	const handleCancelReason = ({ status, reason }) => {
 		setCancelReason(reason);
@@ -344,7 +340,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 										Các dịch vụ đã đặt ({renderData.services?.length})
 									</div>
 								</div>
-								<CustomerServices showMore={true} canEdit={true} services={renderData.services} />
+								<CustomerServices artistList={artistList} showMore={true} canEdit={true} services={renderData.services} />
 							</div>
 
 							<div

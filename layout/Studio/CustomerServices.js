@@ -7,14 +7,21 @@ import MyModal from 'components/MyModal';
 import { useState } from 'react';
 import MoneyInput from 'components/MoneyInput';
 
-const CustomerServices = ({ services, canEdit = false, showMore = false }) => {
+const CustomerServices = ({
+	services,
+	canEdit = false,
+	showMore = false,
+	artistList
+}) => {
 	const [bookingServiceModal, setBookingServiceModal] = useState(false);
 	const [selectedService, setSelectedService] = useState(undefined);
+	const [selectedArtist, setSelectedArtist] = useState(0);
 	const [selectedMeetingDate, setSelectedMeetingDate] = useState(
 		formatDateTimeForInput(new Date())
 	);
 
 	const onSelectUpdatedService = (serviceIndex) => {
+		setSelectedArtist(0)
 		setSelectedService(services.at(serviceIndex));
 		setBookingServiceModal(true);
 	};
@@ -94,17 +101,17 @@ const CustomerServices = ({ services, canEdit = false, showMore = false }) => {
 								<Dropdown className="relative h-full flex items-center">
 									<DropdownToggle>
 										<div className="w-40 rounded-lg p-1 border border-gray-300">
-											Chưa phân công
+											{artistList?.at(selectedArtist)?.firstName} {artistList?.at(selectedArtist)?.lastName}
 										</div>
 									</DropdownToggle>
 									<DropdownMenu>
-										{stringServiceStatus.map((status, statusIndex) => (
+										{artistList?.map((artist, artistIndex) => (
 											<div
-												key={status}
+												key={artist.id}
 												// onClick={() => setTattooState('size', statusIndex)}
 												className={`px-2 py-1 cursor-pointer hover:bg-gray-100`}
 											>
-												{status}
+												{artist?.firstName} {artist.lastName}
 											</div>
 										))}
 									</DropdownMenu>
@@ -139,9 +146,7 @@ const CustomerServices = ({ services, canEdit = false, showMore = false }) => {
 			<div className="block">
 				{services.map((service, serviceIndex) => (
 					<Card
-						className={`shadow-lg ${
-							(!showMore && serviceIndex > 2) ? 'hidden' : ''
-						}`}
+						className={`shadow-lg ${!showMore && serviceIndex > 2 ? 'hidden' : ''}`}
 						key={service.id}
 					>
 						<div className="w-full flex justify-start gap-2 items-start bg-gray-50 py-5 relative">
@@ -247,7 +252,9 @@ const CustomerServices = ({ services, canEdit = false, showMore = false }) => {
 
 CustomerServices.propTypes = {
 	services: PropTypes.array,
-	canEdit: PropTypes.bool
+	canEdit: PropTypes.bool,
+	showMore: PropTypes.bool,
+	artistList: PropTypes.array
 };
 
 export default CustomerServices;

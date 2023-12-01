@@ -74,12 +74,12 @@ const TattooDetails = () => {
 				const renderData = {
 					...data,
 					stages: Array.from(stageMap, ([id, value]) => value),
-					bookingDetails: data.bookingDetails.map((bookingDetail) => {
-						return {
-							...bookingDetail,
-							saved: true
-						}
-					})
+					// bookingDetails: data.bookingDetails.map((bookingDetail) => {
+					// 	return {
+					// 		...bookingDetail,
+					// 		saved: true
+					// 	}
+					// })
 				};
 				setArtTattoo(renderData);
 				setArtist(renderData.artist);
@@ -98,13 +98,13 @@ const TattooDetails = () => {
 				totalRevenue: 0,
 				thumbnail: '',
 				medias: [],
-				bookingDetails: [{
-					bookingDetailsId: v4(),
-					operationId: 0,
-					price: 0,
-					saved: false,
-					paymentId: null
-				}],
+				// bookingDetails: [{
+				// 	bookingDetailsId: v4(),
+				// 	operationId: 0,
+				// 	price: 0,
+				// 	saved: false,
+				// 	paymentId: null
+				// }],
 				stages: []
 			});
 		}

@@ -55,44 +55,6 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 		});
 	};
 
-	const handleAddBookingDetail = () => {
-		const bookingDetails = tattoo.bookingDetails;
-		bookingDetails.push({
-			bookingDetailsId: v4(),
-			operationId: 0,
-			price: 0,
-			saved: false,
-			paymentId: null
-		});
-		setTattoo({ ...tattoo, bookingDetails: bookingDetails });
-	};
-
-	const handleRemoveBookingDetail = (detailIndex) => {
-		const bookingDetails = tattoo.bookingDetails;
-		bookingDetails.splice(detailIndex, 1);
-		setTattoo({ ...tattoo, bookingDetails: bookingDetails });
-	};
-
-	const handleBookingDetail = (value, detailIndex, changePrice = true) => {
-		console.log(value);
-		const bookingDetails = tattoo.bookingDetails;
-		const detail = changePrice
-			? {
-					...bookingDetails.at(detailIndex),
-					price: value
-			  }
-			: {
-					...bookingDetails.at(detailIndex),
-					operationId: value
-			  };
-		bookingDetails[detailIndex] = detail;
-		let price = 0;
-		bookingDetails.map((d) => {
-			price += d.price;
-		});
-		setTattoo({ ...tattoo, bookingDetails: bookingDetails, total: price });
-	};
-
 	const setTattooState = (key, newValue) => {
 		if (tattoo[key] !== newValue) {
 			setTattoo({ ...tattoo, [key]: newValue });
@@ -176,40 +138,6 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 			});
 	};
 
-	const createBookingDetail = (bd, tattooId) => {
-		fetcherPost(`${BASE_URL}/booking-details`, {
-			bookingId: tattoo.bookingId,
-			price: bd.price,
-			operationId: bd.operationId,
-			tattooArtId: tattooId,
-			artistId: selectedArtist
-		});
-	};
-
-	const handleBookingDetails = (tattooId) => {
-		const originalIds = [];
-		const newIds = [];
-		const originalBookingDetails = new Map(
-			defaultTattoo.bookingDetails.map((bd) => {
-				originalIds.push(bd.id);
-				return [bd.id, bd];
-			})
-		);
-		const newBookingDetails = new Map(
-			tattoo.bookingDetails.map((bd) => {
-				newIds.push(bd.id);
-				return [bd.id, bd];
-			})
-		);
-		let i = 0;
-		let newLength = newIds.length;
-		for (i; i < newLength; i++) {
-			if (!originalBookingDetails.has(newIds.at(i))) {
-				createBookingDetail(newBookingDetails.get(newIds.at(i)), tattooId);
-			}
-		}
-	};
-
 	const handleSaveChange = async () => {
 		if (tattoo.id === '') {
 			handleAlert(true, 'Đang tạo hình xăm...');
@@ -219,7 +147,6 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 			if (hasTattooChange()) {
 				handleUpdateTattoo();
 			}
-			handleBookingDetails(tattoo.id);
 		}
 	};
 
@@ -418,91 +345,6 @@ function TattooDetailsPage({ bookingId, artTattoo, handleSubmit, artistList }) {
 							// Update tattoo stages and booking details
 						}
 						<div>
-							{
-								// Add booking details
-							}
-							{tattoo.bookingId !== '' && (
-								<div className="mt-3 border-gray-300">
-									{
-										// Booking details list
-									}
-									<div className="font-semibold text-lg pb-2">
-										Ghi nhận chi phí dịch vụ
-									</div>
-
-									<div className="w-max mb-3">
-										<Button onClick={handleAddBookingDetail}>Thêm dịch vụ</Button>
-									</div>
-
-									{tattoo.bookingDetails.map((detail, detailIndex) => (
-										<div
-											className={
-												'relative min-w-0 break-words rounded-lg mb-4 w-full bg-white dark:bg-gray-600'
-											}
-											key={detail.bookingDetailsId}
-										>
-											<div
-												className={'bg-gray-50 py-4 px-6 flex flex-row items-center'}
-											>
-												<div className="relative flex flex-wrap justify-between items-center w-full">
-													<Dropdown className={'relative'}>
-														<DropdownToggle>
-															<div className="text-base w-40 flex flex-row items-center rounded-lg px-2 py-1 border border-gray-300 relative">
-																<ChevronDown
-																	className="absolute right-1"
-																	width={20}
-																	height={20}
-																/>
-																<div className="h-6">
-																	{operationNames.at(detail.operationId)}
-																</div>
-															</div>
-														</DropdownToggle>
-														<DropdownMenu className={'h-20 overflow-auto'}>
-															{operationNames.map((op, opIndex) => (
-																<div
-																	key={op}
-																	onClick={() =>
-																		handleBookingDetail(opIndex, detailIndex, false)
-																	}
-																	className={`px-2 py-1 w-40 cursor-pointer hover:bg-gray-100`}
-																>
-																	{op}
-																</div>
-															))}
-														</DropdownMenu>
-													</Dropdown>
-
-													<div className="text-base relative">
-														<MoneyInput
-															value={detail.price}
-															disabled={detail.paymentId !== null}
-															onAccept={(value, mask) =>
-																handleBookingDetail(value, detailIndex)
-															}
-														/>
-													</div>
-													{
-														// Remove booking detail icon
-													}
-													{detail.paymentId === null && (
-														<button
-															onClick={() => handleRemoveBookingDetail(detailIndex)}
-														>
-															<AiOutlineClose
-																className={`absolute -top-3 -right-5 hover:scale-125 hover:text-red-500 ${
-																	tattoo.bookingDetails.length > 1 ? '' : 'hidden'
-																}`}
-																size={16}
-															/>
-														</button>
-													)}
-												</div>
-											</div>
-										</div>
-									))}
-								</div>
-							)}
 
 							{
 								// Add tattoo stage, including tattoo medias

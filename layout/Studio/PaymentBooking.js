@@ -7,7 +7,7 @@ import { Card, CardBody } from 'ui';
 import Button from 'components/Button';
 import { useState } from 'react';
 
-const PaymentBooking = ({ bookingId, bookingDetails, payments }) => {
+const PaymentBooking = ({ bookingId, payments }) => {
 	const [selectedMethod, setSelectedMethod] = useState(0);
 
 	return (
@@ -224,7 +224,6 @@ const PaymentBooking = ({ bookingId, bookingDetails, payments }) => {
 
 PaymentBooking.propTypes = {
 	bookingId: PropTypes.string,
-	bookingDetails: PropTypes.array,
 	payments: PropTypes.array
 };
 

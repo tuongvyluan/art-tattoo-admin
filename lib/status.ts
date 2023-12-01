@@ -35,14 +35,16 @@ export const enum SERVICE_SIZE {
 	SMALL = 0,
 	MEDIUM = 1,
 	LARGE = 2,
-	EXTRA = 3
+	EXTRA = 3,
+	ANY = 4
 }
 
 export const stringSize = [
 	'Size S (<8cm)',
 	'Size M (8 - 15cm)',
 	'Size L (15 - 30cm)',
-	'Size XL (>30cm)'
+	'Size XL (>30cm)',
+	'Size bất kỳ'
 ];
 
 export const stringServiceStatus = [
@@ -135,7 +137,7 @@ export const enum PLACEMENT {
 }
 
 export const stringPlacements = [
-	'Vị trí khác',
+	'Vị trí bất kỳ',
 	'Full lưng',
 	'Nửa lưng',
 	'Full ngực',
@@ -171,7 +173,7 @@ export const enum SERVICE_PLACEMENT {
 }
 
 export const stringServicePlacement = [
-	'Vị trí khác',
+	'Vị trí bất kỳ',
 	'Full lưng',
 	'Nửa lưng',
 	'Full ngực',

@@ -2,27 +2,25 @@ const { useSession } = require('next-auth/react');
 import ServicePage from 'layout/Studio/Service';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
-import { ROLE } from 'lib/status';
-import Router from 'next/router';
+import { PLACEMENT, ROLE, SERVICE_SIZE } from 'lib/status';
 import { useState } from 'react';
+import { v4 } from 'uuid';
 const { Loading } = require('ui');
 
 const StudioService = () => {
 	// Check authenticated
 	const { status, data } = useSession();
 	const [loading, setLoading] = useState(true);
-	const [services, setServices] = useState([]);
+	const [services, setServices] = useState([{
+		id: v4(),
+		name: 'Tư vấn',
+		placement: PLACEMENT.ANY,
+		size: SERVICE_SIZE.ANY,
+		minPrice: 0,
+		maxPrice: 0
+	}]);
 
 	if (status === 'loading') {
-		return (
-			<div className="flex items-center justify-center h-full">
-				<Loading />
-			</div>
-		);
-	}
-
-	if (status === 'unauthenticated') {
-		Router.replace('/')
 		return (
 			<div className="flex items-center justify-center h-full">
 				<Loading />
