@@ -198,3 +198,15 @@ export const stringTattooStages = [
 	'Bảo hành',
 	'Khác'
 ]
+
+export const stringBookingServiceStatus = [
+	'Đang thực hiện',
+	'Hoàn thành',
+	'Đã huỷ'
+]
+
+export const stringBookingServiceStatusColor = [
+	'yellow-300',
+	'green-300',
+	'red-300'
+]

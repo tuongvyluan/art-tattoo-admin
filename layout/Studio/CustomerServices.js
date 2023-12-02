@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { stringPlacements, stringServiceStatus, stringSize } from 'lib/status';
+import { stringBookingServiceStatus, stringBookingServiceStatusColor, stringBookingStatuses, stringPlacements, stringServiceStatus, stringSize } from 'lib/status';
 import { formatDateTimeForInput, formatPrice, formatTime } from 'lib';
 import { Avatar, Card, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
 import { MdEdit, MdOutlineCalendarMonth, MdOutlineClose } from 'react-icons/md';
@@ -8,7 +8,7 @@ import { useState } from 'react';
 import MoneyInput from 'components/MoneyInput';
 
 const CustomerServices = ({
-	services,
+	bookingServices,
 	canEdit = false,
 	showMore = false,
 	artistList
@@ -21,8 +21,8 @@ const CustomerServices = ({
 	);
 
 	const onSelectUpdatedService = (serviceIndex) => {
-		setSelectedArtist(0)
-		setSelectedService(services.at(serviceIndex));
+		setSelectedArtist(0);
+		setSelectedService(bookingServices.at(serviceIndex));
 		setBookingServiceModal(true);
 	};
 
@@ -102,7 +102,8 @@ const CustomerServices = ({
 								<Dropdown className="relative h-full flex items-center">
 									<DropdownToggle>
 										<div className="w-40 rounded-lg p-1 border border-gray-300">
-											{artistList?.at(selectedArtist)?.firstName} {artistList?.at(selectedArtist)?.lastName}
+											{artistList?.at(selectedArtist)?.firstName}{' '}
+											{artistList?.at(selectedArtist)?.lastName}
 										</div>
 									</DropdownToggle>
 									<DropdownMenu>
@@ -145,16 +146,18 @@ const CustomerServices = ({
 				</div>
 			</MyModal>
 			<div className="block">
-				{services.map((service, serviceIndex) => (
+				{bookingServices.map((bookingService, bookingServiceIndex) => (
 					<Card
-						className={`shadow-lg ${!showMore && serviceIndex > 2 ? 'hidden' : ''}`}
-						key={service.id}
+						className={`shadow-lg ${
+							!showMore && bookingServiceIndex > 2 ? 'hidden' : ''
+						}`}
+						key={bookingService.bookingServiceId}
 					>
 						<div className="w-full flex justify-start gap-2 items-start bg-gray-50 py-5 relative">
 							{canEdit && (
 								<div className="absolute top-4 right-4 cursor-pointer flex flex-wrap gap-2">
 									<div
-										onClick={() => onSelectUpdatedService(serviceIndex)}
+										onClick={() => onSelectUpdatedService(bookingServiceIndex)}
 										className="relative"
 									>
 										<MdEdit size={20} />
@@ -198,50 +201,70 @@ const CustomerServices = ({
 								// Phần bên phải của khung booking service
 							}
 							<div className="px-3 w-full">
-								<div key={service.id} className="pb-1 flex flex-wrap text-base">
-									<div>{serviceIndex + 1}</div>
-									<div className="pr-1">. {stringSize.at(service.size)},</div>
+								<div
+									key={bookingService.id}
+									className="pb-1 flex flex-wrap text-base"
+								>
+									<div>{bookingServiceIndex + 1}</div>
+									<div className="pr-1">. {stringSize.at(bookingService.size)},</div>
 
-									{service.placement ? (
+									{bookingService.placement ? (
 										<div className="pr-1">
-											Vị trí xăm: {stringPlacements.at(service.placement)},
+											Vị trí xăm: {stringPlacements.at(bookingService.placement)},
 										</div>
 									) : (
 										<></>
 									)}
 
 									<div className="pr-1">
-										{formatPrice(service.minPrice)} - {formatPrice(service.maxPrice)}
+										{formatPrice(bookingService.minPrice)} -{' '}
+										{formatPrice(bookingService.maxPrice)}
 									</div>
 								</div>
 								<div className="flex flex-wrap gap-3 items-center ">
 									{
 										// Giá tiền
 									}
-									<div className="flex flex-wrap items-center text-base font-semibold bg-teal-300 px-2 rounded-full">
-										<div>{formatPrice(2000000)}</div>
-									</div>
+									{bookingService.price > 0 && (
+										<div className="flex flex-wrap items-center text-base font-semibold bg-teal-300 px-2 rounded-full">
+											<div>{formatPrice(bookingService.price)}</div>
+										</div>
+									)}
 									{
 										// Ngày hẹn
 									}
-									<div className="flex flex-wrap gap-1 items-center text-base font-semibold bg-indigo-100 px-2 rounded-full">
-										<MdOutlineCalendarMonth size={20} />
-										<div>{formatTime(new Date())}</div>
-									</div>
+									{bookingService.bookingMeetings?.length > 0 && (
+										<div className="flex flex-wrap gap-1 items-center text-base font-semibold bg-indigo-100 px-2 rounded-full">
+											<MdOutlineCalendarMonth size={20} />
+											<div>{formatTime(new Date())}</div>
+										</div>
+									)}
 									{
 										// Trạng thái
 									}
-									<div className="flex flex-wrap gap-1 items-center text-base font-semibold bg-yellow-300 px-2 rounded-full">
-										<div>Đang thực hiện</div>
+									<div className={`flex flex-wrap gap-1 items-center text-base font-semibold bg-${stringBookingServiceStatusColor.at(bookingService.status)} px-2 rounded-full`}>
+										<div>{stringBookingServiceStatus.at(bookingService.status)}</div>
 									</div>
 								</div>
 								{
 									// Assign artist
 								}
-								<div className="flex flex-wrap gap-1 items-center text-base font-semibold pt-3">
-									<Avatar size={40} src={'/public/images/ATL.png'} />
-									<div>Lê Bảo Trâm</div>
-								</div>
+								{bookingService.artist && (
+									<div className="flex flex-wrap gap-1 items-center text-base font-semibold pt-3">
+										<Avatar
+											size={40}
+											src={
+												bookingService.artist?.avatar
+													? bookingService.artist.avatar
+													: '/public/images/ATL.png'
+											}
+										/>
+										<div>
+											{bookingService.artist?.firstName}{' '}
+											{bookingService.artist?.lastName}
+										</div>
+									</div>
+								)}
 							</div>
 						</div>
 					</Card>
