@@ -76,7 +76,7 @@ function StudioIndexPage({ studioId }) {
 				{studio.artists && studio.artists.length > 0 ? (
 					<div>
 						<Card>
-							<CardBody className="flex">
+							<CardBody className="flex justify-center gap-3">
 								{studio.artists?.map((artist, artistIndex) => (
 									<div key={artist.id} className="w-1/4 px-2 mb-3">
 										<a className="w-full block text-gray-900 dark:text-white">

@@ -11,7 +11,9 @@ import { Alert, Card, CardBody, Dropdown, DropdownMenu, DropdownToggle } from 'u
 import { v4 } from 'uuid';
 
 function ServicePage({ services, studioId, onReload }) {
-	const [serviceList, setServiceList] = useState(services);
+	const [serviceList, setServiceList] = useState(
+		JSON.parse(JSON.stringify(services))
+	);
 
 	const length = serviceList.length;
 
@@ -29,9 +31,14 @@ function ServicePage({ services, studioId, onReload }) {
 		setServiceList(services);
 	};
 
-	const removeService = (serviceIndex) => {
+	const removeService = (serviceId) => {
+		const serviceIndex = serviceList.findIndex((service) => service.id === serviceId)
 		const services = [...serviceList];
-		services.splice(serviceIndex, 1);
+		if (services.at(serviceIndex).isNew) {
+			services.splice(serviceIndex, 1);
+		} else {
+			services[serviceIndex]['status'] = 2;
+		}
 		setServiceList(services);
 	};
 
@@ -39,11 +46,13 @@ function ServicePage({ services, studioId, onReload }) {
 		const services = [...serviceList];
 		const service = {
 			id: v4(),
-			name: '',
+			title: '',
 			size: 0,
 			placement: 0,
 			minPrice: 0,
-			maxPrice: 0
+			maxPrice: 0,
+			status: 0,
+			isNew: true
 		};
 		services.splice(serviceIndex, 0, service);
 		setServiceList(services);
@@ -60,6 +69,24 @@ function ServicePage({ services, studioId, onReload }) {
 
 	const handleSubmit = () => {
 		handleAlert(true, 'Đang cập nhật bảng giá', '');
+		const submitServices = serviceList.map((service) => {
+			return service.isNew
+				? {
+						title: service.title,
+						size: service.size,
+						placement: service.placement,
+						minPrice: service.minPrice,
+						maxPrice: service.maxPrice,
+						status: service.status,
+						id: undefined
+				  }
+				: service;
+		});
+		console.log(submitServices)
+	};
+
+	const handleReset = () => {
+		setServiceList(JSON.parse(JSON.stringify(services)));
 	};
 
 	return (
@@ -76,6 +103,11 @@ function ServicePage({ services, studioId, onReload }) {
 			<div className="sm:px-3 md:px-1 lg:px-10 xl:px-12">
 				<div className="flex justify-end pb-3 ">
 					<div className="flex gap-2 items-center">
+						<div className="w-16">
+							<Button outline onClick={handleReset}>
+								Reset
+							</Button>
+						</div>
 						<div className="w-16">
 							<Button onClick={handleSubmit}>Lưu</Button>
 						</div>
@@ -122,14 +154,16 @@ function ServicePage({ services, studioId, onReload }) {
 										{serviceList.map((service, serviceIndex) => (
 											<tr
 												key={service.id}
-												className="bg-white border-b hover:bg-gray-50 text-black"
+												className={`bg-white border-b hover:bg-gray-50 text-black ${
+													service.status === 2 ? 'hidden' : ''
+												}`}
 											>
 												<td className="px-3 py-4">
 													<MyInput
-														name={'name'}
-														value={service.name}
+														name={'title'}
+														value={service.title}
 														onChange={(e) =>
-															setServiceField('name', e.target.value, serviceIndex)
+															setServiceField('title', e.target.value, serviceIndex)
 														}
 													/>
 												</td>
@@ -173,7 +207,7 @@ function ServicePage({ services, studioId, onReload }) {
 																	key={placement}
 																	onClick={() =>
 																		setServiceField(
-																			'size',
+																			'placement',
 																			placementIndex,
 																			serviceIndex
 																		)
@@ -196,6 +230,7 @@ function ServicePage({ services, studioId, onReload }) {
 															<MoneyInput
 																name="minPrice"
 																value={service.minPrice}
+																min={0}
 																onAccept={(value, mask) =>
 																	setServiceField('minPrice', value, serviceIndex)
 																}
@@ -204,8 +239,9 @@ function ServicePage({ services, studioId, onReload }) {
 														<span>tới</span>
 														<div className="w-32">
 															<MoneyInput
-																name="minPrice"
-																value={service.minPrice}
+																name="maxPrice"
+																value={service.maxPrice}
+																min={service.minPrice}
 																onAccept={(value, mask) =>
 																	setServiceField('maxPrice', value, serviceIndex)
 																}
@@ -216,7 +252,7 @@ function ServicePage({ services, studioId, onReload }) {
 												<td className="px-3 py-4 flex flex-wrap gap-2">
 													<Tooltip content="Xoá dịch vụ" placement="bottom-end">
 														<div
-															onClick={() => removeService(serviceIndex)}
+															onClick={() => removeService(service.id)}
 															className="cursor-pointer"
 														>
 															<BsTrash size={25} />

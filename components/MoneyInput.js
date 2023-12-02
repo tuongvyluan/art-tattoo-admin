@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { IMaskInput } from 'react-imask';
 
-const MoneyInput = ({ value, onAccept, currency = '₫', disabled = false }) => {
+const MoneyInput = ({ value, onAccept, currency = '₫', disabled = false, min = 0, max = 1000000000 }) => {
 	return (
 		<div className="relative">
 			<span className={`absolute left-2 text-sm top-1`}>{currency}</span>
@@ -9,8 +9,8 @@ const MoneyInput = ({ value, onAccept, currency = '₫', disabled = false }) => 
 				disabled={disabled}
 				className="text-base text-black flex flex-row items-center rounded-lg py-0.5 pr-2 border border-gray-300 pl-5 w-full"
 				mask={Number}
-				min={0}
-				max={1000000000}
+				min={min}
+				max={max}
 				scale={0}
 				required
 				placeholder="Nhập giá tiền"
@@ -28,7 +28,9 @@ MoneyInput.propTypes = {
 	value: PropTypes.number.isRequired,
 	onAccept: PropTypes.func.isRequired,
 	currency: PropTypes.string,
-	disabled: PropTypes.bool
+	disabled: PropTypes.bool,
+	min: PropTypes.number,
+	max: PropTypes.number
 };
 
 export default MoneyInput;

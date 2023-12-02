@@ -21,7 +21,7 @@ const TattooList = () => {
 			<TattooListNotFilter
 				url={`${BASE_URL}/TattooArts/TattooUser?studioId=${data?.user?.studioId}`}
 				pageSize={12}
-				studioId={studioId}
+				studioId={data?.user?.studioId}
 			/>
 		);
 	}
