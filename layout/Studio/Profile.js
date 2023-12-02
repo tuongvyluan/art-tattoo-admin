@@ -1,10 +1,12 @@
 import Button from 'components/Button';
+import CldButton from 'components/CldButton';
 import { fetcherPost, fetcherPut } from 'lib';
 import { BASE_URL } from 'lib/env';
 import { useSession } from 'next-auth/react';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { Card, CardBody, Alert } from 'ui';
+import { MdUpload } from 'react-icons/md';
+import { Card, CardBody, Alert, Avatar } from 'ui';
 
 function StudioInfo({ studio }) {
 	const [showAlert, setShowAlert] = useState(false);
@@ -118,6 +120,30 @@ function StudioInfo({ studio }) {
 							Thông tin studio
 						</h1>
 						<form method="post" className="pt-3" onSubmit={handleFormSubmit}>
+							<div className="w-full min-w-min sm:w-1/2 md:w-1/3 lg:w-1/4 mx-auto">
+								<div className="flex justify-center">
+									<div key={avatar}>
+										<Avatar
+											circular={false}
+											src={avatar ? avatar : '/images/upload-img.png'}
+											alt={'avatar'}
+											size={150}
+										/>
+									</div>
+								</div>
+								<div className="flex flex-wrap items-center mt-1">
+									<div className="mx-auto">
+										<CldButton
+											onSuccess={(result, options) => setAvatar(result.info?.url)}
+										>
+											<div className="flex gap-1 items-center">
+												<MdUpload size={16} />
+												<div>Thay Avatar</div>
+											</div>
+										</CldButton>
+									</div>
+								</div>
+							</div>
 							<div className="flex flex-wrap items-center justify-between mb-3">
 								<div className="w-full sm:w-2/5 lg:w-1/2 sm:pb-0 pb-6">
 									<label>{'Tên'}</label>
