@@ -39,6 +39,7 @@ const CustomerServices = ({
 						// Tên dịch vụ
 					}
 					<div className="pb-3 flex flex-wrap text-xl font-semibold">
+						<div className="pr-1">{selectedService?.title},</div>
 						<div className="pr-1">{stringSize.at(selectedService?.size)},</div>
 
 						{selectedService?.placement ? (

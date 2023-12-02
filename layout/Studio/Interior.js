@@ -14,30 +14,16 @@ const StudioInterior = ({ url, pageSize = 20, studioId }) => {
 	const [page, setPage] = useState(1);
 
 	const { status } = useSession();
-	const [tattooCol, setTattooCol] = useState(2);
-
-	const onResize = useCallback((event) => {
-		const { innerWidth } = window;
-		let cols = 2;
-		if (innerWidth >= 640) {
-			cols = 3;
-		}
-		if (innerWidth >= 768) {
-			cols = 4;
-		}
-		if (innerWidth >= 1024) {
-			cols = 5;
-		}
-		if (innerWidth >= 1280) {
-			cols = 6;
-		}
-		setTattooCol(cols);
-	}, []);
 
 	const onSuccess = (result, options) => {
 		fetcherPost(`${BASE_URL}/interior`, {
 			studioId: studioId,
 			url: result.info?.url
+		}).then((data) => {
+			const interiors = [...items];
+			interiors.splice(0, 0, {
+				url: result.info?.url
+			});
 		});
 	};
 
@@ -55,16 +41,6 @@ const StudioInterior = ({ url, pageSize = 20, studioId }) => {
 			</div>
 		);
 	};
-
-	useEffect(() => {
-		//add eventlistener to window
-		onResize();
-		window.addEventListener('resize', debounce(onResize, 100, true));
-		// remove event on unmount to prevent a memory leak with the cleanup
-		return () => {
-			window.removeEventListener('resize', debounce(onResize, 100, true));
-		};
-	}, []);
 
 	if (status === 'loading') {
 		return (
@@ -102,19 +78,13 @@ const StudioInterior = ({ url, pageSize = 20, studioId }) => {
 								</div>
 							}
 						>
-							<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-								{Array.from({ length: tattooCol }).map((col, colIndex) => (
-									<div key={colIndex}>
-										{items.map((item, index) => (
-											<div key={index}>
-												{index % tattooCol === colIndex && (
-													<WidgetPostCard
-														hasChildren={false}
-														image={item.url ? item.url : randomPhoto}
-													></WidgetPostCard>
-												)}
-											</div>
-										))}
+							<div>
+								{items.map((item, index) => (
+									<div key={index}>
+										<WidgetPostCard
+											hasChildren={false}
+											image={item.url ? item.url : randomPhoto}
+										></WidgetPostCard>
 									</div>
 								))}
 							</div>

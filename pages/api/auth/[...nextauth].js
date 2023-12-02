@@ -43,7 +43,7 @@ const authOptions = {
 						role = -1;
 				}
 
-				if (role === ROLE.CUSTOMER || role === ROLE.ARTIST) {
+				if (role === -1) {
 					throw new Error('You are not allowed to access');
 				}
 
@@ -55,7 +55,9 @@ const authOptions = {
 					role: role,
 					email: jwtObj['emailaddress'],
 					firstName: jwtObj['surname'],
-					lastName: jwtObj['name']
+					lastName: jwtObj['name'],
+					accountId: res.accountId,
+					avatar: res.avatar
 				};
 			}
 		}),
@@ -79,7 +81,6 @@ const authOptions = {
 						studioName: ''
 					}
 				});
-				console.log(data);
 				if (data.result.success) {
 					const jwtObj = readJwt(data.accountResult.jwt);
 					// Check role
