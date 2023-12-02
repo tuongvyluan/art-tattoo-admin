@@ -2,6 +2,8 @@ import Button from 'components/Button';
 import MoneyInput from 'components/MoneyInput';
 import MyInput from 'components/MyInput';
 import { Tooltip } from 'flowbite-react';
+import { fetcherPut } from 'lib';
+import { BASE_URL } from 'lib/env';
 import { stringPlacements, stringSize } from 'lib/status';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
@@ -32,7 +34,9 @@ function ServicePage({ services, studioId, onReload }) {
 	};
 
 	const removeService = (serviceId) => {
-		const serviceIndex = serviceList.findIndex((service) => service.id === serviceId)
+		const serviceIndex = serviceList.findIndex(
+			(service) => service.id === serviceId
+		);
 		const services = [...serviceList];
 		if (services.at(serviceIndex).isNew) {
 			services.splice(serviceIndex, 1);
@@ -52,7 +56,8 @@ function ServicePage({ services, studioId, onReload }) {
 			minPrice: 0,
 			maxPrice: 0,
 			status: 0,
-			isNew: true
+			isNew: true,
+			studioId: studioId
 		};
 		services.splice(serviceIndex, 0, service);
 		setServiceList(services);
@@ -78,11 +83,17 @@ function ServicePage({ services, studioId, onReload }) {
 						minPrice: service.minPrice,
 						maxPrice: service.maxPrice,
 						status: service.status,
-						id: undefined
+						id: undefined,
+						studioId: studioId
 				  }
-				: service;
+				: {
+						...service,
+						studioId: studioId
+				  };
 		});
-		console.log(submitServices)
+		fetcherPut(`${BASE_URL}/studios/${studioId}/services`, submitServices).then(() => {
+			onReload()
+		})
 	};
 
 	const handleReset = () => {

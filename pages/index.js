@@ -2,6 +2,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { Loading } from '../ui';
 import { ROLE } from '../lib/status';
 import StudioIndexPage from '../layout/Studio/Index';
+import Router from 'next/router';
 
 const Index = () => {
 	// Check authenticated
