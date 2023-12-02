@@ -45,12 +45,12 @@ const Header = ({ toggleOpen }) => {
 							<MenuAlt1 width={18} height={18} strokeWidth={2} />
 						</a>
 
-						{data?.user?.studioId && (
+						{/* {data?.user?.studioId && (
 							<div className="pb-3">
 								Gói hoạt động còn hạn đến ngày {formatDate(new Date())},{' '}
 								<Link href={'/package'}>gia hạn thêm</Link>
 							</div>
-						)}
+						)} */}
 					</div>
 					<div className="inset-y-0 right-0 items-center px-4 sm:static sm:inset-auto flex h-full">
 						{/* <Dropdown className="px-3 static sm:relative h-full flex items-center">

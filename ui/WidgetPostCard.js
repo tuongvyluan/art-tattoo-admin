@@ -5,7 +5,13 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import Image from 'next/future/image';
 
-export const WidgetPostCard = ({ children, image, imageHeight, link = '#' }) => {
+export const WidgetPostCard = ({
+	children,
+	image,
+	imageHeight,
+	link = '#',
+	hasChildren = true
+}) => {
 	return (
 		<Card>
 			<Link href={link}>
@@ -28,8 +34,7 @@ export const WidgetPostCard = ({ children, image, imageHeight, link = '#' }) => 
 					)}
 				</div>
 			</Link>
-
-			<div className={'p-2 bg-white'}>{children}</div>
+			{hasChildren && <div className={'p-2 bg-white'}>{children}</div>}{' '}
 		</Card>
 	);
 };
@@ -38,5 +43,6 @@ WidgetPostCard.propTypes = {
 	link: PropTypes.string,
 	children: PropTypes.node.isRequired,
 	image: PropTypes.string.isRequired,
-	imageHeight: PropTypes.number
+	imageHeight: PropTypes.number,
+	hasChildren: PropTypes.bool
 };
