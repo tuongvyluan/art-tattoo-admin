@@ -2,8 +2,17 @@ import PropTypes from "prop-types";
 import { Transition } from "@headlessui/react";
 import { X } from "icons/solid";
 import classNames from "classnames";
+import { useEffect } from "react";
 
 export const Alert = ({ color = "blue", children, className, showAlert = true, setShowAlert, ...props}) => {
+  useEffect(() => {
+    const timeId = setTimeout(() => {
+      setShowAlert(false)
+    }, 5000)
+    return () => {
+      clearTimeout(timeId);
+    }
+  }, [])
   return (
     <Transition
       show={showAlert}

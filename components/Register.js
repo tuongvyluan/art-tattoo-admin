@@ -6,6 +6,7 @@ import Heading from './Heading';
 import MyInput from './MyInput';
 import CldButton from './CldButton';
 import { MdUpload } from 'react-icons/md';
+import PickCity from './PickCity';
 
 const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 	const handleFormChange = (e) => {
@@ -33,22 +34,22 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 								</div>
 
 								<div className="grid grid-cols-1 lg:grid-cols-9 gap-5">
-									<div className='col-span-6'>
+									<div className="col-span-6">
 										<Heading>Tiệm xăm</Heading>
 										<div className="block lg:grid grid-cols-2 gap-1">
 											<div className="block mb-3.5">
-												<div className="w-full min-w-min sm:w-1/2 md:w-1/3 lg:w-1/4 mx-auto">
+												<div className="w-full">
 													<div className="flex justify-center">
 														<div key={avatar}>
 															<Avatar
 																circular={false}
 																src={avatar}
 																alt={'avatar'}
-																size={150}
+																size={200}
 															/>
 														</div>
 													</div>
-													<div className="flex flex-wrap items-center">
+													<div className="flex flex-wrap items-center pt-3">
 														<div className="mx-auto">
 															<CldButton
 																onSuccess={(result, options) =>
@@ -69,12 +70,56 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 													<label>
 														Tên tiệm xăm <span className="text-red-500">*</span>{' '}
 													</label>
-													<MyInput required={true} />
+													<MyInput
+														name={'studioName'}
+														value={user.studioName}
+														onChange={handleFormChange}
+														required={true}
+													/>
+												</div>
+												<div className="block mb-3">
+													<label>
+														Mã số thuế <span className="text-red-500">*</span>{' '}
+													</label>
+													<MyInput
+														name={'studioTaxCode'}
+														value={user.studioTaxCode}
+														onChange={handleFormChange}
+														required={true}
+													/>
+												</div>
+												<div className="block mb-3">
+													<label className="block w-full">
+														Thành phố <span className="text-red-500">*</span>{' '}
+													</label>
+													<PickCity
+														className="block w-full"
+														city={user.studioCity}
+														setCity={(newCity) => {
+															handleFormChange({
+																target: {
+																	name: 'studioCity',
+																	value: newCity
+																}
+															});
+														}}
+													/>
+												</div>
+												<div className="block mb-3">
+													<label>
+														Địa chỉ <span className="text-red-500">*</span>{' '}
+													</label>
+													<MyInput
+														name={'studioAddress'}
+														value={user.studioAddress}
+														onChange={handleFormChange}
+														required={true}
+													/>
 												</div>
 											</div>
 										</div>
 									</div>
-									<div className='col-span-3'>
+									<div className="col-span-3">
 										<Heading>Quản lí tiệm xăm</Heading>
 										<div className="rounded-lg shadow-sm">
 											<div className="block mb-3">
@@ -94,13 +139,13 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 													{'Số điện thoại'} <span className="text-red-500">*</span>{' '}
 												</label>
 												<MyInput
-													name="phoneNumber"
+													name={'phoneNumber'}
 													value={user.phoneNumber}
 													onChange={handleFormChange}
-													type="tel"
+													type={'tel'}
 													required
 													className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
-													placeholder={'Email'}
+													placeholder={'Số điện thoại'}
 												/>
 											</div>
 											<div className="block mb-3">
@@ -111,7 +156,7 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 													name="email"
 													value={user.email}
 													onChange={handleFormChange}
-													type="email"
+													type={'email'}
 													required
 													placeholder={'Email'}
 												/>
@@ -150,7 +195,9 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 								</div>
 
 								<div className="flex justify-center">
-									<Button type="submit">Đăng ký</Button>
+									<div className="w-56">
+										<Button type="submit">Đăng ký</Button>
+									</div>
 								</div>
 							</form>
 							<div className="text-center pb-3">
