@@ -20,6 +20,7 @@ import cancelReasons from 'lib/cancelReasons';
 import { Modal } from 'flowbite-react';
 import CustomerServices from './CustomerServices';
 import useSWR from 'swr';
+import Heading from 'components/Heading';
 
 const hasBookingMeeting = (bookingMeetings) => {
 	let result;
@@ -52,7 +53,9 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	const [cancelReason, setCancelReason] = useState(cancelReasons.at(0).reason);
 	const [cancelReasonMore, setCancelReasonMore] = useState('');
 
-	const {data: artistList, error} = useSWR(`${BASE_URL}/artists/${studioId}/artist-studio-list`)
+	const { data: artistList, error } = useSWR(
+		`${BASE_URL}/artists/${studioId}/artist-studio-list`
+	);
 
 	const handleCancelReason = ({ status, reason }) => {
 		setCancelReason(reason);
@@ -297,9 +300,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								<div className="flex justify-start flex-wrap">
 									<div className="w-full md:pr-1 md:w-1/3 md:border-r mb-5 md:mb-0 md:border-b-0 border-b border-gray-300">
 										<div>
-											<div className="font-semibold text-xl pb-2">
-												Thông tin khách hàng
-											</div>
+											<Heading>Thông tin khách hàng</Heading>
 											<div className="text-base">
 												{renderData.customer.firstName}{' '}
 												{renderData.customer.lastName}
@@ -324,9 +325,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							}
 							{renderData.description && (
 								<div className="pt-3 pb-3 border-b border-gray-300">
-									<div className="font-semibold text-xl pb-2">
-										Mô tả của khách hàng
-									</div>
+									<Heading>Mô tả của khách hàng</Heading>
 									<div className="block">{renderData.description}</div>
 								</div>
 							)}
@@ -336,11 +335,14 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							}
 							<div className="pt-3">
 								<div className="flex justify-between w-full pb-1">
-									<div className="font-semibold text-xl pb-2">
-										Các dịch vụ đã đặt ({renderData.services?.length})
-									</div>
+									<Heading>Các dịch vụ đã đặt ({renderData.services?.length})</Heading>
 								</div>
-								<CustomerServices artistList={artistList} showMore={true} canEdit={true} services={renderData.services} />
+								<CustomerServices
+									artistList={artistList}
+									showMore={true}
+									canEdit={true}
+									services={renderData.services}
+								/>
 							</div>
 
 							<div

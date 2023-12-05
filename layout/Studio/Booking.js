@@ -6,24 +6,17 @@ import { Search } from 'icons/outline';
 import debounce from 'lodash.debounce';
 import {
 	BOOKING_STATUS,
-	operationNames,
 	stringBookingStatuses,
-	stringColor,
-	stringDifficult,
-	stringPlacements,
-	stringSize
 } from 'lib/status';
-import Image from 'next/image';
 import MyPagination from 'ui/MyPagination';
 import { BASE_URL } from 'lib/env';
 import CustomerServices from './CustomerServices';
 
 const ALL_TAB = '1';
 const PENDING_TAB = '2';
-const CONFIRMED_TAB = '3';
-const IN_PROGRESS_TAB = '4';
-const COMPLETE_TAB = '5';
-const CANCELLED_TAB = '6';
+const IN_PROGRESS_TAB = '3';
+const COMPLETE_TAB = '4';
+const CANCELLED_TAB = '5';
 
 function BookingPage({ studioId }) {
 	const [data, setData] = useState([]);
@@ -85,10 +78,6 @@ function BookingPage({ studioId }) {
 				setPage(1);
 				setFilter(BOOKING_STATUS.PENDING);
 				break;
-			case CONFIRMED_TAB:
-				setPage(1);
-				setFilter(BOOKING_STATUS.CONFIRMED);
-				break;
 			case IN_PROGRESS_TAB:
 				setPage(1);
 				setFilter(BOOKING_STATUS.IN_PROGRESS);
@@ -99,7 +88,7 @@ function BookingPage({ studioId }) {
 				break;
 			case CANCELLED_TAB:
 				setPage(1);
-				setFilter(BOOKING_STATUS.CUSTOMER_CANCEL);
+				setFilter(BOOKING_STATUS.STUDIO_CANCEL);
 				break;
 			default:
 				setPage(1);
@@ -146,24 +135,6 @@ function BookingPage({ studioId }) {
 								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
 							>
 								Chờ xác nhận
-								<Ripple color="black" />
-							</a>
-						</li>
-						<li
-							className={`text-center cursor-pointer ${
-								activeTab === CONFIRMED_TAB
-									? 'border-b-2 border-solid border-gray-700'
-									: ''
-							}`}
-						>
-							<a
-								onClick={() => {
-									toggle(CONFIRMED_TAB);
-								}}
-								href="#"
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
-							>
-								Đã xác nhận
 								<Ripple color="black" />
 							</a>
 						</li>

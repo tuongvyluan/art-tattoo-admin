@@ -15,14 +15,30 @@ export const roleString = [
 export const enum ACCOUNT_STATUS {
 	NOT_VERIFIED = 0,
 	VERIFIED = 1,
-	SUSPENDED = 2,
-	DELETED = 3
+	GOOGLE = 2,
+	INACTIVE = 3,
+	BANNED = 4
 }
 
 export const enum CUSTOMER_STATUS {
-	NOT_VERIFIED = 0,
-	VERIFIED = 1,
-	DELETED = 2
+	ACTIVE = 0,
+	DELETED = 1
+}
+
+export const enum PACKAGE_STATUS {
+	AVAILABLE = 0,
+	EXPIRED = 1,
+	CANCELLED = 2
+}
+
+export const enum PACKAGE_TYPE_STATUS {
+	AVAILABLE = 0,
+	UNAVAILABLE = 1
+}
+
+export const enum ARTIST_STATUS {
+	AVAILABLE = 0,
+	UNAVAILABLE = 1 // Cannot be found on platform
 }
 
 export const enum STUDIO_STATUS {
@@ -61,31 +77,29 @@ export const stringDifficult = (isDifficult: boolean) => {
 	return isDifficult ? 'Phức tạp' : 'Đơn giản';
 };
 
-export const enum PACKAGE_STATUS {
-	IN_PROGRESS = 0,
-	AVAILABLE = 1,
-	EXPIRED = 2,
-	CANCELLED = 3
-}
-
-export const enum PACKAGE_TYPE_STATUS {
-	AVAILABLE = 0,
-	UNAVAILABLE = 1,
-	DELETED = 2
-}
-
-export const enum ARTIST_STATUS {
-	AVAILABLE = 0,
-	UNAVAILABLE = 1
-}
-
 export const enum BOOKING_STATUS {
 	PENDING = 0,
-	CONFIRMED = 1,
-	IN_PROGRESS = 2,
-	CUSTOMER_CANCEL = 3,
-	STUDIO_CANCEL = 4,
-	COMPLETED = 5
+	IN_PROGRESS = 1,
+	CUSTOMER_CANCEL = 2,
+	STUDIO_CANCEL = 3,
+	COMPLETED = 4
+}
+
+export const enum BOOKING_DETAIL_STATUS {
+	PENDING = 0,
+	CANCELLED = 1,
+	COMPLETED = 2
+}
+
+export const enum BOOKING_MEETING_STATUS {
+	PENDING = 0,
+	COMPLETED = 1,
+	CANCELLED = 2
+}
+
+export const enum TRANSACTION_STATUS {
+	AVAILABLE = 0,
+	DELETED = 1
 }
 
 export const stringBookingStatuses = [
@@ -106,14 +120,14 @@ export const operationNames = [
 ];
 
 export const enum TATTOO_ART_STATUS {
-	AVAILABLE = 0,
-	UNAVAILABLE = 1,
+	UNAVAILABLE = 0,
+	AVAILABLE = 1,
 	DELETED = 2
 }
 
 export const enum TATTOO_ART_STAGE_STATUS {
-	AVAILABLE = 0,
-	UNAVAILABLE = 1,
+	UNAVAILABLE = 0,
+	AVAILABLE = 1,
 	DELETED = 2
 }
 

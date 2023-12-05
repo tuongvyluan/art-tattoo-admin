@@ -1,10 +1,16 @@
 import Button from 'components/Button';
 import MoneyInput from 'components/MoneyInput';
 import MyInput from 'components/MyInput';
+import MyModal from 'components/MyModal';
 import { Tooltip } from 'flowbite-react';
-import { fetcherPut } from 'lib';
+import { fetcherPut, formatPrice } from 'lib';
 import { BASE_URL } from 'lib/env';
-import { stringPlacements, stringSize } from 'lib/status';
+import {
+	SERVICE_PLACEMENT,
+	SERVICE_SIZE,
+	stringPlacements,
+	stringSize
+} from 'lib/status';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { BsTrash } from 'react-icons/bs';
@@ -26,6 +32,19 @@ function ServicePage({ services, studioId, onReload }) {
 		content: '',
 		isWarn: false
 	});
+
+	const [currentService, setCurrentService] = useState({
+		studioId: studioId,
+		title: '',
+		size: SERVICE_SIZE.ANY,
+		placement: SERVICE_PLACEMENT.ANY,
+		status: 0,
+		minPrice: 0,
+		maxPrice: 0
+	});
+
+	const [openAddModal, setOpenAddModal] = useState(false);
+	const [openRemoveModal, setOpenRemoveModal] = useState(false);
 
 	const setServiceField = (name, value, index) => {
 		const services = [...serviceList];
@@ -91,13 +110,37 @@ function ServicePage({ services, studioId, onReload }) {
 						studioId: studioId
 				  };
 		});
-		fetcherPut(`${BASE_URL}/studios/${studioId}/services`, submitServices).then(() => {
-			onReload()
-		})
+		fetcherPut(`${BASE_URL}/studios/${studioId}/services`, submitServices).then(
+			() => {
+				onReload();
+			}
+		);
 	};
 
-	const handleReset = () => {
-		setServiceList(JSON.parse(JSON.stringify(services)));
+	const handleOpenAddModal = () => {
+		setCurrentService({
+			studioId: studioId,
+			title: '',
+			size: SERVICE_SIZE.ANY,
+			placement: SERVICE_PLACEMENT.ANY,
+			status: 0,
+			minPrice: 0,
+			maxPrice: 0
+		});
+		setOpenAddModal(true);
+	};
+
+	const handleOpenRemoveModal = (service) => {
+		setCurrentService({
+			studioId: studioId,
+			title: service.title,
+			size: service.size,
+			placement: service.placement,
+			status: 0,
+			minPrice: service.minPrice,
+			maxPrice: service.maxPrice
+		});
+		setOpenRemoveModal(true);
 	};
 
 	return (
@@ -111,16 +154,41 @@ function ServicePage({ services, studioId, onReload }) {
 				<strong className="font-bold mr-1">{alertContent.title}</strong>
 				<span className="block sm:inline">{alertContent.content}</span>
 			</Alert>
+
+			{
+				// Modals
+			}
+			<MyModal
+				title="Xác nhận xoá dịch vụ"
+				warn={true}
+				openModal={openRemoveModal}
+				setOpenModal={setOpenRemoveModal}
+				onSubmit={() => handleAfterConfirmed(cancelStatus)}
+			>
+				<div>
+					Bạn có chắc muốn xoá dịch vụ{' '}
+					{currentService.title && <span>{currentService.title + ', '}</span>}
+					{stringSize.at(currentService.size) + ', '}
+					{stringPlacements.at(currentService.placement) + ', '}
+					{formatPrice(currentService?.minPrice)} -{' '}
+					{formatPrice(currentService?.maxPrice)}?
+				</div>
+			</MyModal>
+			<MyModal
+				title="Tạo dịch vụ mới"
+				openModal={openAddModal}
+				setOpenModal={setOpenAddModal}
+				onSubmit={() => handleAfterConfirmed(cancelStatus)}
+			>
+				<div>
+					
+				</div>
+			</MyModal>
 			<div className="sm:px-3 md:px-1 lg:px-10 xl:px-12">
 				<div className="flex justify-end pb-3 ">
 					<div className="flex gap-2 items-center">
-						<div className="w-16">
-							<Button outline onClick={handleReset}>
-								Reset
-							</Button>
-						</div>
-						<div className="w-16">
-							<Button onClick={handleSubmit}>Lưu</Button>
+						<div className="w-28">
+							<Button onClick={handleOpenAddModal}>Tạo thêm</Button>
 						</div>
 					</div>
 				</div>
@@ -263,18 +331,10 @@ function ServicePage({ services, studioId, onReload }) {
 												<td className="px-3 py-4 flex flex-wrap gap-2">
 													<Tooltip content="Xoá dịch vụ" placement="bottom-end">
 														<div
-															onClick={() => removeService(service.id)}
+															onClick={() => handleOpenRemoveModal(service)}
 															className="cursor-pointer"
 														>
 															<BsTrash size={25} />
-														</div>
-													</Tooltip>
-													<Tooltip content="Thêm dịch vụ" placement="bottom-end">
-														<div
-															onClick={() => addService(serviceIndex)}
-															className="cursor-pointer"
-														>
-															<MdAdd size={25} />
 														</div>
 													</Tooltip>
 												</td>

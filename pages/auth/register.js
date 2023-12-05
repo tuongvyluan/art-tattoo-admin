@@ -17,14 +17,17 @@ const RegisterPage = () => {
 	}, [status]);
 
 	const [user, setUser] = useState({
-		firstName: '',
-		lastName: '',
+		name: '',
 		email: '',
 		phoneNumber: '',
 		password: '',
 		cpassword: '',
+		studioName: '',
+		studioAddress: '',
+		studioCity: '79',
 		role: ROLE.STUDIO
 	});
+	const [avatar, setAvatar] = useState('/images/upload-img.png')
 	const [showAlert, setShowAlert] = useState(false);
 
 	const [alertContent, setAlertContent] = useState({
@@ -48,6 +51,7 @@ const RegisterPage = () => {
 			try {
 				await fetcherPost(`${BASE_URL}/Auth/Register`, {
 					...user,
+					avatar: avatar,
 					redirect: false
 				});
 				Router.replace('/auth/signin');
@@ -83,7 +87,7 @@ const RegisterPage = () => {
 				<strong className="font-bold mr-1">{alertContent.title}</strong>
 				<span className="block sm:inline">{alertContent.content}</span>
 			</Alert>
-			<Register user={user} setUser={handleSetUser} handleSubmit={handleSubmit} />
+			<Register avatar={avatar} setAvata={setAvatar} user={user} setUser={handleSetUser} handleSubmit={handleSubmit} />
 		</div>
 	);
 };

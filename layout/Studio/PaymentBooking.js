@@ -6,11 +6,11 @@ import PropTypes from 'prop-types';
 import { Card, CardBody } from 'ui';
 import Button from 'components/Button';
 import { useState } from 'react';
+import Heading from 'components/Heading';
 
 const PaymentBooking = ({ bookingId, payments }) => {
 	const [selectedMethod, setSelectedMethod] = useState(0);
-	const [total, setTotal] = useState(0)
-	
+	const [total, setTotal] = useState(0);
 
 	return (
 		<div className="relative sm:px-12 md:px-3 lg:px-10 xl:px-44">
@@ -30,7 +30,7 @@ const PaymentBooking = ({ bookingId, payments }) => {
 						</div>
 					</div>
 					<div>
-						<div className="font-semibold text-xl pb-2">Thông tin thanh toán:</div>
+						<Heading>Thông tin thanh toán:</Heading>
 						{
 							// Tổng tiền
 						}
@@ -147,15 +147,13 @@ const PaymentBooking = ({ bookingId, payments }) => {
 						// Payment method
 					}
 					<div className="pt-5">
-						<div className="font-semibold text-xl pb-2">
-							Chọn phương thức thanh toán:
-						</div>
+						<Heading>Chọn phương thức thanh toán:</Heading>
 						<div className="flex justify-center gap-5">
 							<div
 								className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
 									selectedMethod === 0 && 'bg-blue-100'
 								}`}
-                onClick={() => setSelectedMethod(0)}
+								onClick={() => setSelectedMethod(0)}
 							>
 								<div>
 									<BsCashCoin size={20} />
@@ -166,7 +164,7 @@ const PaymentBooking = ({ bookingId, payments }) => {
 								className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
 									selectedMethod === 1 && 'bg-blue-100'
 								}`}
-                onClick={() => setSelectedMethod(1)}
+								onClick={() => setSelectedMethod(1)}
 							>
 								<div>
 									<BsCreditCard size={20} />
@@ -177,7 +175,7 @@ const PaymentBooking = ({ bookingId, payments }) => {
 								className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
 									selectedMethod === 2 && 'bg-blue-100'
 								}`}
-                onClick={() => setSelectedMethod(2)}
+								onClick={() => setSelectedMethod(2)}
 							>
 								<div>
 									<BsWallet2 size={20} />
@@ -190,8 +188,8 @@ const PaymentBooking = ({ bookingId, payments }) => {
 						// Fill in payment
 					}
 					<div>
-						<div className='flex flex-wrap'>
-							<input type='checkbox'  />
+						<div className="flex flex-wrap">
+							<input type="checkbox" />
 						</div>
 					</div>
 					<div className="flex justify-center pt-5">

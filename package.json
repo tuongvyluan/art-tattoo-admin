@@ -5,6 +5,7 @@
   "dependencies": {
     "@headlessui/react": "^0.2.0",
     "@tailwindcss/typography": "0.3.1",
+    "@types/prop-types": "^15.7.11",
     "@zeit/next-css": "1.0.1",
     "chart.js": "2.9.4",
     "classnames": "2.2.6",
