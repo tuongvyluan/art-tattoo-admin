@@ -33,10 +33,10 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 									</p>
 								</div>
 
-								<div className="grid grid-cols-1 lg:grid-cols-9 gap-5">
-									<div className="col-span-6">
+								<div className="grid grid-cols-1 lg:grid-cols-9 gap-5 px-10 lg:px-0">
+									<div className="lg:col-span-6">
 										<Heading>Tiệm xăm</Heading>
-										<div className="block lg:grid grid-cols-2 gap-1">
+										<div className="block lg:grid grid-cols-2 gap-5">
 											<div className="block mb-3.5">
 												<div className="w-full">
 													<div className="flex justify-center">
@@ -64,10 +64,8 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 														</div>
 													</div>
 												</div>
-											</div>
-											<div>
-												<div className="block mb-3">
-													<label>
+												<div className="block mt-5 mb-3">
+													<label className='mt-1'>
 														Tên tiệm xăm <span className="text-red-500">*</span>{' '}
 													</label>
 													<MyInput
@@ -77,6 +75,8 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 														required={true}
 													/>
 												</div>
+											</div>
+											<div>
 												<div className="block mb-3">
 													<label>
 														Mã số thuế <span className="text-red-500">*</span>{' '}
@@ -116,10 +116,34 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 														required={true}
 													/>
 												</div>
+												<div className="block mb-3">
+													<label>
+														Giờ mở cửa <span className="text-red-500">*</span>{' '}
+													</label>
+													<MyInput
+														name={'studioOpenTime'}
+														value={user.studioOpenTime}
+														onChange={handleFormChange}
+														type='time'
+														required={true}
+													/>
+												</div>
+												<div className="block mb-3">
+													<label>
+														Giờ đóng cửa <span className="text-red-500">*</span>{' '}
+													</label>
+													<MyInput
+														name={'studioCloseTime'}
+														value={user.studioCloseTime}
+														onChange={handleFormChange}
+														type='time'
+														required={true}
+													/>
+												</div>
 											</div>
 										</div>
 									</div>
-									<div className="col-span-3">
+									<div className="lg:col-span-3">
 										<Heading>Quản lí tiệm xăm</Heading>
 										<div className="rounded-lg shadow-sm">
 											<div className="block mb-3">

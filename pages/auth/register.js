@@ -1,6 +1,6 @@
 import Register from 'components/Register';
-import { fetcherPost } from 'lib';
-import { BASE_URL } from 'lib/env';
+import { fetcher, fetcherPost } from 'lib';
+import { BASE_URL, TAX_CODE_API } from 'lib/env';
 import { checkTaxCode } from 'lib/regex';
 import { ROLE } from 'lib/status';
 import { useSession } from 'next-auth/react';
@@ -27,9 +27,12 @@ const RegisterPage = () => {
 		studioAddress: '',
 		studioCity: '79',
 		studioTaxCode: '',
+		studioOpenTime: '09:00:00',
+		studioCloseTime: '21:00:00',
+		studioBioContent: '',
 		role: ROLE.STUDIO
 	});
-	const [avatar, setAvatar] = useState('/images/upload-img.png')
+	const [avatar, setAvatar] = useState('/images/upload-img.png');
 	const [showAlert, setShowAlert] = useState(false);
 
 	const [alertContent, setAlertContent] = useState({
@@ -51,24 +54,45 @@ const RegisterPage = () => {
 			handleAlert(true, '', 'Mã số thuế không hợp lệ.', true);
 		} else {
 			handleAlert(true, '', 'Đang đăng ký tài khoản...');
-			// try {
-				console.log(user)
-				console.log(avatar)
-			// 	await fetcherPost(`${BASE_URL}/Auth/Register`, {
-			// 		...user,
-			// 		avatar: avatar,
-			// 		redirect: false
-			// 	});
-			// 	Router.replace('/auth/signin');
-			// } catch (e) {
-			// 	console.log(e);
-			// 	let mesageTitle = 'Đăng ký tài khoản không thành công.';
-			// 	let messageContent = '';
-			// 	if (e.message.includes('already an account')) {
-			// 		messageContent = 'Email hoặc số điện thoại này đã tồn tại.';
-			// 	}
-			// 	handleAlert(true, mesageTitle, messageContent, true);
-			// }
+			try {
+				fetcher(`${TAX_CODE_API}/${user.studioTaxCode}`).then((data) => {
+					let validTax = false;
+					if (data.code === '00') {
+						validTax = true;
+					}
+					// fetcherPost(`${BASE_URL}/Auth/Register`, {
+					// 	accountCreateModel: {
+					// 		email: user.email,
+					// 		avatar: avatar,
+					// 		password: user.password,
+					// 		fullName: user.name,
+					// 		phoneNumber: user.phoneNumber,
+					// 		role: ROLE.STUDIO
+					// 	},
+					// 	studioViewModelForCreate: {
+					// 		studioName: user.studioName,
+					// 		taxCode: user.studioTaxCode,
+					// 		address: user.studioAddress,
+					// 		city: user.studioCity,
+					// 		bioContent: user.studioBioContent,
+					// 		openTime: user.studioOpenTime,
+					// 		closeTime: user.studioCloseTime,
+
+					// 	}
+					// })
+					// .finally(() => {
+					// 	Router.replace('/auth/signin');
+					// });
+				});
+			} catch (e) {
+				console.log(e);
+				let mesageTitle = 'Đăng ký tài khoản không thành công.';
+				let messageContent = '';
+				if (e.message.includes('already an account')) {
+					messageContent = 'Email hoặc số điện thoại này đã tồn tại.';
+				}
+				handleAlert(true, mesageTitle, messageContent, true);
+			}
 		}
 	};
 
@@ -92,7 +116,13 @@ const RegisterPage = () => {
 				<strong className="font-bold mr-1">{alertContent.title}</strong>
 				<span className="block sm:inline">{alertContent.content}</span>
 			</Alert>
-			<Register avatar={avatar} setAvatar={setAvatar} user={user} setUser={handleSetUser} handleSubmit={handleSubmit} />
+			<Register
+				avatar={avatar}
+				setAvatar={setAvatar}
+				user={user}
+				setUser={handleSetUser}
+				handleSubmit={handleSubmit}
+			/>
 		</div>
 	);
 };
