@@ -88,7 +88,7 @@ function AdminStudioPage({ pageSize }) {
 													<div className='w-32 flex'><Badge color='success' className='text-center'>Đang hoạt động</Badge></div>
 												) : (
 													<div className='w-32 flex'>
-														<Badge color='warning' className='text-center'>Đã bị khoá</Badge>
+														<Badge color='failure' className='text-center'>Đã bị khoá</Badge>
 													</div>
 												)}
 											</td>

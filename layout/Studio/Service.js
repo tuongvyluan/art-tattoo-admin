@@ -2,7 +2,7 @@ import Button from 'components/Button';
 import MoneyInput from 'components/MoneyInput';
 import MyInput from 'components/MyInput';
 import MyModal from 'components/MyModal';
-import { Tooltip } from 'flowbite-react';
+import { Badge, Tooltip } from 'flowbite-react';
 import { ChevronDown, Pencil } from 'icons/outline';
 import { fetcherDelete, fetcherPost, fetcherPut, formatPrice } from 'lib';
 import { BASE_URL } from 'lib/env';
@@ -22,12 +22,22 @@ import { Alert, Card, CardBody, Dropdown, DropdownMenu, DropdownToggle } from 'u
 
 const sortServiceByCategory = (a, b) => b.serviceCategoryId - a.serviceCategoryId;
 
+const filterAvailableStatus = (service) => service.status === 0;
+
+const filterDuplicate = (newService, oldService) => {
+	return (
+		newService.status === oldService.status &&
+		newService.serviceCategoryId === oldService.serviceCategoryId &&
+		newService.size === oldService.size &&
+		newService.placement === oldService.placement
+	);
+};
+
 function ServicePage({ services, studioId, onReload }) {
 	const [serviceList, setServiceList] = useState(
 		JSON.parse(JSON.stringify(services.sort(sortServiceByCategory)))
 	);
-
-	const length = serviceList.length;
+	const [duplicateList, setDuplicateList] = useState([]);
 
 	const [showAlert, setShowAlert] = useState(false);
 
@@ -82,13 +92,49 @@ function ServicePage({ services, studioId, onReload }) {
 		setOpenAddModal(false);
 	};
 
-	const updateService = () => {
+	const checkCreate = () => {
+		const duplicateList = serviceList.filter((service) =>
+			filterDuplicate(currentService, service)
+		);
+		if (duplicateList.length > 0) {
+			setDuplicateList(duplicateList);
+			return true;
+		}
+		return false;
+	};
+
+	const createUpdate = () => {
+		if (typeof currentService.title === 'string' && currentService.title.trim().length > 0) {
+			if (currentService.id === '') {
+				if (duplicateList.length > 0 || !checkCreate()) {
+					addService();
+				}
+			} else {
+				updateService(currentService.id);
+			}
+		} else {
+			handleAlert(true, 'Dịch vụ không hợp lệ', 'Phải có tên dịch vụ', 2)
+		}
+	};
+
+	const handleUpdateDuplicate = (oldServiceId) => {
+		setCurrentService({
+			...currentService,
+			id: oldServiceId
+		})
+		updateService(oldServiceId)
+	}
+
+	const updateService = (id) => {
 		if (currentService.minPrice > currentService.maxPrice) {
 			handleAlert(true, 'Giá dịch vụ không hợp lệ', 'Giá phải từ nhỏ đến lớn', 2);
 		} else {
 			fetcherPut(
-				`${BASE_URL}/studios/${studioId}/services/${currentService.id}`,
-				currentService
+				`${BASE_URL}/studios/${studioId}/services/${id}`,
+				{
+					...currentService,
+					id: id
+				}
 			).then(() => {
 				onReload();
 			});
@@ -98,10 +144,11 @@ function ServicePage({ services, studioId, onReload }) {
 	};
 
 	const resetCurrentService = () => {
+		setDuplicateList([]);
 		setCurrentService({
 			id: '',
 			studioId: studioId,
-			title: '',
+			title: 'Xăm',
 			serviceCategoryId: 0,
 			size: SERVICE_SIZE.ANY,
 			placement: SERVICE_PLACEMENT.ANY,
@@ -133,6 +180,7 @@ function ServicePage({ services, studioId, onReload }) {
 	};
 
 	const handleChangeService = (e) => {
+		setDuplicateList([])
 		setCurrentService({ ...currentService, [e.target.name]: e.target.value });
 	};
 
@@ -147,6 +195,7 @@ function ServicePage({ services, studioId, onReload }) {
 	};
 
 	const handleSetCurrentService = (service) => {
+		setDuplicateList([]);
 		setCurrentService({
 			id: service.id,
 			studioId: studioId,
@@ -204,179 +253,284 @@ function ServicePage({ services, studioId, onReload }) {
 				confirmTitle={currentService.id !== '' ? 'Sửa' : 'Tạo'}
 				openModal={openAddModal}
 				setOpenModal={setOpenAddModal}
-				onSubmit={() => {
-					if (currentService.id === '') {
-						addService();
-					} else {
-						updateService();
-					}
-				}}
-				size="xl"
+				onSubmit={createUpdate}
+				size={duplicateList.length > 0 ? '3xl' : 'xl'}
 			>
-				<div>
+				<form className='max-h-96 overflow-auto'>
 					{
-						// service title
+						// Update currentService
 					}
-					<div className="mb-3 flex items-center">
-						<div className="w-32">Tên dịch vụ</div>
-						<div className="w-44">
-							<MyInput
-								name={'title'}
-								value={currentService.title}
-								onChange={handleChangeService}
-							/>
+					<div>
+						{
+							// service title
+						}
+						<div className="mb-3 flex items-center">
+							<div className="w-32">Tên dịch vụ</div>
+							<div className="w-44">
+								<MyInput
+									name={'title'}
+									value={currentService.title}
+									onChange={handleChangeService}
+									required={true}
+								/>
+							</div>
+						</div>
+						{
+							// service category
+						}
+						<div className="mb-3 flex items-center">
+							<div className="w-32">Loại dịch vụ</div>
+							<Dropdown className="relative">
+								<DropdownToggle>
+									<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
+										{stringServiceCategories.at(currentService.serviceCategoryId)}
+									</div>
+									<div className="absolute top-2 right-2">
+										<ChevronDown width={16} height={16} />
+									</div>
+								</DropdownToggle>
+								<DropdownMenu className={'h-24 overflow-auto w-40'}>
+									{stringServiceCategories.map((cate, cateIndex) => (
+										<div
+											key={cate}
+											onClick={() =>
+												handleChangeService({
+													target: {
+														name: 'serviceCategoryId',
+														value: cateIndex
+													}
+												})
+											}
+											className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
+												currentService.category === cateIndex ? 'bg-indigo-100' : ''
+											}`}
+										>
+											{cate}
+										</div>
+									))}
+								</DropdownMenu>
+							</Dropdown>
+						</div>
+						{
+							// service size
+						}
+						<div className="mb-3 flex items-center">
+							<label className="w-32">Kích thước</label>
+							<Dropdown className="relative">
+								<DropdownToggle>
+									<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
+										{stringSize.at(currentService.size)}
+									</div>
+									<div className="absolute top-2 right-2">
+										<ChevronDown width={16} height={16} />
+									</div>
+								</DropdownToggle>
+								<DropdownMenu className={'h-24 overflow-auto w-40'}>
+									{stringSize.map((size, sizeIndex) => (
+										<div
+											key={size}
+											onClick={() =>
+												handleChangeService({
+													target: {
+														name: 'size',
+														value: sizeIndex
+													}
+												})
+											}
+											className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
+												currentService.size === sizeIndex ? 'bg-indigo-100' : ''
+											}`}
+										>
+											{size}
+										</div>
+									))}
+								</DropdownMenu>
+							</Dropdown>
+						</div>
+						{
+							// service placement
+						}
+						<div className="mb-3 flex items-center">
+							<label className="w-32">Vị trí xăm</label>
+							<Dropdown className="relative">
+								<DropdownToggle>
+									<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
+										{stringPlacements.at(currentService.placement)}
+									</div>
+									<div className="absolute top-2 right-2">
+										<ChevronDown width={16} height={16} />
+									</div>
+								</DropdownToggle>
+								<DropdownMenu className={'h-24 overflow-auto w-40'}>
+									{stringPlacements.map((placement, placementIndex) => (
+										<div
+											key={placement}
+											onClick={() =>
+												handleChangeService({
+													target: {
+														name: 'placement',
+														value: placementIndex
+													}
+												})
+											}
+											className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
+												currentService.placement === placementIndex
+													? 'bg-indigo-100'
+													: ''
+											}`}
+										>
+											{placement}
+										</div>
+									))}
+								</DropdownMenu>
+							</Dropdown>
+						</div>
+						<div className="mb-3 flex items-center">
+							<div className="w-32">Đối tượng</div>
+							<Dropdown className="relative">
+								<DropdownToggle>
+									<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
+										{currentService.status === 0 ? 'Mọi người' : 'Khách hàng cũ'}
+									</div>
+									<div className="absolute top-2 right-2">
+										<ChevronDown width={16} height={16} />
+									</div>
+								</DropdownToggle>
+								<DropdownMenu className={'w-40'}>
+									<div>
+										<div
+											onClick={() =>
+												handleChangeService({
+													target: {
+														name: 'status',
+														value: 0
+													}
+												})
+											}
+											className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
+												currentService.status === 0 ? 'bg-indigo-100' : ''
+											}`}
+										>
+											Mọi người
+										</div>
+										<div
+											onClick={() =>
+												handleChangeService({
+													target: {
+														name: 'status',
+														value: 1
+													}
+												})
+											}
+											className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
+												currentService.status === 1 ? 'bg-indigo-100' : ''
+											}`}
+										>
+											Khách hàng cũ
+										</div>
+									</div>
+								</DropdownMenu>
+							</Dropdown>
+						</div>
+						{
+							// service price range
+						}
+						<div className="mb-10 flex items-center">
+							<div className="w-32">Giá</div>
+							<div className="flex flex-wrap max-w-max gap-2 items-center">
+								<div className="w-32">
+									<MoneyInput
+										name="minPrice"
+										value={currentService.minPrice}
+										min={0}
+										onAccept={(value, mask) =>
+											handleChangeService({
+												target: {
+													name: 'minPrice',
+													value: value
+												}
+											})
+										}
+									/>
+								</div>
+								<span>tới</span>
+								<div className="w-32">
+									<MoneyInput
+										name="maxPrice"
+										value={currentService.maxPrice}
+										min={currentService.minPrice}
+										onAccept={(value, mask) =>
+											handleChangeService({
+												target: {
+													name: 'maxPrice',
+													value: value
+												}
+											})
+										}
+									/>
+								</div>
+							</div>
 						</div>
 					</div>
 					{
-						// service category
-					}
-					<div className="mb-3 flex items-center">
-						<div className="w-32">Loại dịch vụ</div>
-						<Dropdown className="relative">
-							<DropdownToggle>
-								<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
+						// View duplicate list
+						currentService.id === '' && duplicateList.length > 0 && (
+							<div>
+								Bạn đã có những dịch vụ này với loại dịch vụ là{' '}
+								<span className="font-semibold">
 									{stringServiceCategories.at(currentService.serviceCategoryId)}
-								</div>
-								<div className="absolute top-2 right-2">
-									<ChevronDown width={16} height={16} />
-								</div>
-							</DropdownToggle>
-							<DropdownMenu className={'h-24 overflow-auto w-40'}>
-								{stringServiceCategories.map((cate, cateIndex) => (
-									<div
-										key={cate}
-										onClick={() =>
-											handleChangeService({
-												target: {
-													name: 'serviceCategoryId',
-													value: cateIndex
-												}
-											})
-										}
-										className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
-											currentService.category === cateIndex ? 'bg-indigo-100' : ''
-										}`}
-									>
-										{cate}
-									</div>
-								))}
-							</DropdownMenu>
-						</Dropdown>
-					</div>
-					{
-						// service size
-					}
-					<div className="mb-3 flex items-center">
-						<label className="w-32">Kích thước</label>
-						<Dropdown className="relative">
-							<DropdownToggle>
-								<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
+								</span>
+								, kích thước{' '}
+								<span className="font-semibold">
 									{stringSize.at(currentService.size)}
-								</div>
-								<div className="absolute top-2 right-2">
-									<ChevronDown width={16} height={16} />
-								</div>
-							</DropdownToggle>
-							<DropdownMenu className={'h-24 overflow-auto w-40'}>
-								{stringSize.map((size, sizeIndex) => (
-									<div
-										key={size}
-										onClick={() =>
-											handleChangeService({
-												target: {
-													name: 'size',
-													value: sizeIndex
-												}
-											})
-										}
-										className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
-											currentService.size === sizeIndex ? 'bg-indigo-100' : ''
-										}`}
-									>
-										{size}
-									</div>
-								))}
-							</DropdownMenu>
-						</Dropdown>
-					</div>
-					{
-						// service placement
-					}
-					<div className="mb-3 flex items-center">
-						<label className="w-32">Vị trí xăm</label>
-						<Dropdown className="relative">
-							<DropdownToggle>
-								<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
+								</span>
+								, vị trí xăm{' '}
+								<span className="font-semibold">
 									{stringPlacements.at(currentService.placement)}
-								</div>
-								<div className="absolute top-2 right-2">
-									<ChevronDown width={16} height={16} />
-								</div>
-							</DropdownToggle>
-							<DropdownMenu className={'h-24 overflow-auto w-40'}>
-								{stringPlacements.map((placement, placementIndex) => (
-									<div
-										key={placement}
-										onClick={() =>
-											handleChangeService({
-												target: {
-													name: 'placement',
-													value: placementIndex
-												}
-											})
-										}
-										className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
-											currentService.placement === placementIndex
-												? 'bg-indigo-100'
-												: ''
-										}`}
-									>
-										{placement}
-									</div>
-								))}
-							</DropdownMenu>
-						</Dropdown>
-					</div>
-					{
-						// service price range
+								</span>{' '}
+								và dành cho{' '}
+								<span className="font-semibold">
+									{currentService.status === 0 ? 'Mọi người' : 'Khách hàng cũ'}
+								</span>
+								. Bạn có chắc muốn tạo thêm dịch vụ này không hay cập nhật dịch vụ
+								cũ?
+								<table className='mx-auto'>
+									<thead>
+										<tr>
+											<th scope="col" className="px-3 py-3 bg-gray-50">
+												Tên dịch vụ
+											</th>
+											<th scope="col" className="px-3 py-3 bg-gray-50">
+												Giá
+											</th>
+											<th scope="col" className="px-3 py-3 bg-gray-50"></th>
+										</tr>
+									</thead>
+									<tbody>
+										{duplicateList.map((service) => (
+											<tr className="bg-blue-50" key={service.id}>
+												<td className="px-3 py-4">
+													<div>{service.title}</div>
+												</td>
+												<td className="px-3 py-4">
+													<div>
+														{formatPrice(service.minPrice)} -{' '}
+														{formatPrice(service.maxPrice)}
+													</div>
+												</td>
+												<td>
+													<div className='max-w-max px-2'>
+														<Button onClick={() => handleUpdateDuplicate(service.id)}>Cập nhật</Button>
+													</div>
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+						)
 					}
-					<div className="mb-10 flex items-center">
-						<div className="w-32">Giá</div>
-						<div className="flex flex-wrap max-w-max gap-2 items-center">
-							<div className="w-32">
-								<MoneyInput
-									name="minPrice"
-									value={currentService.minPrice}
-									min={0}
-									onAccept={(value, mask) =>
-										handleChangeService({
-											target: {
-												name: 'minPrice',
-												value: value
-											}
-										})
-									}
-								/>
-							</div>
-							<span>tới</span>
-							<div className="w-32">
-								<MoneyInput
-									name="maxPrice"
-									value={currentService.maxPrice}
-									min={currentService.minPrice}
-									onAccept={(value, mask) =>
-										handleChangeService({
-											target: {
-												name: 'maxPrice',
-												value: value
-											}
-										})
-									}
-								/>
-							</div>
-						</div>
-					</div>
-				</div>
+				</form>
 			</MyModal>
 			<div className="sm:px-3 md:px-1 lg:px-10 xl:px-12">
 				<div className="flex justify-end pb-3 ">
@@ -397,76 +551,105 @@ function ServicePage({ services, studioId, onReload }) {
 								Bảng giá dịch vụ
 							</h2>
 							{serviceList?.length > 0 ? (
-								<div className="relative shadow-md sm:rounded-lg">
-									<table className="w-full text-sm text-left text-gray-500 pb-20">
-										<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
-											<tr>
-												<th scope="col" className="w-1/4 px-3 py-3 bg-gray-50">
-													Tên dịch vụ
-												</th>
-												<th scope="col" className="w-32 px-3 py-3 bg-gray-50">
-													Loại dịch vụ
-												</th>
-												<th scope="col" className="w-32 px-3 py-3 bg-gray-50">
-													Kích thước
-												</th>
-												<th scope="col" className="w-32 px-3 py-3 bg-gray-50">
-													Vị trí xăm
-												</th>
-												<th scope="col" className="px-3 py-3 bg-gray-50">
-													Giá
-												</th>
-												<th scope="col" className="px-3 py-3 bg-gray-50"></th>
-											</tr>
-										</thead>
-										<tbody className="h-full">
-											{serviceList.map((service, serviceIndex) => (
-												<tr
-													key={service.id}
-													className={`bg-white border-b hover:bg-gray-50 text-black ${
-														service.status === SERVICE_STATUS.DELETED ? 'hidden' : ''
-													}`}
-												>
-													<td className="px-3 py-4">
-														<div>{service.title}</div>
-													</td>
-													<td className="px-3 py-4">
-														<div>
-															{stringServiceCategories.at(service.serviceCategoryId)}
-														</div>
-													</td>
-													<td className="px-3 py-4">
-														{stringSize.at(service.size)}
-													</td>
-													<td className="px-3 py-4">
-														{stringPlacements.at(service.placement)}
-													</td>
-													<td className="px-3 py-4">
-														{formatPrice(service.minPrice)} -{' '}
-														{formatPrice(service.maxPrice)}
-													</td>
-													<td className="px-3 py-4 flex flex-wrap gap-5">
-														<Tooltip content="Sửa dịch vụ" placement="top-end">
-															<div
-																onClick={() => handleOpenUpdateModal(service)}
-																className="cursor-pointer"
-															>
-																<Pencil width={25} height={25} />
-															</div>
-														</Tooltip>
-														<Tooltip content="Xoá dịch vụ" placement="top-end">
-															<div
-																onClick={() => handleOpenRemoveModal(service)}
-																className="cursor-pointer"
-															>
-																<BsTrash size={25} />
-															</div>
-														</Tooltip>
-													</td>
-												</tr>
-											))}
-										</tbody>
-									</table>
+								<div>
+									{serviceList.filter(filterAvailableStatus)?.at(0) ? (
+										<div className="relative shadow-md sm:rounded-lg">
+											<table className="w-full text-sm text-left text-gray-500 pb-20">
+												<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
+													<tr>
+														<th scope="col" className="w-1/4 px-3 py-3 bg-gray-50">
+															Tên dịch vụ
+														</th>
+														<th scope="col" className="w-32 px-3 py-3 bg-gray-50">
+															Loại dịch vụ
+														</th>
+														<th scope="col" className="w-32 px-3 py-3 bg-gray-50">
+															Kích thước
+														</th>
+														<th scope="col" className="w-32 px-3 py-3 bg-gray-50">
+															Vị trí xăm
+														</th>
+														<th scope="col" className="px-3 py-3 bg-gray-50">
+															Giá
+														</th>
+														<th scope="col" className="px-3 py-3 bg-gray-50">
+															Đối tượng áp dụng
+														</th>
+														<th scope="col" className="px-3 py-3 bg-gray-50"></th>
+													</tr>
+												</thead>
+												<tbody className="h-full">
+													{serviceList.map((service, serviceIndex) => (
+														<tr
+															key={service.id}
+															className={`bg-white border-b hover:bg-gray-50 text-black ${
+																service.status === SERVICE_STATUS.DELETED
+																	? 'hidden'
+																	: ''
+															}`}
+														>
+															<td className="px-3 py-4">
+																<div>{service.title}</div>
+															</td>
+															<td className="px-3 py-4">
+																<div>
+																	{stringServiceCategories.at(
+																		service.serviceCategoryId
+																	)}
+																</div>
+															</td>
+															<td className="px-3 py-4">
+																{stringSize.at(service.size)}
+															</td>
+															<td className="px-3 py-4">
+																{stringPlacements.at(service.placement)}
+															</td>
+															<td className="px-3 py-4">
+																{formatPrice(service.minPrice)} -{' '}
+																{formatPrice(service.maxPrice)}
+															</td>
+															<td className="px-3 py-4">
+																<div className="flex">
+																	<Badge
+																		color={
+																			service.status === 0 ? 'success' : 'warning'
+																		}
+																	>
+																		{service.status === 0
+																			? 'Mọi người'
+																			: 'Khách hàng cũ'}
+																	</Badge>
+																</div>
+															</td>
+															<td className="px-3 py-4 flex flex-wrap gap-5">
+																<Tooltip content="Sửa dịch vụ" placement="top-end">
+																	<div
+																		onClick={() => handleOpenUpdateModal(service)}
+																		className="cursor-pointer"
+																	>
+																		<Pencil width={25} height={25} />
+																	</div>
+																</Tooltip>
+																<Tooltip content="Xoá dịch vụ" placement="top-end">
+																	<div
+																		onClick={() => handleOpenRemoveModal(service)}
+																		className="cursor-pointer"
+																	>
+																		<BsTrash size={25} />
+																	</div>
+																</Tooltip>
+															</td>
+														</tr>
+													))}
+												</tbody>
+											</table>
+										</div>
+									) : (
+										<div>
+											Bạn đang chưa có dịch vụ nào cho khách hàng mới để họ lựa chọn
+											khi đặt hẹn, tạo thêm dịch vụ nhé.
+										</div>
+									)}
 								</div>
 							) : (
 								<div>Tiệm xăm hiện không có bảng giá dịch vụ</div>
