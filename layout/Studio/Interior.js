@@ -36,9 +36,7 @@ const StudioInterior = ({ url, pageSize = 20, studioId }) => {
 			);
 		}
 		return (
-			<div className="absolute text-base w-full text-center -bottom-7 pb-3">
-				Đã tải hết hình ảnh
-			</div>
+			<div></div>
 		);
 	};
 
