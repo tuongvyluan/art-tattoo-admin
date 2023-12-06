@@ -87,8 +87,9 @@ export const enum BOOKING_STATUS {
 
 export const enum BOOKING_DETAIL_STATUS {
 	PENDING = 0,
-	CANCELLED = 1,
-	COMPLETED = 2
+	IN_PROGRESS = 1,
+	CANCELLED = 2,
+	COMPLETED = 3
 }
 
 export const enum BOOKING_MEETING_STATUS {
