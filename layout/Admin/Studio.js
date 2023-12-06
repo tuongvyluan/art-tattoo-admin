@@ -1,134 +1,108 @@
-import { Table } from 'components/Table';
-import React from 'react';
-import { Loading } from 'ui';
-import { fetcher, fetcherPutWithToken } from 'lib';
-import useSWR from 'swr';
-import { Title } from 'ui/Title';
-import TableCellType from 'lib/tableCellType';
+import React, { useEffect, useState } from 'react';
+import { Card, CardBody } from 'ui';
+import Heading from 'components/Heading';
+import { Badge } from 'flowbite-react';
+import MyPagination from 'ui/MyPagination';
+import { BASE_URL } from 'lib/env';
+import { fetcher } from 'lib';
 
-function AdminStudioPage() {
-	const columns = React.useMemo(
-		() => [
-			{
-				Header: 'Studio',
-				columns: [
-					{
-						Header: 'Name',
-						accessor: 'owner.fullName'
-					},
-					{
-						Header: 'Address',
-						accessor: 'address'
-					},
-					{
-						Header: 'Rating',
-						accessor: 'owner.rating'
-					}
-				]
-			},
-			{
-				Header: 'Status',
-				columns: [
-					{
-						Header: 'Active',
-						accessor: 'activeStatus'
-					},
-					{
-						Header: 'Approved',
-						accessor: 'approveStatus'
-					}
-				]
-			}
-		],
-		[]
-	);
+function AdminStudioPage({ pageSize }) {
+	const [items, setItems] = useState([])
+	const [error, setError] = useState(false)
+	const [page, setPage] = useState(1);
+	const [totalPage, setTotalPage] = useState(0);
 
-	const baseUrl = `${process.env.NEXT_PUBLIC_API_BASEURL}/Studios`;
+	useEffect(() => {
+		fetcher(`${BASE_URL}/studios`).then((data) => {
+			setItems(data.studios)
+			setTotalPage(Math.ceil(data.total / pageSize))
+		}).catch((e) => {
+			setError(true)
+		})
+	}, [])
 
-	let { data, error } = useSWR(baseUrl, fetcher);
-	const handleUpdate = (key, value) => {
-		if (key === 'approve') {
-			approveStudio(value);
-		}
-	};
-	const approveStudio = (studio) => {
-		const foundStudio = data.find((s) => s.id === studio.id);
-		if (foundStudio.approveStatus === 0) {
-			foundStudio.approveStatus = 1;
-		} else {
-			foundStudio.approveStatus = 0;
-		}
-		loading = true;
-		fetcherPutWithToken(`${baseUrl}/${foundStudio.id}`, foundStudio)
-			.then(async (response) => {
-				console.log(response);
-				data = await fetcher(baseUrl);
-			})
-			.finally(() => {
-				loading = false;
-			});
-	};
-	let renderedData;
-	let loading = true;
+	useEffect(() => {
+		fetcher(`${BASE_URL}/studios?page=${page}`).then((data) => {
+			setItems(data.studios)
+		}).catch((e) => {
+			setError(true)
+		})
+	}, [page])
 
-	if (error)
-		return (
-			<div className="flex items-center justify-center h-full">
-				Failed to load table data
-			</div>
-		);
-
-	if (data) {
-		let className, text, newStudio;
-		renderedData = [];
-		data.forEach((studio) => {
-			newStudio = JSON.parse(JSON.stringify(studio));
-			if (studio.activeStatus === 1) {
-				className = 'text-green-500 font-bold';
-				text = 'OPEN';
-			} else {
-				className = 'text-red-500 font-bold';
-				text = 'CLOSED';
-			}
-			newStudio.activeStatus = {
-				value: text,
-				className: className,
-				tableCellType: TableCellType.TEXT
-			};
-			if (studio.approveStatus === 1) {
-				className = 'bg-blue-400';
-				text = 'Approved';
-			} else {
-				className = 'bg-red-500';
-				text = 'Unapproved';
-			}
-			newStudio.approveStatus = {
-				value: text,
-				className: `${className} text-white`,
-				tableCellType: TableCellType.BUTTON
-			};
-			renderedData.push(newStudio);
-			console.log(renderedData);
-		});
-		loading = false;
-	}
-
-	if (!data && loading)
-		return (
-			<div className="flex items-center justify-center h-full">
-				<Loading />
-			</div>
-		);
+  if (error) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        Tải dữ liệu thất bại
+      </div>
+    )
+  }
 
 	return (
 		<div>
-			<Title>Studio</Title>
-			<Table
-				data={renderedData}
-				columns={columns}
-				pageCount={2}
-				update={handleUpdate}
-			/>
+			<Heading>Studio</Heading>
+			<Card>
+				<CardBody>
+					<div className="pt-1">
+						<div className="relative shadow-md sm:rounded-lg">
+							<table className="w-full text-sm text-left text-gray-500 pb-20">
+								<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
+									<tr>
+										<th scope="col" className="px-3 py-3 bg-gray-50 text-center">
+											Tên tiệm xăm
+										</th>
+										{/* <th scope="col" className="px-3 py-3 bg-gray-50 text-center">
+											Thành phố
+										</th> */}
+										<th scope="col" className="px-3 py-3 bg-gray-50 text-center">
+											Địa chỉ
+										</th>
+										{/* <th scope="col" className="px-3 py-3 bg-gray-50 text-center">
+											Mã số thuế
+										</th> */}
+										{/* <th scope="col" className="px-3 py-3 bg-gray-50 text-center">
+											Hạn sử dụng gói
+										</th> */}
+										{/* <th scope="col" className="px-3 py-3 bg-gray-50 text-center">
+											Đánh giá
+										</th> */}
+										{/* <th scope="col" className="px-3 py-3 bg-gray-50 text-center">
+											Đang mở cửa
+										</th> */}
+										<th scope="col" className="px-3 py-3 bg-gray-50 text-center">
+											Được phép hoạt động
+										</th>
+									</tr>
+								</thead>
+								<tbody className="h-full">
+									{items.map((item, itemIndex) => (
+										<tr key={item.id}>
+											<td className="px-3 py-4">{item.studioName}</td>
+											{/* <td className="px-3 py-4"></td> */}
+											<td className="px-3 py-4">{item.address}</td>
+											{/* <td className="px-3 py-4"></td> */}
+											{/* <td className="px-3 py-4"></td>
+											<td className="px-3 py-4"></td> */}
+											{/* <td className="px-3 py-4"></td> */}
+											<td className="px-3 py-4">
+												{item.isActivated ? (
+													<div className='w-32 flex'><Badge color='success' className='text-center'>Đang hoạt động</Badge></div>
+												) : (
+													<div className='w-32 flex'>
+														<Badge color='warning' className='text-center'>Đã bị khoá</Badge>
+													</div>
+												)}
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</CardBody>
+			</Card>
+			{totalPage > 0 && (
+				<MyPagination current={page} setCurrent={setPage} totalPage={totalPage} />
+			)}
 		</div>
 	);
 }

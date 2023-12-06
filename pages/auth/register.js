@@ -60,29 +60,33 @@ const RegisterPage = () => {
 					if (data.code === '00') {
 						validTax = true;
 					}
-					// fetcherPost(`${BASE_URL}/Auth/Register`, {
-					// 	accountCreateModel: {
-					// 		email: user.email,
-					// 		avatar: avatar,
-					// 		password: user.password,
-					// 		fullName: user.name,
-					// 		phoneNumber: user.phoneNumber,
-					// 		role: ROLE.STUDIO
-					// 	},
-					// 	studioViewModelForCreate: {
-					// 		studioName: user.studioName,
-					// 		taxCode: user.studioTaxCode,
-					// 		address: user.studioAddress,
-					// 		city: user.studioCity,
-					// 		bioContent: user.studioBioContent,
-					// 		openTime: user.studioOpenTime,
-					// 		closeTime: user.studioCloseTime,
-
-					// 	}
-					// })
-					// .finally(() => {
-					// 	Router.replace('/auth/signin');
-					// });
+					console.log(user)
+					fetcherPost(`${BASE_URL}/Auth/Register`, {
+						accountCreateModel: {
+							email: user.email,
+							avatar: avatar,
+							password: user.password,
+							fullName: user.name,
+							phoneNumber: user.phoneNumber,
+							role: ROLE.STUDIO
+						},
+						studioViewModelForCreate: {
+							studioName: user.studioName,
+							taxCode: user.studioTaxCode,
+							address: user.studioAddress,
+							city: user.studioCity,
+							bioContent: user.studioBioContent,
+							openTime: user.studioOpenTime,
+							closeTime: user.studioCloseTime,
+							isAuthorized: validTax
+						}
+					}).then((data) => {
+						console.log(data)
+						handleAlert(true, 'Đăng ký tài khoản thành công', 'Bạn hãy kiểm tra mail để xác thực tài khoản nhé.', 1);
+					}).catch((e) => {
+						console.log(e)
+						handleAlert(true, 'Đăng ký tài khoản thất bại', '', 2);
+					})
 				});
 			} catch (e) {
 				console.log(e);
@@ -91,17 +95,29 @@ const RegisterPage = () => {
 				if (e.message.includes('already an account')) {
 					messageContent = 'Email hoặc số điện thoại này đã tồn tại.';
 				}
-				handleAlert(true, mesageTitle, messageContent, true);
+				handleAlert(true, mesageTitle, messageContent, 2);
 			}
 		}
 	};
 
-	const handleAlert = (state, title, content, isWarn = false) => {
+	const handleAlert = (state, title, content, isWarn = 0) => {
 		setShowAlert((prev) => state);
+		let color;
+		switch (isWarn) {
+			case 1:
+				color = 'green'
+				break;
+			case 2:
+				color = 'red'
+				break;
+			default:
+				color = 'blue'
+				break;
+		}
 		setAlertContent({
 			title: title,
 			content: content,
-			isWarn: isWarn
+			isWarn: color
 		});
 	};
 
@@ -110,7 +126,7 @@ const RegisterPage = () => {
 			<Alert
 				showAlert={showAlert}
 				setShowAlert={setShowAlert}
-				color={alertContent.isWarn ? 'red' : 'blue'}
+				color={alertContent.isWarn}
 				className="bottom-2 right-2 absolute"
 			>
 				<strong className="font-bold mr-1">{alertContent.title}</strong>

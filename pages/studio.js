@@ -30,7 +30,7 @@ const StudioPage = () => {
 	}
 	if (status === 'authenticated') {
 		if (data.user.role === ROLE.ADMIN) {
-			return <AdminStudioPage />;
+			return <AdminStudioPage pageSize={10} />;
 		}
 		if (data.user.role === ROLE.STUDIO) {
 			if (data.user.studioId && loading) {

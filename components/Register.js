@@ -65,7 +65,7 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 													</div>
 												</div>
 												<div className="block mt-5 mb-3">
-													<label className='mt-1'>
+													<label className="mt-1">
 														Tên tiệm xăm <span className="text-red-500">*</span>{' '}
 													</label>
 													<MyInput
@@ -120,24 +120,30 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 													<label>
 														Giờ mở cửa <span className="text-red-500">*</span>{' '}
 													</label>
-													<MyInput
+													<input
+														aria-label={'studioOpenTime'}
 														name={'studioOpenTime'}
 														value={user.studioOpenTime}
 														onChange={handleFormChange}
-														type='time'
+														type="time"
+														step={1}
 														required={true}
+														className="appearance-none relative block w-full px-3 py-2 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
 													/>
 												</div>
 												<div className="block mb-3">
 													<label>
 														Giờ đóng cửa <span className="text-red-500">*</span>{' '}
 													</label>
-													<MyInput
+													<input
+														aria-label={'studioCloseTime'}
 														name={'studioCloseTime'}
 														value={user.studioCloseTime}
 														onChange={handleFormChange}
-														type='time'
+														type="time"
+														step={1}
 														required={true}
+														className="appearance-none relative block w-full px-3 py-2 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
 													/>
 												</div>
 											</div>

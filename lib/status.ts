@@ -224,3 +224,17 @@ export const stringBookingServiceStatusColor = [
 	'green-300',
 	'red-300'
 ]
+
+export const enum SERVICE_CATEGORY {
+	NEW_TATTOO = 0, // Xăm hình mới
+	COVER_UP = 1, // Xăm đè lên hình cũ
+	AFTERCARE = 2, // Bảo hành, sửa lỗi cho hình xăm có sẵn
+	REMOVAL = 3 // Xoá xăm
+}
+
+export const stringServiceCategories = [
+	'Xăm hình mới',
+	'Xăm đè',
+	'Bảo hành sau xăm',
+	'Xoá xăm'
+]

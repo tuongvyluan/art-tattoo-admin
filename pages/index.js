@@ -3,6 +3,7 @@ import { Loading } from '../ui';
 import { ROLE } from '../lib/status';
 import StudioIndexPage from '../layout/Studio/Index';
 import Router from 'next/router';
+import AdminIndexPage from 'layout/Admin/Index';
 
 const Index = () => {
 	// Check authenticated
@@ -10,7 +11,7 @@ const Index = () => {
 
 	if (status === 'authenticated') {
 		if (data.user.role === ROLE.ADMIN) {
-			return <div>ADMIN</div>;
+			return <AdminIndexPage />
 		}
 		if (data.user.role === ROLE.STUDIO) {
 			if (data.user.studioId) {
