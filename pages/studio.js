@@ -38,7 +38,8 @@ const StudioPage = () => {
 					setLoading(false);
 					const newStudio = {
 						...response,
-						avatar: data.user.avatar
+						avatar: data.user.avatar,
+						city: response.city ? response.city : '79'
 					};
 					setStudio(newStudio);
 				});
@@ -52,6 +53,8 @@ const StudioPage = () => {
 					owner: {
 						phoneNumber: ''
 					},
+					city: '79',
+					taxCode: '',
 					openTime: '08:00:00',
 					closeTime: '20:00:00',
 					avatar: '',

@@ -47,6 +47,12 @@ export const enum STUDIO_STATUS {
 	DELETED = 2
 }
 
+export const enum SERVICE_STATUS {
+	AVAILABLE = 0,
+	STUDIO_ONLY = 1,
+	DELETED = 2
+}
+
 export const enum SERVICE_SIZE {
 	SMALL = 0,
 	MEDIUM = 1,
@@ -230,12 +236,14 @@ export const enum SERVICE_CATEGORY {
 	NEW_TATTOO = 0, // Xăm hình mới
 	COVER_UP = 1, // Xăm đè lên hình cũ
 	AFTERCARE = 2, // Bảo hành, sửa lỗi cho hình xăm có sẵn
-	REMOVAL = 3 // Xoá xăm
+	REMOVAL = 3, // Xoá xăm
+	CONSULT = 4
 }
 
 export const stringServiceCategories = [
 	'Xăm hình mới',
 	'Xăm đè',
 	'Bảo hành sau xăm',
-	'Xoá xăm'
+	'Xoá xăm',
+	'Tư vấn'
 ]

@@ -1,7 +1,7 @@
 import Register from 'components/Register';
 import { fetcher, fetcherPost } from 'lib';
 import { BASE_URL, TAX_CODE_API } from 'lib/env';
-import { checkTaxCode } from 'lib/regex';
+import { checkPhoneNumber, checkTaxCode } from 'lib/regex';
 import { ROLE } from 'lib/status';
 import { useSession } from 'next-auth/react';
 import Router from 'next/router';
@@ -49,9 +49,11 @@ const RegisterPage = () => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		if (user.cpassword !== user.password) {
-			handleAlert(true, '', 'Mật khẩu xác nhận không trùng khớp.', true);
+			handleAlert(true, '', 'Mật khẩu xác nhận không trùng khớp.', 2);
 		} else if (!checkTaxCode(user.studioTaxCode)) {
-			handleAlert(true, '', 'Mã số thuế không hợp lệ.', true);
+			handleAlert(true, '', 'Mã số thuế không hợp lệ.', 2);
+		} else if (!checkPhoneNumber(user.phoneNumber)) {
+			handleAlert(true, '', 'Số điện thoại không hợp lệ.', 2);
 		} else {
 			handleAlert(true, '', 'Đang đăng ký tài khoản...');
 			try {
@@ -61,7 +63,7 @@ const RegisterPage = () => {
 						validTax = true;
 					}
 					console.log(user)
-					fetcherPost(`${BASE_URL}/Auth/Register`, {
+					fetcherPost(`${BASE_URL}/Auth/RegisterWithStudio`, {
 						accountCreateModel: {
 							email: user.email,
 							avatar: avatar,

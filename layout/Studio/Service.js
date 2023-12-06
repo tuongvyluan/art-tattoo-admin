@@ -3,12 +3,15 @@ import MoneyInput from 'components/MoneyInput';
 import MyInput from 'components/MyInput';
 import MyModal from 'components/MyModal';
 import { Tooltip } from 'flowbite-react';
-import { fetcherPut, formatPrice } from 'lib';
+import { ChevronDown, Pencil } from 'icons/outline';
+import { fetcherDelete, fetcherPost, fetcherPut, formatPrice } from 'lib';
 import { BASE_URL } from 'lib/env';
 import {
 	SERVICE_PLACEMENT,
 	SERVICE_SIZE,
+	SERVICE_STATUS,
 	stringPlacements,
+	stringServiceCategories,
 	stringSize
 } from 'lib/status';
 import PropTypes from 'prop-types';
@@ -16,11 +19,12 @@ import { useState } from 'react';
 import { BsTrash } from 'react-icons/bs';
 import { MdAdd } from 'react-icons/md';
 import { Alert, Card, CardBody, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
-import { v4 } from 'uuid';
+
+const sortServiceByCategory = (a, b) => b.serviceCategoryId - a.serviceCategoryId;
 
 function ServicePage({ services, studioId, onReload }) {
 	const [serviceList, setServiceList] = useState(
-		JSON.parse(JSON.stringify(services))
+		JSON.parse(JSON.stringify(services.sort(sortServiceByCategory)))
 	);
 
 	const length = serviceList.length;
@@ -34,10 +38,12 @@ function ServicePage({ services, studioId, onReload }) {
 	});
 
 	const [currentService, setCurrentService] = useState({
+		id: '',
 		studioId: studioId,
 		title: '',
 		size: SERVICE_SIZE.ANY,
 		placement: SERVICE_PLACEMENT.ANY,
+		serviceCategoryId: 0,
 		status: 0,
 		minPrice: 0,
 		maxPrice: 0
@@ -53,93 +59,109 @@ function ServicePage({ services, studioId, onReload }) {
 	};
 
 	const removeService = (serviceId) => {
-		const serviceIndex = serviceList.findIndex(
-			(service) => service.id === serviceId
-		);
-		const services = [...serviceList];
-		if (services.at(serviceIndex).isNew) {
-			services.splice(serviceIndex, 1);
+		fetcherDelete(
+			`${BASE_URL}/studios/${studioId}/services/${currentService.id}`
+		).then(() => {
+			onReload();
+		});
+		handleAlert(true, 'Đang xoá dịch vụ', '', 0);
+		setOpenRemoveModal(false);
+	};
+
+	const addService = () => {
+		if (currentService.minPrice > currentService.maxPrice) {
+			handleAlert(true, 'Giá dịch vụ không hợp lệ', 'Giá phải từ nhỏ đến lớn', 2);
 		} else {
-			services[serviceIndex]['status'] = 2;
+			fetcherPost(`${BASE_URL}/studios/${studioId}/services`, currentService).then(
+				() => {
+					onReload();
+				}
+			);
 		}
-		setServiceList(services);
+		handleAlert(true, 'Đang tạo dịch vụ', '', 0);
+		setOpenAddModal(false);
 	};
 
-	const addService = (serviceIndex) => {
-		const services = [...serviceList];
-		const service = {
-			id: v4(),
-			title: '',
-			size: 0,
-			placement: 0,
-			minPrice: 0,
-			maxPrice: 0,
-			status: 0,
-			isNew: true,
-			studioId: studioId
-		};
-		services.splice(serviceIndex, 0, service);
-		setServiceList(services);
-	};
-
-	const handleAlert = (state, title, content, isWarn = false) => {
-		setShowAlert((prev) => state);
-		setAlertContent({
-			title: title,
-			content: content,
-			isWarn: isWarn
-		});
-	};
-
-	const handleSubmit = () => {
-		handleAlert(true, 'Đang cập nhật bảng giá', '');
-		const submitServices = serviceList.map((service) => {
-			return service.isNew
-				? {
-						title: service.title,
-						size: service.size,
-						placement: service.placement,
-						minPrice: service.minPrice,
-						maxPrice: service.maxPrice,
-						status: service.status,
-						id: undefined,
-						studioId: studioId
-				  }
-				: {
-						...service,
-						studioId: studioId
-				  };
-		});
-		fetcherPut(`${BASE_URL}/studios/${studioId}/services`, submitServices).then(
-			() => {
+	const updateService = () => {
+		if (currentService.minPrice > currentService.maxPrice) {
+			handleAlert(true, 'Giá dịch vụ không hợp lệ', 'Giá phải từ nhỏ đến lớn', 2);
+		} else {
+			fetcherPut(
+				`${BASE_URL}/studios/${studioId}/services/${currentService.id}`,
+				currentService
+			).then(() => {
 				onReload();
-			}
-		);
+			});
+		}
+		handleAlert(true, 'Đang sửa dịch vụ', '', 0);
+		setOpenAddModal(false);
 	};
 
-	const handleOpenAddModal = () => {
+	const resetCurrentService = () => {
 		setCurrentService({
+			id: '',
 			studioId: studioId,
 			title: '',
+			serviceCategoryId: 0,
 			size: SERVICE_SIZE.ANY,
 			placement: SERVICE_PLACEMENT.ANY,
 			status: 0,
 			minPrice: 0,
 			maxPrice: 0
 		});
+	};
+
+	const handleAlert = (state, title, content, isWarn = 0) => {
+		setShowAlert((prev) => state);
+		let color;
+		switch (isWarn) {
+			case 1:
+				color = 'green';
+				break;
+			case 2:
+				color = 'red';
+				break;
+			default:
+				color = 'blue';
+				break;
+		}
+		setAlertContent({
+			title: title,
+			content: content,
+			isWarn: color
+		});
+	};
+
+	const handleChangeService = (e) => {
+		setCurrentService({ ...currentService, [e.target.name]: e.target.value });
+	};
+
+	const handleOpenAddModal = () => {
+		resetCurrentService();
 		setOpenAddModal(true);
 	};
 
-	const handleOpenRemoveModal = (service) => {
+	const handleOpenUpdateModal = (service) => {
+		handleSetCurrentService(service);
+		setOpenAddModal(true);
+	};
+
+	const handleSetCurrentService = (service) => {
 		setCurrentService({
+			id: service.id,
 			studioId: studioId,
 			title: service.title,
+			serviceCategoryId: service.serviceCategoryId,
 			size: service.size,
 			placement: service.placement,
 			status: 0,
 			minPrice: service.minPrice,
 			maxPrice: service.maxPrice
 		});
+	};
+
+	const handleOpenRemoveModal = (service) => {
+		handleSetCurrentService(service);
 		setOpenRemoveModal(true);
 	};
 
@@ -148,7 +170,7 @@ function ServicePage({ services, studioId, onReload }) {
 			<Alert
 				showAlert={showAlert}
 				setShowAlert={setShowAlert}
-				color={alertContent.isWarn ? 'red' : 'blue'}
+				color={alertContent.isWarn}
 				className="bottom-2 right-2 fixed max-w-md z-50"
 			>
 				<strong className="font-bold mr-1">{alertContent.title}</strong>
@@ -160,10 +182,11 @@ function ServicePage({ services, studioId, onReload }) {
 			}
 			<MyModal
 				title="Xác nhận xoá dịch vụ"
+				confirmTitle={'Xoá'}
 				warn={true}
 				openModal={openRemoveModal}
 				setOpenModal={setOpenRemoveModal}
-				onSubmit={() => handleAfterConfirmed(cancelStatus)}
+				onSubmit={() => removeService()}
 			>
 				<div>
 					Bạn có chắc muốn xoá dịch vụ{' '}
@@ -175,20 +198,195 @@ function ServicePage({ services, studioId, onReload }) {
 				</div>
 			</MyModal>
 			<MyModal
-				title="Tạo dịch vụ mới"
+				title={
+					currentService.id !== '' ? 'Cập nhật bảng giá dịch vụ' : 'Thêm dịch vụ mới'
+				}
+				confirmTitle={currentService.id !== '' ? 'Sửa' : 'Tạo'}
 				openModal={openAddModal}
 				setOpenModal={setOpenAddModal}
-				onSubmit={() => handleAfterConfirmed(cancelStatus)}
+				onSubmit={() => {
+					if (currentService.id === '') {
+						addService();
+					} else {
+						updateService();
+					}
+				}}
+				size="xl"
 			>
 				<div>
-					
+					{
+						// service title
+					}
+					<div className="mb-3 flex items-center">
+						<div className="w-32">Tên dịch vụ</div>
+						<div className="w-44">
+							<MyInput
+								name={'title'}
+								value={currentService.title}
+								onChange={handleChangeService}
+							/>
+						</div>
+					</div>
+					{
+						// service category
+					}
+					<div className="mb-3 flex items-center">
+						<div className="w-32">Loại dịch vụ</div>
+						<Dropdown className="relative">
+							<DropdownToggle>
+								<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
+									{stringServiceCategories.at(currentService.serviceCategoryId)}
+								</div>
+								<div className="absolute top-2 right-2">
+									<ChevronDown width={16} height={16} />
+								</div>
+							</DropdownToggle>
+							<DropdownMenu className={'h-24 overflow-auto w-40'}>
+								{stringServiceCategories.map((cate, cateIndex) => (
+									<div
+										key={cate}
+										onClick={() =>
+											handleChangeService({
+												target: {
+													name: 'serviceCategoryId',
+													value: cateIndex
+												}
+											})
+										}
+										className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
+											currentService.category === cateIndex ? 'bg-indigo-100' : ''
+										}`}
+									>
+										{cate}
+									</div>
+								))}
+							</DropdownMenu>
+						</Dropdown>
+					</div>
+					{
+						// service size
+					}
+					<div className="mb-3 flex items-center">
+						<label className="w-32">Kích thước</label>
+						<Dropdown className="relative">
+							<DropdownToggle>
+								<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
+									{stringSize.at(currentService.size)}
+								</div>
+								<div className="absolute top-2 right-2">
+									<ChevronDown width={16} height={16} />
+								</div>
+							</DropdownToggle>
+							<DropdownMenu className={'h-24 overflow-auto w-40'}>
+								{stringSize.map((size, sizeIndex) => (
+									<div
+										key={size}
+										onClick={() =>
+											handleChangeService({
+												target: {
+													name: 'size',
+													value: sizeIndex
+												}
+											})
+										}
+										className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
+											currentService.size === sizeIndex ? 'bg-indigo-100' : ''
+										}`}
+									>
+										{size}
+									</div>
+								))}
+							</DropdownMenu>
+						</Dropdown>
+					</div>
+					{
+						// service placement
+					}
+					<div className="mb-3 flex items-center">
+						<label className="w-32">Vị trí xăm</label>
+						<Dropdown className="relative">
+							<DropdownToggle>
+								<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
+									{stringPlacements.at(currentService.placement)}
+								</div>
+								<div className="absolute top-2 right-2">
+									<ChevronDown width={16} height={16} />
+								</div>
+							</DropdownToggle>
+							<DropdownMenu className={'h-24 overflow-auto w-40'}>
+								{stringPlacements.map((placement, placementIndex) => (
+									<div
+										key={placement}
+										onClick={() =>
+											handleChangeService({
+												target: {
+													name: 'placement',
+													value: placementIndex
+												}
+											})
+										}
+										className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
+											currentService.placement === placementIndex
+												? 'bg-indigo-100'
+												: ''
+										}`}
+									>
+										{placement}
+									</div>
+								))}
+							</DropdownMenu>
+						</Dropdown>
+					</div>
+					{
+						// service price range
+					}
+					<div className="mb-10 flex items-center">
+						<div className="w-32">Giá</div>
+						<div className="flex flex-wrap max-w-max gap-2 items-center">
+							<div className="w-32">
+								<MoneyInput
+									name="minPrice"
+									value={currentService.minPrice}
+									min={0}
+									onAccept={(value, mask) =>
+										handleChangeService({
+											target: {
+												name: 'minPrice',
+												value: value
+											}
+										})
+									}
+								/>
+							</div>
+							<span>tới</span>
+							<div className="w-32">
+								<MoneyInput
+									name="maxPrice"
+									value={currentService.maxPrice}
+									min={currentService.minPrice}
+									onAccept={(value, mask) =>
+										handleChangeService({
+											target: {
+												name: 'maxPrice',
+												value: value
+											}
+										})
+									}
+								/>
+							</div>
+						</div>
+					</div>
 				</div>
 			</MyModal>
 			<div className="sm:px-3 md:px-1 lg:px-10 xl:px-12">
 				<div className="flex justify-end pb-3 ">
 					<div className="flex gap-2 items-center">
 						<div className="w-28">
-							<Button onClick={handleOpenAddModal}>Tạo thêm</Button>
+							<Button onClick={handleOpenAddModal}>
+								<div className="flex flex-wrap items-center justify-center gap-1">
+									<MdAdd size={20} /> Tạo thêm
+								</div>
+							</Button>
 						</div>
 					</div>
 				</div>
@@ -198,151 +396,81 @@ function ServicePage({ services, studioId, onReload }) {
 							<h2 className="text-lg font-semibold pb-3 text-center">
 								Bảng giá dịch vụ
 							</h2>
-							<div className="relative shadow-md sm:rounded-lg">
-								<table className="w-full text-sm text-left text-gray-500 pb-20">
-									<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
-										<tr>
-											<th
-												scope="col"
-												className="w-1/4 px-3 py-3 bg-gray-50 text-center"
-											>
-												Tên dịch vụ
-											</th>
-											<th
-												scope="col"
-												className="w-32 px-3 py-3 bg-gray-50 text-center"
-											>
-												Kích thước
-											</th>
-											<th
-												scope="col"
-												className="w-32 px-3 py-3 bg-gray-50 text-center"
-											>
-												Vị trí xăm
-											</th>
-											<th scope="col" className="px-3 py-3 bg-gray-50 text-center">
-												Giá
-											</th>
-											<th
-												scope="col"
-												className="px-3 py-3 bg-gray-50 text-center"
-											></th>
-										</tr>
-									</thead>
-									<tbody className="h-full">
-										{serviceList.map((service, serviceIndex) => (
-											<tr
-												key={service.id}
-												className={`bg-white border-b hover:bg-gray-50 text-black ${
-													service.status === 2 ? 'hidden' : ''
-												}`}
-											>
-												<td className="px-3 py-4">
-													<MyInput
-														name={'title'}
-														value={service.title}
-														onChange={(e) =>
-															setServiceField('title', e.target.value, serviceIndex)
-														}
-													/>
-												</td>
-												<td className="px-3 py-4">
-													<Dropdown className="relative flex items-center">
-														<DropdownToggle>
-															<div className="w-32 rounded-lg p-1 border border-gray-300">
-																{stringSize.at(service.size)}
-															</div>
-														</DropdownToggle>
-														<DropdownMenu isBottom={serviceIndex >= length - 3}>
-															{stringSize.map((size, sizeIndex) => (
-																<div
-																	key={size}
-																	onClick={() =>
-																		setServiceField('size', sizeIndex, serviceIndex)
-																	}
-																	className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
-																		service.size === sizeIndex ? 'bg-indigo-100' : ''
-																	}`}
-																>
-																	{size}
-																</div>
-															))}
-														</DropdownMenu>
-													</Dropdown>
-												</td>
-												<td className="px-3 py-4">
-													<Dropdown className="relative flex items-center">
-														<DropdownToggle>
-															<div className="w-32 rounded-lg p-1 border border-gray-300">
-																{stringPlacements.at(service.placement)}
-															</div>
-														</DropdownToggle>
-														<DropdownMenu
-															isBottom={serviceIndex >= length - 3}
-															className={'max-h-28 overflow-y-auto'}
-														>
-															{stringPlacements.map((placement, placementIndex) => (
-																<div
-																	key={placement}
-																	onClick={() =>
-																		setServiceField(
-																			'placement',
-																			placementIndex,
-																			serviceIndex
-																		)
-																	}
-																	className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
-																		service.placement === placementIndex
-																			? 'bg-indigo-100'
-																			: ''
-																	}`}
-																>
-																	{placement}
-																</div>
-															))}
-														</DropdownMenu>
-													</Dropdown>
-												</td>
-												<td className="px-3 py-4">
-													<div className="flex flex-wrap max-w-max mx-auto gap-2 items-center">
-														<div className="w-32">
-															<MoneyInput
-																name="minPrice"
-																value={service.minPrice}
-																min={0}
-																onAccept={(value, mask) =>
-																	setServiceField('minPrice', value, serviceIndex)
-																}
-															/>
-														</div>
-														<span>tới</span>
-														<div className="w-32">
-															<MoneyInput
-																name="maxPrice"
-																value={service.maxPrice}
-																min={service.minPrice}
-																onAccept={(value, mask) =>
-																	setServiceField('maxPrice', value, serviceIndex)
-																}
-															/>
-														</div>
-													</div>
-												</td>
-												<td className="px-3 py-4 flex flex-wrap gap-2">
-													<Tooltip content="Xoá dịch vụ" placement="bottom-end">
-														<div
-															onClick={() => handleOpenRemoveModal(service)}
-															className="cursor-pointer"
-														>
-															<BsTrash size={25} />
-														</div>
-													</Tooltip>
-												</td>
+							{serviceList?.length > 0 ? (
+								<div className="relative shadow-md sm:rounded-lg">
+									<table className="w-full text-sm text-left text-gray-500 pb-20">
+										<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
+											<tr>
+												<th scope="col" className="w-1/4 px-3 py-3 bg-gray-50">
+													Tên dịch vụ
+												</th>
+												<th scope="col" className="w-32 px-3 py-3 bg-gray-50">
+													Loại dịch vụ
+												</th>
+												<th scope="col" className="w-32 px-3 py-3 bg-gray-50">
+													Kích thước
+												</th>
+												<th scope="col" className="w-32 px-3 py-3 bg-gray-50">
+													Vị trí xăm
+												</th>
+												<th scope="col" className="px-3 py-3 bg-gray-50">
+													Giá
+												</th>
+												<th scope="col" className="px-3 py-3 bg-gray-50"></th>
 											</tr>
-										))}
-									</tbody>
-								</table>
-							</div>
+										</thead>
+										<tbody className="h-full">
+											{serviceList.map((service, serviceIndex) => (
+												<tr
+													key={service.id}
+													className={`bg-white border-b hover:bg-gray-50 text-black ${
+														service.status === SERVICE_STATUS.DELETED ? 'hidden' : ''
+													}`}
+												>
+													<td className="px-3 py-4">
+														<div>{service.title}</div>
+													</td>
+													<td className="px-3 py-4">
+														<div>
+															{stringServiceCategories.at(service.serviceCategoryId)}
+														</div>
+													</td>
+													<td className="px-3 py-4">
+														{stringSize.at(service.size)}
+													</td>
+													<td className="px-3 py-4">
+														{stringPlacements.at(service.placement)}
+													</td>
+													<td className="px-3 py-4">
+														{formatPrice(service.minPrice)} -{' '}
+														{formatPrice(service.maxPrice)}
+													</td>
+													<td className="px-3 py-4 flex flex-wrap gap-5">
+														<Tooltip content="Sửa dịch vụ" placement="top-end">
+															<div
+																onClick={() => handleOpenUpdateModal(service)}
+																className="cursor-pointer"
+															>
+																<Pencil width={25} height={25} />
+															</div>
+														</Tooltip>
+														<Tooltip content="Xoá dịch vụ" placement="top-end">
+															<div
+																onClick={() => handleOpenRemoveModal(service)}
+																className="cursor-pointer"
+															>
+																<BsTrash size={25} />
+															</div>
+														</Tooltip>
+													</td>
+												</tr>
+											))}
+										</tbody>
+									</table>
+								</div>
+							) : (
+								<div>Tiệm xăm hiện không có bảng giá dịch vụ</div>
+							)}
 						</div>
 					</CardBody>
 				</Card>

@@ -7,12 +7,12 @@ import { IoIosWarning } from 'react-icons/io';
 const MyModal = ({
 	title,
 	children,
-	confirmTitle = 'Xác nhận',
-	cancelTitle = 'Huỷ',
-	warn = false,
 	openModal,
 	setOpenModal,
 	onSubmit,
+	confirmTitle = 'Xác nhận',
+	cancelTitle = 'Huỷ',
+	warn = false,
 	size = 'lg',
 	noFooter = false
 }) => {
@@ -54,7 +54,8 @@ MyModal.propTypes = {
 	openModal: PropTypes.bool.isRequired,
 	setOpenModal: PropTypes.func.isRequired,
 	onSubmit: PropTypes.func.isRequired,
-	size: PropTypes.string
+	size: PropTypes.string,
+	noFooter: PropTypes.bool
 };
 
 export default MyModal;

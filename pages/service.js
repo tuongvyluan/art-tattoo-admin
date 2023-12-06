@@ -11,14 +11,7 @@ const StudioService = () => {
 	// Check authenticated
 	const { status, data } = useSession();
 	const [loading, setLoading] = useState(true);
-	const [services, setServices] = useState([{
-		id: v4(),
-		name: 'Tư vấn',
-		placement: PLACEMENT.ANY,
-		size: SERVICE_SIZE.ANY,
-		minPrice: 0,
-		maxPrice: 0
-	}]);
+	const [services, setServices] = useState([]);
 
 	if (status === 'loading') {
 		return (
@@ -31,7 +24,7 @@ const StudioService = () => {
 	if (status === 'authenticated' && data.user.role === ROLE.STUDIO) {
 		const studioId = data.user.studioId;
 		if (loading) {
-			fetcher(`${BASE_URL}/studios/${studioId}/services?pageSize=100`)
+			fetcher(`${BASE_URL}/studios/${studioId}/services-for-create-booking`)
 				.then((data) => {
 					setServices(data.services);
 					setLoading(false);

@@ -3,6 +3,7 @@ import { Avatar, Card, CardBody, Loading, WidgetStatCard } from '../../ui';
 import { Users } from 'icons/solid';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
+import Link from 'next/link';
 
 function StudioIndexPage({ studioId }) {
 	const [studio, setStudio] = useState({
@@ -105,9 +106,15 @@ function StudioIndexPage({ studioId }) {
 						</Card>
 					</div>
 				) : (
-					<div className="flex items-center justify-center h-full">
-						Bạn đang chưa có nghệ sĩ nào, vào trang nghệ sĩ để nhập key từ nghệ sĩ và
-						thêm họ vào tiệm xăm của mình nhé.
+					<div className="flex items-center justify-center gap-1 text-lg">
+						<div className='text-center'>
+							<span>Bạn đang chưa có nghệ sĩ nào, vào </span>
+							<Link href={'/artist'}>đây</Link>
+							<span>
+								{' '}
+								để nhập key từ nghệ sĩ và thêm họ vào tiệm xăm của mình nhé.
+							</span>
+						</div>
 					</div>
 				)}
 			</>
