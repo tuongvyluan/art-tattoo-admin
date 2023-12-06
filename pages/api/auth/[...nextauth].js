@@ -54,8 +54,7 @@ const authOptions = {
 					token: res.jwt,
 					role: role,
 					email: jwtObj['emailaddress'],
-					firstName: jwtObj['surname'],
-					lastName: jwtObj['name'],
+					fullName: res.fullName,
 					accountId: res.accountId,
 					avatar: res.avatar
 				};
@@ -100,8 +99,7 @@ const authOptions = {
 						signOut();
 					}
 					return {
-						firstName: profile.family_name,
-						lastName: profile.given_name,
+						fullName: profile.family_name + ' ' + profile.given_name,
 						avatar: data.accountResult.avatar,
 						id: data.accountResult.accountId,
 						customerId: data.accountResult.customerId,
@@ -119,8 +117,7 @@ const authOptions = {
 					accessToken: user.token,
 					id: user.id,
 					role: user.role,
-					firstName: user.firstName,
-					lastName: user.lastName,
+					fullName: user.fullName,
 					studioId: user.studioId,
 					customerId: user.customerId,
 					artistId: user.artistId,
@@ -135,8 +132,7 @@ const authOptions = {
 				session.user.role = token.role;
 				session.user.id = token.id;
 				session.user.accessToken = token.accessToken;
-				session.user.firstName = token.firstName;
-				session.user.lastName = token.lastName;
+				session.user.fullName = token.fullName;
 				session.user.studioId = token.studioId;
 				session.user.customerId = token.customerId;
 				session.user.artistId = token.artistId;
@@ -186,8 +182,7 @@ const authOptions = {
 					token: res.jwt,
 					role: role,
 					email: jwtObj['emailaddress'],
-					firstName: jwtObj['surname'],
-					lastName: jwtObj['name'],
+					fullName: res.fullName,
 					studioId: res.studioId,
 					customerId: res.customerId,
 					artistId: res.artistId,

@@ -9,8 +9,7 @@ interface IUser extends DefaultUser {
   role?: Role;
   id?: string;
   token?: string;
-  firstName?: string;
-  lastName?: string;
+  fullName?: string;
   studioId?: string;
   avatar?: string;
 }
