@@ -62,7 +62,6 @@ const RegisterPage = () => {
 					if (data.code === '00') {
 						validTax = true;
 					}
-					console.log(user)
 					fetcherPost(`${BASE_URL}/Auth/RegisterWithStudio`, {
 						accountCreateModel: {
 							email: user.email,

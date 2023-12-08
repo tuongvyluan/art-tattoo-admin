@@ -4,8 +4,8 @@ import Heading from 'components/Heading';
 import MyInput from 'components/MyInput';
 import PickCity from 'components/PickCity';
 import { Tooltip } from 'flowbite-react';
-import { fetcherPost, fetcherPut } from 'lib';
-import { BASE_URL } from 'lib/env';
+import { fetcher, fetcherPost, fetcherPut } from 'lib';
+import { BASE_URL, TAX_CODE_API } from 'lib/env';
 import { useSession } from 'next-auth/react';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
@@ -13,22 +13,34 @@ import { MdUpload } from 'react-icons/md';
 import { Card, CardBody, Alert, Avatar } from 'ui';
 
 function StudioInfo({ studio }) {
-	const [showAlert, setShowAlert] = useState(false);
 	const { data, update } = useSession();
 	const [avatar, setAvatar] = useState(studio.avatar);
+	const [showAlert, setShowAlert] = useState(false);
 
 	const [alertContent, setAlertContent] = useState({
 		title: '',
 		content: '',
-		isWarn: false
+		isWarn: 'blue'
 	});
 
-	const handleAlert = (state, title, content, isWarn = false) => {
+	const handleAlert = (state, title, content, isWarn = 0) => {
 		setShowAlert((prev) => state);
+		let color;
+		switch (isWarn) {
+			case 1:
+				color = 'green';
+				break;
+			case 2:
+				color = 'red';
+				break;
+			default:
+				color = 'blue';
+				break;
+		}
 		setAlertContent({
 			title: title,
 			content: content,
-			isWarn: isWarn
+			isWarn: color
 		});
 	};
 
@@ -46,16 +58,30 @@ function StudioInfo({ studio }) {
 		setAvatar(studio.avatar);
 	};
 
-	const handleUpdateStudio = (newStudio) => {
-		fetcherPut(`${BASE_URL}/studios/${newStudio.id}`, newStudio)
+	const handleUpdateStudio = async (newStudio) => {
+		handleAlert(true, '', 'Đang cập nhật studio.');
+		let validTax = studio.isAuthorized;
+		if (newStudio.taxCode !== studio.taxCode) {
+			await fetcher(`${TAX_CODE_API}/${newStudio.taxCode}`).then((data) => {
+				if (data.code === '00') {
+					validTax = true;
+				} else {
+					validTax = false;
+				}
+			});
+		}
+		const checkedStudio = {
+			...newStudio,
+			isAuthorized: validTax
+		};
+		fetcherPut(`${BASE_URL}/studios/${newStudio.id}`, checkedStudio)
 			.then(() => {
 				setDefaultProfile(profile);
-				handleAlert(true, '', 'Sửa thông tin thành công.');
+				handleAlert(true, '', 'Sửa thông tin thành công.', 1);
 			})
 			.catch((e) => {
-				handleAlert(true, '', 'Sửa thông tin thất bại.', true);
+				handleAlert(true, '', 'Sửa thông tin thất bại.', 2);
 			});
-		handleAlert(true, '', 'Đang cập nhật studio.');
 	};
 
 	const handleCreateStudio = (newStudio) => {
@@ -110,7 +136,7 @@ function StudioInfo({ studio }) {
 	return (
 		<div className="relative h-full">
 			<Alert
-				color={alertContent.isWarn ? 'red' : 'blue'}
+				color={alertContent.isWarn}
 				className="-bottom-9 right-2 absolute"
 				setShowAlert={setShowAlert}
 				showAlert={showAlert}
@@ -123,9 +149,11 @@ function StudioInfo({ studio }) {
 					<CardBody>
 						<div className="border-b border-gray-300 text-base flex w-full justify-between">
 							<Heading>Thông tin studio</Heading>
-							<div className='flex flex-wrap gap-2 items-center'>
-								<div>Mở cửa</div>
-								<Tooltip content={`Ấn để ${profile.isOpened ? 'đóng' : 'mở'} cửa`}>
+							<div className="flex flex-wrap gap-2 items-center">
+								<div>Ngừng nhận đơn hàng</div>
+								<Tooltip
+									content={`Ấn để ${profile.isOpened ? 'ngừng ' : ''}nhận đơn hảng`}
+								>
 									<div
 										onClick={() =>
 											handleFormChange({
@@ -138,7 +166,7 @@ function StudioInfo({ studio }) {
 										className="relative cursor-pointer"
 									>
 										<input
-											checked={profile.isOpened}
+											checked={!profile.isOpened}
 											type="checkbox"
 											readOnly
 											className="hidden"
@@ -175,7 +203,7 @@ function StudioInfo({ studio }) {
 									</div>
 								</div>
 							</div>
-							<div className="flex flex-wrap items-center justify-start gap-3 mb-3">
+							<div className="flex flex-wrap items-center justify-start gap-3 mb-3 mt-3">
 								<div className="w-full sm:w-2/5 lg:w-1/2 sm:pb-0 pb-6">
 									<label>{'Tên'}</label>
 									<MyInput
@@ -224,12 +252,12 @@ function StudioInfo({ studio }) {
 											step={1}
 											onChange={handleFormChange}
 											required
-											className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-600 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
+											className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
 										/>
 									</div>
 								</div>
 							</div>
-							<div className='block lg:flex flex-wrap gap-2'>
+							<div className="block lg:flex flex-wrap gap-2">
 								<div className="block mb-3 w-52">
 									<label>{'Thành phố'}</label>
 									<PickCity
