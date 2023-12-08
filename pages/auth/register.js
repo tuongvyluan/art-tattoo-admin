@@ -38,7 +38,7 @@ const RegisterPage = () => {
 	const [alertContent, setAlertContent] = useState({
 		title: '',
 		content: '',
-		isWarn: false
+		isWarn: 'blue'
 	});
 
 	const handleSetUser = (newUser) => {

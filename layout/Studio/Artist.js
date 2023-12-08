@@ -2,7 +2,7 @@ import { fetcher, fetcherPost, fetcherPut } from 'lib';
 import { BASE_URL } from 'lib/env';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
-import { Avatar, Card, CardBody, Loading } from 'ui';
+import { Alert, Avatar, Card, CardBody, Loading } from 'ui';
 import CryptoJS from 'crypto-js';
 import Button from 'components/Button';
 
@@ -25,21 +25,86 @@ const StudioArtist = ({ studioId }) => {
 		bookings: []
 	});
 	const [artistKey, setArtistKey] = useState('');
+	const [showAlert, setShowAlert] = useState(false);
+
+	const [alertContent, setAlertContent] = useState({
+		title: '',
+		content: '',
+		isWarn: 'blue'
+	});
+
+	const handleAlert = (state, title, content, isWarn = 0) => {
+		setShowAlert((prev) => state);
+		let color;
+		switch (isWarn) {
+			case 1:
+				color = 'green';
+				break;
+			case 2:
+				color = 'red';
+				break;
+			default:
+				color = 'blue';
+				break;
+		}
+		setAlertContent({
+			title: title,
+			content: content,
+			isWarn: color
+		});
+	};
 
 	const handleAddArtist = () => {
 		const keyValue = CryptoJS.AES.decrypt(artistKey, ENCRYPT_SECRET);
-		const artistId = JSON.parse(keyValue.toString(CryptoJS.enc.Utf8))?.id;
+		const artistId = JSON.parse(keyValue?.toString(CryptoJS.enc.Utf8))?.id;
+		let success = false;
+
 		if (artistId) {
-			fetcherPost(`${BASE_URL}/artists/${studio.id}/studio-artist/${artistId}`).then(
-				(data) => {
-					setStudio({
-						...studio,
-						id: null
+			const comparison =
+				Date.now() -
+				JSON.parse(keyValue?.toString(CryptoJS.enc.Utf8))?.key -
+				15 * 60 * 1000;
+			if (comparison <= 0) {
+				success = true;
+				handleAlert(
+					true,
+					'Đang thêm nghệ sĩ',
+					'',
+					0
+				);
+				fetcherPost(`${BASE_URL}/artists/${studio.id}/studio-artist/${artistId}`)
+					.then((data) => {
+						setStudio({
+							...studio,
+							id: null
+						});
+						handleAlert(
+							true,
+							'Thêm nghệ sĩ thành công',
+							'',
+							1
+						);
+					})
+					.catch((e) => {
+						handleAlert(
+							true,
+							'Thêm nghệ sĩ thất bại',
+							'Key không hợp lệ hoặc đã quá hạn 15 phút kể từ khi tạo key, hãy hỏi nghệ sĩ để lấy key mới',
+							2
+						);
+					})
+					.finally(() => {
+						setArtistKey('');
 					});
-				}
-			).finally(() => {
-				setArtistKey('')
-			})
+			}
+		}
+		if (!success) {
+			handleAlert(
+				true,
+				'Thêm nghệ sĩ thất bại',
+				'Key không hợp lệ hoặc đã quá hạn 15 kể từ khi tạo key, hãy hỏi nghệ sĩ để lấy key mới',
+				2
+			);
 		}
 	};
 
@@ -73,7 +138,16 @@ const StudioArtist = ({ studioId }) => {
 		);
 	}
 	return (
-		<div>
+		<div className="relative min-h-body">
+			<Alert
+				showAlert={showAlert}
+				setShowAlert={setShowAlert}
+				color={alertContent.isWarn}
+				className="bottom-2 right-2 absolute"
+			>
+				<strong className="font-bold mr-1">{alertContent.title}</strong>
+				<span className="block sm:inline">{alertContent.content}</span>
+			</Alert>
 			{studio.artists && studio.artists.length > 0 ? (
 				<div>
 					<Card>
@@ -94,9 +168,7 @@ const StudioArtist = ({ studioId }) => {
 										</div>
 										<div className="mt-1 flex justify-center text-center">
 											<div>
-												<span className="block">
-													{artist.artist.fullName}
-												</span>
+												<span className="block">{artist.artist.fullName}</span>
 											</div>
 										</div>
 									</a>
