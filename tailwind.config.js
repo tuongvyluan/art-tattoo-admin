@@ -31,11 +31,11 @@ module.exports = {
 			},
 			height: {
 				152: '37.5rem',
-				body: 'calc(100vh - 124px)',
+				body: 'calc(100vh - 136px)',
 				noFooter: 'calc(100vh - 60px)'
 			},
 			minHeight: {
-				body: 'calc(100vh - 124px)',
+				body: 'calc(100vh - 136px)',
 				noFooter: 'calc(100vh - 60px)'
 			},
 			maxHeight: {

@@ -89,7 +89,7 @@ const StudioArtist = ({ studioId }) => {
 						handleAlert(
 							true,
 							'Thêm nghệ sĩ thất bại',
-							'Key không hợp lệ hoặc đã quá hạn 15 phút kể từ khi tạo key, hãy hỏi nghệ sĩ để lấy key mới',
+							'Nghệ sĩ này hiện đã thuộc về tiệm xăm.',
 							2
 						);
 					})
@@ -102,7 +102,7 @@ const StudioArtist = ({ studioId }) => {
 			handleAlert(
 				true,
 				'Thêm nghệ sĩ thất bại',
-				'Key không hợp lệ hoặc đã quá hạn 15 kể từ khi tạo key, hãy hỏi nghệ sĩ để lấy key mới',
+				'Key không hợp lệ hoặc đã quá hạn 15 phút kể từ khi tạo key, hãy hỏi nghệ sĩ để lấy key mới',
 				2
 			);
 		}
