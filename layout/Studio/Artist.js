@@ -116,7 +116,9 @@ const StudioArtist = ({ studioId }) => {
 				...studio,
 				id: studioId,
 				ownerId: response.artistId,
-				artists: response.studioArtists.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
+				artists: response.studioArtists.sort(
+					(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+				),
 				bookings: response.bookings
 			});
 		});
@@ -173,37 +175,45 @@ const StudioArtist = ({ studioId }) => {
 										</div>
 									))}
 							</div>
-							<Heading>Từng hợp tác</Heading>
-							<div className="flex flex-wrap justify-center">
-								{studio.artists
-									?.filter((a) => a.dismissedAt != null)
-									.map((artist, artistIndex) => (
-										<div key={artist.id} className="min-w-max w-1/4 px-2 mb-3">
-											<a className={`w-full block text-gray-900 dark:text-white`}>
-												<div className="flex justify-center">
-													<Avatar
-														size={48}
-														src={
-															artist.artist.avatar
-																? artist.artist.avatar
-																: '/images/ATL.png'
-														}
-														alt={artist.artist.fullName}
-													/>
-												</div>
-												<div className="mt-1 flex justify-center text-center">
-													<div>
-														<div className="block">{artist.artist.fullName}</div>
-														<div className="flex pt-2">
-															Từ {formatDate(artist.createdAt)} đến{' '}
-															{formatDate(artist.dismissedAt)}
+							{studio.artists?.filter((a) => a.dismissedAt != null).at(0) ? (
+								<div>
+									<Heading>Đã ngừng hợp tác</Heading>
+									<div className="flex flex-wrap justify-center">
+										{studio.artists
+											?.filter((a) => a.dismissedAt != null)
+											.map((artist, artistIndex) => (
+												<div key={artist.id} className="min-w-max w-1/4 px-2 mb-3">
+													<a
+														className={`w-full block text-gray-900 dark:text-white`}
+													>
+														<div className="flex justify-center">
+															<Avatar
+																size={48}
+																src={
+																	artist.artist.avatar
+																		? artist.artist.avatar
+																		: '/images/ATL.png'
+																}
+																alt={artist.artist.fullName}
+															/>
 														</div>
-													</div>
+														<div className="mt-1 flex justify-center text-center">
+															<div>
+																<div className="block">{artist.artist.fullName}</div>
+																<div className="flex pt-2">
+																	Từ {formatDate(artist.createdAt)} đến{' '}
+																	{formatDate(artist.dismissedAt)}
+																</div>
+															</div>
+														</div>
+													</a>
 												</div>
-											</a>
-										</div>
-									))}
-							</div>
+											))}
+									</div>
+								</div>
+							) : (
+								<></>
+							)}
 						</CardBody>
 					</Card>
 				</div>
