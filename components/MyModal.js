@@ -53,7 +53,7 @@ MyModal.propTypes = {
 	warn: PropTypes.bool,
 	openModal: PropTypes.bool.isRequired,
 	setOpenModal: PropTypes.func.isRequired,
-	onSubmit: PropTypes.func.isRequired,
+	onSubmit: PropTypes.func,
 	size: PropTypes.string,
 	noFooter: PropTypes.bool
 };

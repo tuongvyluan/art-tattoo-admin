@@ -3,7 +3,6 @@ import {
 	stringBookingDetailStatus,
 	stringBookingDetailStatusColor,
 	stringPlacements,
-	stringServiceStatus,
 	stringSize
 } from 'lib/status';
 import { formatDateTimeForInput, formatPrice, formatTime } from 'lib';
@@ -45,8 +44,8 @@ const CustomerServices = ({
 	return (
 		<div className="relative">
 			<MyModal
-				serviceSize="2xl"
-				serviceTitle="Chỉnh sửa dịch vụ"
+				size="3xl"
+				title="Chỉnh sửa dịch vụ"
 				openModal={bookingServiceModal}
 				setOpenModal={setBookingServiceModal}
 			>
@@ -54,7 +53,7 @@ const CustomerServices = ({
 					{
 						// Tên dịch vụ
 					}
-					<div className="pb-3 flex flex-wrap text-xl font-semibold">
+					<div className="pb-3 flex flex-wrap text-base font-semibold">
 						<div className="pr-1">{selectedBookingDetail?.serviceTitle},</div>
 						<div className="pr-1">
 							{stringSize.at(selectedBookingDetail?.serviceSize)},
@@ -69,21 +68,18 @@ const CustomerServices = ({
 							<></>
 						)}
 
+						{selectedBookingDetail?.serviceCategory ? (
+							<div className="pr-1">
+								{selectedBookingDetail.serviceCategory.name},
+							</div>
+						) : (
+							<></>
+						)}
+
 						<div className="pr-1">
 							{formatPrice(selectedBookingDetail?.serviceMinPrice)} -{' '}
 							{formatPrice(selectedBookingDetail?.serviceMaxPrice)}
 						</div>
-					</div>
-					{
-						// Description của booking details
-					}
-					<div className="pb-3 flex items-center gap-1">
-						<div className="w-20">Lưu ý: </div>
-						<MyInput
-							name="description"
-							value={selectedBookingDetail?.description}
-							onChange={handleChangeDetail}
-						/>
 					</div>
 					{
 						// Thông tin cơ bản của dịch vụ
@@ -97,20 +93,22 @@ const CustomerServices = ({
 								<div className="w-20">Trạng thái: </div>
 								<Dropdown className="relative h-full flex items-center">
 									<DropdownToggle>
-										<div className="w-40 rounded-lg p-1 border border-gray-300">
-											{stringServiceStatus.at(0)}
+										<div className="w-40 rounded-lg p-1 border border-gray-600">
+											{stringBookingDetailStatus.at(0)}
 										</div>
 									</DropdownToggle>
 									<DropdownMenu>
-										{stringServiceStatus.map((status, statusIndex) => (
-											<div
-												key={status}
-												// onClick={() => setTattooState('serviceSize', statusIndex)}
-												className={`px-2 py-1 cursor-pointer hover:bg-gray-100`}
-											>
-												{status}
-											</div>
-										))}
+										<div>
+											{stringBookingDetailStatus.map((status, statusIndex) => (
+												<div
+													key={status}
+													// onClick={() => setTattooState('serviceSize', statusIndex)}
+													className={`px-2 py-1 cursor-pointer hover:bg-gray-100`}
+												>
+													{status}
+												</div>
+											))}
+										</div>
 									</DropdownMenu>
 								</Dropdown>
 							</div>
@@ -131,27 +129,38 @@ const CustomerServices = ({
 								<div className="w-20">Phân công: </div>
 								<Dropdown className="relative h-full flex items-center">
 									<DropdownToggle>
-										<div className="w-40 rounded-lg p-1 border border-gray-300">
+										<div className="w-40 rounded-lg p-1 border border-gray-600">
 											{artistList?.at(selectedArtist)?.fullName}
 										</div>
 									</DropdownToggle>
 									<DropdownMenu>
-										{artistList?.map((artist, artistIndex) => (
-											<div
-												key={artist.id}
-												// onClick={() => setTattooState('serviceSize', statusIndex)}
-												className={`px-2 py-1 cursor-pointer hover:bg-gray-100`}
-											>
-												{artist?.fullName}
-											</div>
-										))}
+										<div>
+											{artistList?.map((artist, artistIndex) => (
+												<div
+													key={artist.id}
+													// onClick={() => setTattooState('serviceSize', statusIndex)}
+													className={`px-2 py-1 cursor-pointer hover:bg-gray-100`}
+												>
+													{artist?.fullName}
+												</div>
+											))}
+										</div>
 									</DropdownMenu>
 								</Dropdown>
 							</div>
-							<div className="pb-3 flex items-center gap-1">
-								<input type="checkbox" />
-								<div>Tạo hình xăm</div>
-							</div>
+						</div>
+					</div>
+					{
+						// Description của booking details
+					}
+					<div className="pb-3 flex items-center gap-1 pr-3">
+						<div className="w-20">Lưu ý: </div>
+						<div className="flex-grow">
+							<MyInput
+								name="description"
+								value={selectedBookingDetail?.description}
+								onChange={handleChangeDetail}
+							/>
 						</div>
 					</div>
 					{
@@ -162,7 +171,7 @@ const CustomerServices = ({
 							<div className="w-20">Ngày hẹn:</div>
 							<div className="w-min">
 								<input
-									className="appearance-none relative block w-full text-base mb-2 px-3 py-1 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
+									className="appearance-none relative block w-full text-base mb-2 px-3 py-1 border border-gray-600 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
 									type="datetime-local"
 									value={selectedMeetingDate}
 									onChange={(e) =>
@@ -180,7 +189,7 @@ const CustomerServices = ({
 						className={`shadow-lg ${
 							!showMore && bookingServiceIndex > 2 ? 'hidden' : ''
 						}`}
-						key={bookingDetail.bookingServiceId}
+						key={bookingDetail.id}
 					>
 						<div className="w-full flex justify-start gap-2 items-start bg-gray-50 py-5 relative">
 							{canEdit && (
@@ -189,10 +198,10 @@ const CustomerServices = ({
 										onClick={() => onSelectUpdatedService(bookingServiceIndex)}
 										className="relative"
 									>
-										<MdEdit serviceSize={20} />
+										<MdEdit size={20} />
 									</div>
 									<div className="relative">
-										<MdOutlineClose serviceSize={20} />
+										<MdOutlineClose size={20} />
 									</div>
 								</div>
 							)}
@@ -230,7 +239,7 @@ const CustomerServices = ({
 							{
 								// Phần bên phải của khung booking service
 							}
-							<div className="px-3 w-full">
+							<div className="pl-3 pr-16 w-full">
 								<div
 									key={bookingDetail.id}
 									className="pb-1 flex flex-wrap text-base"
@@ -250,9 +259,7 @@ const CustomerServices = ({
 									)}
 
 									{bookingDetail.serviceCategory ? (
-										<div className="pr-1">
-											{bookingDetail.serviceCategory.name},
-										</div>
+										<div className="pr-1">{bookingDetail.serviceCategory.name},</div>
 									) : (
 										<></>
 									)}

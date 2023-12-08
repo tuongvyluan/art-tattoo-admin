@@ -21,6 +21,7 @@ import { Modal } from 'flowbite-react';
 import CustomerServices from './CustomerServices';
 import useSWR from 'swr';
 import Heading from 'components/Heading';
+import { useSession } from 'next-auth/react';
 
 const hasBookingMeeting = (bookingMeetings) => {
 	let result;
@@ -42,9 +43,9 @@ const calculateTotal = (tattooArts) => {
 };
 
 function BookingDetailsPage({ data, studioId, setLoading }) {
+	const { data: account } = useSession();
 	const [renderData, setRenderData] = useState(data);
 
-	const timeline = extractBookingStatusTimeline(renderData);
 	const [bookingStatus, setBookingStatus] = useState(renderData.status);
 
 	// Cancel related vars
@@ -77,15 +78,27 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	const [alertContent, setAlertContent] = useState({
 		title: '',
 		content: '',
-		isWarn: false
+		isWarn: 'blue'
 	});
 
-	const handleAlert = (state, title, content, isWarn = false) => {
+	const handleAlert = (state, title, content, isWarn = 0) => {
 		setShowAlert((prev) => state);
+		let color
+		switch (isWarn) {
+			case 1:
+				color = 'green';
+				break;
+			case 2:
+				color = 'red';
+				break;
+			default:
+				color = 'blue';
+				break;
+		}
 		setAlertContent({
 			title: title,
 			content: content,
-			isWarn: isWarn
+			isWarn: color
 		});
 	};
 
@@ -111,26 +124,11 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 		});
 	};
 
-	const confirmBooking = (meetingDate) => {
-		handleAlert(true, 'Đang xác nhận');
-		createBookingMeeting(meetingDate);
-		fetcherPut(`${BASE_URL}/studios/${studioId}/bookings/${renderData.id}`, {
-			status: BOOKING_STATUS.CONFIRMED
-		})
-			.then((data) => {
-				setBookingStatus(BOOKING_STATUS.CONFIRMED);
-				handleAlert(true, 'Xác nhận đơn hàng thành công');
-				setLoading(true);
-			})
-			.catch((e) => {
-				handleAlert(true, 'Xác nhận đơn hàng thất bại', '', true);
-			});
-	};
-
 	const handleAfterConfirmed = (status) => {
 		handleAlert(true, 'Đang cập nhật trạng thái');
 		const body = {
-			status: status
+			status: status,
+			updaterId: account.user.id
 		};
 		if (status === BOOKING_STATUS.CUSTOMER_CANCEL) {
 			body.customerCancelReason = cancelReason.concat(` ${cancelReasonMore}`);
@@ -138,7 +136,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 		if (status === BOOKING_STATUS.STUDIO_CANCEL) {
 			body.studioCancelReason = cancelReason.concat(` ${cancelReasonMore}`);
 		}
-		fetcherPut(`${BASE_URL}/studios/${studioId}/bookings/${renderData.id}`, body)
+		fetcherPut(`${BASE_URL}/bookings/${renderData.id}`, body)
 			.then((data) => {
 				setBookingStatus(status);
 				handleAlert(true, 'Cập nhật trạng thái đơn hàng thành công');
@@ -172,72 +170,12 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 			<Alert
 				showAlert={showAlert}
 				setShowAlert={setShowAlert}
-				color={alertContent.isWarn ? 'red' : 'blue'}
+				color={alertContent.isWarn}
 				className="bottom-2 right-2 fixed max-w-md z-50"
 			>
 				<strong className="font-bold mr-1">{alertContent.title}</strong>
 				<span className="block sm:inline">{alertContent.content}</span>
 			</Alert>
-			<MyModal
-				size="md"
-				title={
-					hasBookingMeeting(renderData.bookingMeetings)
-						? 'Cập nhật lịch hẹn'
-						: 'Tạo lịch hẹn'
-				}
-				openModal={showBookingMeetingModal}
-				setOpenModal={setShowBookingMeetingModal}
-				onSubmit={() => {
-					if (bookingStatus === BOOKING_STATUS.PENDING) {
-						confirmBooking(currentMeetingDate);
-					} else {
-						handleChangeMeetingDate(currentMeetingDate);
-					}
-				}}
-				cancelTitle="Huỷ thay đổi"
-				confirmTitle="Xác nhận"
-				noFooter={hasBookingMeeting(renderData.bookingMeetings)}
-			>
-				<div className="">
-					<div className="pb-2 text-center">Lịch hẹn mới sẽ vào ngày:</div>
-					<div className="w-max mx-auto">
-						<input
-							type="date"
-							className="appearance-none relative block w-full text-base mb-2 px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
-							value={currentMeetingDate}
-							onChange={(e) => setCurrentMeetingDate(e.target.value)}
-						/>
-					</div>
-					{hasBookingMeeting(renderData.bookingMeetings) && (
-						<Modal.Footer>
-							<div className="flex justify-center gap-2 w-full">
-								<div className="w-24">
-									<Button onClick={() => setShowBookingMeetingModal(false)} outline>
-										Huỷ thay đổi
-									</Button>
-								</div>
-								<div className="w-24">
-									<Button
-										onClick={() =>
-											deleteBookingMeeting(renderData.bookingMeetings.at(0).id)
-										}
-										warn
-									>
-										Xoá lịch hẹn
-									</Button>
-								</div>
-								<div className="w-24">
-									<Button
-										onClick={() => handleChangeMeetingDate(currentMeetingDate)}
-									>
-										Xác nhận
-									</Button>
-								</div>
-							</div>
-						</Modal.Footer>
-					)}
-				</div>
-			</MyModal>
 			<MyModal
 				title="Xác nhận huỷ đơn"
 				warn={true}
@@ -301,18 +239,14 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 									<div className="w-full md:pr-1 md:w-1/3 md:border-r mb-5 md:mb-0 md:border-b-0 border-b border-gray-300">
 										<div>
 											<Heading>Thông tin khách hàng</Heading>
-											<div className="text-base">
-												{renderData.customer.firstName}{' '}
-												{renderData.customer.lastName}
-											</div>
+											<div className="text-base">{renderData.customer.fullName}</div>
 											<div>{renderData.customer.phoneNumber}</div>
 											<div>{renderData.customer.email}</div>
 										</div>
 									</div>
 									<div className="flex flex-col justify-start flex-grow pt-3 md:pt-0">
-										{timeline.length > 0 ? (
-											<WidgetOrderStatus timeline={timeline} />
-										) : (
+										{(renderData.status === BOOKING_STATUS.CUSTOMER_CANCEL ||
+											renderData.status === BOOKING_STATUS.STUDIO_CANCEL) && (
 											<div className="text-center my-auto text-base text-red-500">
 												<div>ĐƠN HÀNG ĐÃ BỊ HUỶ</div>
 											</div>
@@ -335,13 +269,15 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							}
 							<div className="pt-3">
 								<div className="flex justify-between w-full pb-1">
-									<Heading>Các dịch vụ đã đặt ({renderData.services?.length})</Heading>
+									<Heading>
+										Các dịch vụ đã đặt ({renderData.bookingDetails?.length})
+									</Heading>
 								</div>
 								<CustomerServices
 									artistList={artistList}
 									showMore={true}
-									canEdit={true}
-									services={renderData.services}
+									canEdit={renderData.status === BOOKING_STATUS.IN_PROGRESS}
+									bookingDetails={renderData.bookingDetails}
 								/>
 							</div>
 
@@ -371,15 +307,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								)}
 
 								{renderData.status === BOOKING_STATUS.PENDING && (
-									<div className="w-20">
-										<Button onClick={() => setShowBookingMeetingModal(true)}>
-											Đồng ý
-										</Button>
-									</div>
-								)}
-
-								{renderData.status === BOOKING_STATUS.CONFIRMED && (
-									<div className="w-max">
+									<div>
 										<Button
 											onClick={() =>
 												handleAfterConfirmed(BOOKING_STATUS.IN_PROGRESS)

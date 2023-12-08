@@ -20,7 +20,7 @@ const BookingDetails = () => {
 	if (status === 'authenticated' && data.user.role === ROLE.STUDIO && loading) {
 		// Call api to get bookings
 
-		fetcher(`${BASE_URL}/bookings/${bookingId}/details-studio`)
+		fetcher(`${BASE_URL}/bookings/get-by-id?bookingId=${bookingId}`)
 			.then((data) => {
 				setBookingData(data);
 				setLoading(false);
