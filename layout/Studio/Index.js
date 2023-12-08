@@ -89,13 +89,13 @@ function StudioIndexPage({ studioId }) {
 															? artist.artist.avatar
 															: '/images/ATL.png'
 													}
-													alt={artist.artist.firstName}
+													alt={artist.artist.fullName}
 												/>
 											</div>
 											<div className="mt-1 flex justify-center text-center">
 												<div>
 													<span className="block">
-														{artist.artist.firstName} {artist.artist.lastName}
+														{artist.artist.fullName}
 													</span>
 												</div>
 											</div>

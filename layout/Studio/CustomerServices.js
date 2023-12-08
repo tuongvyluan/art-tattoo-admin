@@ -1,36 +1,52 @@
 import PropTypes from 'prop-types';
-import { stringBookingServiceStatus, stringBookingServiceStatusColor, stringBookingStatuses, stringPlacements, stringServiceStatus, stringSize } from 'lib/status';
+import {
+	stringBookingDetailStatus,
+	stringBookingDetailStatusColor,
+	stringPlacements,
+	stringServiceStatus,
+	stringSize
+} from 'lib/status';
 import { formatDateTimeForInput, formatPrice, formatTime } from 'lib';
 import { Avatar, Card, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
 import { MdEdit, MdOutlineCalendarMonth, MdOutlineClose } from 'react-icons/md';
 import MyModal from 'components/MyModal';
 import { useState } from 'react';
 import MoneyInput from 'components/MoneyInput';
+import MyInput from 'components/MyInput';
+import Link from 'next/link';
+import Image from 'next/image';
 
 const CustomerServices = ({
-	bookingServices,
+	bookingDetails,
 	canEdit = false,
 	showMore = false,
 	artistList
 }) => {
 	const [bookingServiceModal, setBookingServiceModal] = useState(false);
-	const [selectedService, setSelectedService] = useState(undefined);
+	const [selectedBookingDetail, setSelectedBookingDetail] = useState(undefined);
 	const [selectedArtist, setSelectedArtist] = useState(0);
 	const [selectedMeetingDate, setSelectedMeetingDate] = useState(
 		formatDateTimeForInput(new Date())
 	);
 
-	const onSelectUpdatedService = (serviceIndex) => {
+	const onSelectUpdatedService = (detailIndex) => {
 		setSelectedArtist(0);
-		setSelectedService(bookingServices.at(serviceIndex));
+		setSelectedBookingDetail(bookingDetails.at(detailIndex));
 		setBookingServiceModal(true);
+	};
+
+	const handleChangeDetail = (e) => {
+		setSelectedBookingDetail({
+			...selectedBookingDetail,
+			[e.target.name]: e.target.value
+		});
 	};
 
 	return (
 		<div className="relative">
 			<MyModal
-				size="2xl"
-				title="Chỉnh sửa dịch vụ"
+				serviceSize="2xl"
+				serviceTitle="Chỉnh sửa dịch vụ"
 				openModal={bookingServiceModal}
 				setOpenModal={setBookingServiceModal}
 			>
@@ -39,21 +55,35 @@ const CustomerServices = ({
 						// Tên dịch vụ
 					}
 					<div className="pb-3 flex flex-wrap text-xl font-semibold">
-						<div className="pr-1">{selectedService?.title},</div>
-						<div className="pr-1">{stringSize.at(selectedService?.size)},</div>
+						<div className="pr-1">{selectedBookingDetail?.serviceTitle},</div>
+						<div className="pr-1">
+							{stringSize.at(selectedBookingDetail?.serviceSize)},
+						</div>
 
-						{selectedService?.placement ? (
+						{selectedBookingDetail?.servicePlacement ? (
 							<div className="pr-1">
-								Vị trí xăm: {stringPlacements.at(selectedService?.placement)},
+								Vị trí xăm:{' '}
+								{stringPlacements.at(selectedBookingDetail?.servicePlacement)},
 							</div>
 						) : (
 							<></>
 						)}
 
 						<div className="pr-1">
-							{formatPrice(selectedService?.minPrice)} -{' '}
-							{formatPrice(selectedService?.maxPrice)}
+							{formatPrice(selectedBookingDetail?.serviceMinPrice)} -{' '}
+							{formatPrice(selectedBookingDetail?.serviceMaxPrice)}
 						</div>
+					</div>
+					{
+						// Description của booking details
+					}
+					<div className="pb-3 flex items-center gap-1">
+						<div className="w-20">Lưu ý: </div>
+						<MyInput
+							name="description"
+							value={selectedBookingDetail?.description}
+							onChange={handleChangeDetail}
+						/>
 					</div>
 					{
 						// Thông tin cơ bản của dịch vụ
@@ -75,7 +105,7 @@ const CustomerServices = ({
 										{stringServiceStatus.map((status, statusIndex) => (
 											<div
 												key={status}
-												// onClick={() => setTattooState('size', statusIndex)}
+												// onClick={() => setTattooState('serviceSize', statusIndex)}
 												className={`px-2 py-1 cursor-pointer hover:bg-gray-100`}
 											>
 												{status}
@@ -102,18 +132,17 @@ const CustomerServices = ({
 								<Dropdown className="relative h-full flex items-center">
 									<DropdownToggle>
 										<div className="w-40 rounded-lg p-1 border border-gray-300">
-											{artistList?.at(selectedArtist)?.firstName}{' '}
-											{artistList?.at(selectedArtist)?.lastName}
+											{artistList?.at(selectedArtist)?.fullName}
 										</div>
 									</DropdownToggle>
 									<DropdownMenu>
 										{artistList?.map((artist, artistIndex) => (
 											<div
 												key={artist.id}
-												// onClick={() => setTattooState('size', statusIndex)}
+												// onClick={() => setTattooState('serviceSize', statusIndex)}
 												className={`px-2 py-1 cursor-pointer hover:bg-gray-100`}
 											>
-												{artist?.firstName} {artist.lastName}
+												{artist?.fullName}
 											</div>
 										))}
 									</DropdownMenu>
@@ -146,12 +175,12 @@ const CustomerServices = ({
 				</div>
 			</MyModal>
 			<div className="block">
-				{bookingServices.map((bookingService, bookingServiceIndex) => (
+				{bookingDetails.map((bookingDetail, bookingServiceIndex) => (
 					<Card
 						className={`shadow-lg ${
 							!showMore && bookingServiceIndex > 2 ? 'hidden' : ''
 						}`}
-						key={bookingService.bookingServiceId}
+						key={bookingDetail.bookingServiceId}
 					>
 						<div className="w-full flex justify-start gap-2 items-start bg-gray-50 py-5 relative">
 							{canEdit && (
@@ -160,10 +189,10 @@ const CustomerServices = ({
 										onClick={() => onSelectUpdatedService(bookingServiceIndex)}
 										className="relative"
 									>
-										<MdEdit size={20} />
+										<MdEdit serviceSize={20} />
 									</div>
 									<div className="relative">
-										<MdOutlineClose size={20} />
+										<MdOutlineClose serviceSize={20} />
 									</div>
 								</div>
 							)}
@@ -172,29 +201,30 @@ const CustomerServices = ({
 							}
 							<div className="flex justify-start gap-2 items-center bg-gray-50 pl-5">
 								<div>
-									{/* <Link
-										href=""
-										// href={`/tattoo/${tattoo.id}?booking=${data.id}`}
-									>
-										<div className="cursor-pointer flex justify-start gap-3 flex-wrap">
-											<div className="relative w-24 h-24">
-												<Image
-													layout="fill"
-													src={
-														// tattoo.thumbnail
-														// 	? tattoo.thumbnail
-														// 	:
-														'/images/ATL.png'
-													}
-													alt={'a'}
-													className="object-contain rounded-2xl"
-												/>
+									{bookingDetail.tattooArt ? (
+										<Link
+											href={`/tattoo/${bookingDetail.tattooArt.id}?booking=${bookingDetail.tattooArt.bookingId}`}
+										>
+											<div className="cursor-pointer flex justify-start gap-3 flex-wrap">
+												<div className="relative w-24 h-24">
+													<Image
+														layout="fill"
+														src={
+															bookingDetail.tattooArt.thumbnail
+																? bookingDetail.tattooArt.thumbnail
+																: '/images/ATL.png'
+														}
+														alt={'a'}
+														className="object-contain rounded-2xl"
+													/>
+												</div>
 											</div>
+										</Link>
+									) : (
+										<div className="border border-black rounded-xl w-24 h-24 cursor-default">
+											<div className="px-2 py-7 text-center">Không có hình xăm</div>
 										</div>
-									</Link> */}
-									<div className="border border-black rounded-xl w-24 h-24 cursor-default">
-										<div className="px-2 py-7 text-center">Không có hình xăm</div>
-									</div>
+									)}
 								</div>
 							</div>
 							{
@@ -202,67 +232,79 @@ const CustomerServices = ({
 							}
 							<div className="px-3 w-full">
 								<div
-									key={bookingService.id}
+									key={bookingDetail.id}
 									className="pb-1 flex flex-wrap text-base"
 								>
 									<div>{bookingServiceIndex + 1}</div>
-									<div className="pr-1">. {stringSize.at(bookingService.size)},</div>
+									<div className="pr-1">
+										. {stringSize.at(bookingDetail.serviceSize)},
+									</div>
 
-									{bookingService.placement ? (
+									{bookingDetail.servicePlacement ? (
 										<div className="pr-1">
-											Vị trí xăm: {stringPlacements.at(bookingService.placement)},
+											Vị trí xăm:{' '}
+											{stringPlacements.at(bookingDetail.servicePlacement)},
+										</div>
+									) : (
+										<></>
+									)}
+
+									{bookingDetail.serviceCategory ? (
+										<div className="pr-1">
+											{bookingDetail.serviceCategory.name},
 										</div>
 									) : (
 										<></>
 									)}
 
 									<div className="pr-1">
-										{formatPrice(bookingService.minPrice)} -{' '}
-										{formatPrice(bookingService.maxPrice)}
+										{formatPrice(bookingDetail.serviceMinPrice)} -{' '}
+										{formatPrice(bookingDetail.serviceMaxPrice)}
 									</div>
 								</div>
 								<div className="flex flex-wrap gap-3 items-center ">
 									{
 										// Giá tiền
 									}
-									{bookingService.price > 0 && (
+									{bookingDetail.price > 0 && (
 										<div className="flex flex-wrap items-center text-base font-semibold bg-teal-300 px-2 rounded-full">
-											<div>{formatPrice(bookingService.price)}</div>
+											<div>{formatPrice(bookingDetail.price)}</div>
 										</div>
 									)}
 									{
 										// Ngày hẹn
 									}
-									{bookingService.bookingMeetings?.length > 0 && (
+									{bookingDetail.bookingMeetings?.length > 0 && (
 										<div className="flex flex-wrap gap-1 items-center text-base font-semibold bg-indigo-100 px-2 rounded-full">
-											<MdOutlineCalendarMonth size={20} />
+											<MdOutlineCalendarMonth serviceSize={20} />
 											<div>{formatTime(new Date())}</div>
 										</div>
 									)}
 									{
 										// Trạng thái
 									}
-									<div className={`flex flex-wrap gap-1 items-center text-base font-semibold bg-${stringBookingServiceStatusColor.at(bookingService.status)} px-2 rounded-full`}>
-										<div>{stringBookingServiceStatus.at(bookingService.status)}</div>
+									<div
+										className={`flex flex-wrap gap-1 items-center text-base font-semibold bg-${stringBookingDetailStatusColor.at(
+											bookingDetail.status
+										)} px-2 rounded-full`}
+									>
+										<div>{stringBookingDetailStatus.at(bookingDetail.status)}</div>
 									</div>
 								</div>
 								{
 									// Assign artist
 								}
-								{bookingService.artist && (
+								{bookingDetail.artist && (
 									<div className="flex flex-wrap gap-1 items-center text-base font-semibold pt-3">
 										<Avatar
-											size={40}
+											serviceSize={40}
 											src={
-												bookingService.artist?.avatar
-													? bookingService.artist.avatar
+												bookingDetail.artist?.account?.avatar
+													? bookingDetail.artist.account.avatar
 													: '/public/images/ATL.png'
 											}
 										/>
-										<div>
-											{bookingService.artist?.firstName}{' '}
-											{bookingService.artist?.lastName}
-										</div>
+										<div>{bookingDetail.artist?.account?.fullName}</div>
 									</div>
 								)}
 							</div>
@@ -275,7 +317,7 @@ const CustomerServices = ({
 };
 
 CustomerServices.propTypes = {
-	services: PropTypes.array,
+	bookingDetails: PropTypes.array,
 	canEdit: PropTypes.bool,
 	showMore: PropTypes.bool,
 	artistList: PropTypes.array

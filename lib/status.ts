@@ -5,12 +5,7 @@ export const enum ROLE {
 	ADMIN = 3
 }
 
-export const roleString = [
-	'Khách hàng',
-	'Nghệ sĩ xăm',
-	'Quản lý tiệm xăm',
-	'Admin'
-]
+export const roleString = ['Khách hàng', 'Nghệ sĩ xăm', 'Quản lý tiệm xăm', 'Admin'];
 
 export const enum ACCOUNT_STATUS {
 	NOT_VERIFIED = 0,
@@ -69,11 +64,7 @@ export const stringSize = [
 	'Size bất kỳ'
 ];
 
-export const stringServiceStatus = [
-	'Đang thực hiện',
-	'Hoàn thành',
-	'Đã huỷ'
-]
+export const stringServiceStatus = ['Đang thực hiện', 'Hoàn thành', 'Đã huỷ'];
 
 export const stringColor = (isColor: boolean) => {
 	return isColor ? 'Có màu' : 'Trắng đen';
@@ -98,6 +89,20 @@ export const enum BOOKING_DETAIL_STATUS {
 	COMPLETED = 3
 }
 
+export const stringBookingDetailStatus = [
+	'Chờ xác nhận',
+	'Đang thực hiện',
+	'Đã huỷ',
+	'Hoàn thành'
+];
+
+export const stringBookingDetailStatusColor = [
+	'yellow-100',
+	'yellow-300',
+	'red-300',
+	'green-300'
+];
+
 export const enum BOOKING_MEETING_STATUS {
 	PENDING = 0,
 	COMPLETED = 1,
@@ -111,20 +116,13 @@ export const enum TRANSACTION_STATUS {
 
 export const stringBookingStatuses = [
 	'Chờ xác nhận',
-	'Đã xác nhận',
 	'Đang thực hiện',
 	'Khách hàng huỷ',
 	'Studio huỷ',
 	'Đã hoàn thành'
 ];
 
-export const operationNames = [
-	'Khác',
-	'Trọn gói',
-	'Xoá xăm',
-	'Dặm lại',
-	'Sửa xăm'
-];
+export const operationNames = ['Khác', 'Trọn gói', 'Xoá xăm', 'Dặm lại', 'Sửa xăm'];
 
 export const enum TATTOO_ART_STATUS {
 	UNAVAILABLE = 0,
@@ -218,19 +216,15 @@ export const stringTattooStages = [
 	'Sau xăm',
 	'Bảo hành',
 	'Khác'
-]
+];
 
-export const stringBookingServiceStatus = [
-	'Đang thực hiện',
-	'Hoàn thành',
-	'Đã huỷ'
-]
+export const stringBookingServiceStatus = ['Đang thực hiện', 'Hoàn thành', 'Đã huỷ'];
 
 export const stringBookingServiceStatusColor = [
 	'yellow-300',
 	'green-300',
 	'red-300'
-]
+];
 
 export const enum SERVICE_CATEGORY {
 	NEW_TATTOO = 0, // Xăm hình mới
@@ -244,6 +238,5 @@ export const stringServiceCategories = [
 	'Xăm hình mới',
 	'Xăm đè',
 	'Bảo hành sau xăm',
-	'Xoá xăm',
-	'Tư vấn'
-]
+	'Xoá xăm'
+];

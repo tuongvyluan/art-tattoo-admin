@@ -55,7 +55,7 @@ function BookingPage({ studioId }) {
 		setError(false);
 
 		fetcher(
-			`${BASE_URL}/bookings/bookings-studio?studioId=${studioId}&page=${page}&pageSize=${pageSize}${
+			`${BASE_URL}/bookings/get-all-bookings?studioId=${studioId}&page=${page}&pageSize=${pageSize}${
 				filter >= 0 ? `&status=${filter}` : ''
 			}`
 		)
@@ -92,7 +92,7 @@ function BookingPage({ studioId }) {
 				break;
 			default:
 				setPage(1);
-				setFilter(undefined);
+				setFilter(-1);
 				break;
 		}
 	}, [activeTab]);
@@ -209,7 +209,7 @@ function BookingPage({ studioId }) {
 					/>
 				</div>
 			</div>
-			{error && (
+			{error && !data && (
 				<div className="flex items-center justify-center h-full">
 					Không tồn tại đơn hẹn xăm
 				</div>
@@ -230,7 +230,7 @@ function BookingPage({ studioId }) {
 											<div className="flex justify-between mx-auto border-b border-gray-300 pb-3 mb-3">
 												<div className="flex gap-3 items-start">
 													<div className="font-semibold">
-														{booking.customer.firstName} {booking.customer.lastName}
+														{booking.customer.fullName}
 													</div>
 												</div>
 												<div>
@@ -242,13 +242,13 @@ function BookingPage({ studioId }) {
 											<div className="flex justify-between w-full pb-1">
 												<div className="text-base font-semibold py-2">
 													Các dịch vụ đã đặt (
-													{booking.bookingServices?.length
-														? booking.bookingServices?.length
+													{booking.bookingDetails?.length
+														? booking.bookingDetails?.length
 														: '0'}
 													)
 												</div>
 											</div>
-											<CustomerServices bookingServices={booking.bookingServices} />
+											<CustomerServices bookingDetails={booking.bookingDetails} />
 											<div className="flex justify-end pt-3 items-start">
 												<div className="text-right">
 													<div>
@@ -257,19 +257,21 @@ function BookingPage({ studioId }) {
 															{formatTime(booking.createdAt)}
 														</span>
 													</div>
-													{booking.date && (
+													{booking.cancelledAt && (
 														<div>
-															Ngày hẹn:{' '}
-															<span className="text-base">
-																{formatTime(booking.date)}
-															</span>
+															<div>
+																Ngày huỷ:{' '}
+																<span className="text-base">
+																	{formatTime(booking.cancelledAt)}
+																</span>
+															</div>
 														</div>
 													)}
-													{booking.total && (
+													{booking.completedAt && (
 														<div>
-															Thành tiền:{' '}
-															<span className="text-lg text-red-500">
-																{formatPrice(booking.total)}
+															Ngày hoàn thành:{' '}
+															<span className="text-base">
+																{formatTime(booking.completedAt)}
 															</span>
 														</div>
 													)}
