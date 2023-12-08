@@ -1,10 +1,11 @@
-import { fetcher, fetcherPost, fetcherPut } from 'lib';
+import { fetcher, fetcherPost, fetcherPut, formatDate } from 'lib';
 import { BASE_URL } from 'lib/env';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Alert, Avatar, Card, CardBody, Loading } from 'ui';
 import CryptoJS from 'crypto-js';
 import Button from 'components/Button';
+import Heading from 'components/Heading';
 
 const ENCRYPT_SECRET = 'qo7r0q3yrwfdngposdgv';
 
@@ -66,24 +67,14 @@ const StudioArtist = ({ studioId }) => {
 				15 * 60 * 1000;
 			if (comparison <= 0) {
 				success = true;
-				handleAlert(
-					true,
-					'Đang thêm nghệ sĩ',
-					'',
-					0
-				);
+				handleAlert(true, 'Đang thêm nghệ sĩ', '', 0);
 				fetcherPost(`${BASE_URL}/artists/${studio.id}/studio-artist/${artistId}`)
 					.then((data) => {
 						setStudio({
 							...studio,
 							id: null
 						});
-						handleAlert(
-							true,
-							'Thêm nghệ sĩ thành công',
-							'',
-							1
-						);
+						handleAlert(true, 'Thêm nghệ sĩ thành công', '', 1);
 					})
 					.catch((e) => {
 						handleAlert(
@@ -125,9 +116,7 @@ const StudioArtist = ({ studioId }) => {
 				...studio,
 				id: studioId,
 				ownerId: response.artistId,
-				artists: response.studioArtists.filter((artist) => {
-					return artist.artist.artist.status === 0;
-				}),
+				artists: response.studioArtists.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
 				bookings: response.bookings
 			});
 		});
@@ -151,34 +140,70 @@ const StudioArtist = ({ studioId }) => {
 			{studio.artists && studio.artists.length > 0 ? (
 				<div>
 					<Card>
-						<CardBody className="flex">
-							{studio.artists?.map((artist, artistIndex) => (
-								<div key={artist.id} className="w-1/4 px-2 mb-3">
-									<a className="w-full block text-gray-900 dark:text-white">
-										<div className="flex justify-center">
-											<Avatar
-												size={48}
-												src={
-													artist.artist.avatar
-														? artist.artist.avatar
-														: '/images/ATL.png'
-												}
-												alt={artist.artist.fullName}
-											/>
+						<CardBody>
+							<Heading>Đang hợp tác</Heading>
+							<div className="flex flex-wrap justify-center">
+								{studio.artists
+									?.filter((a) => a.dismissedAt === null)
+									.map((artist, artistIndex) => (
+										<div key={artist.id} className="min-w-max w-1/4 px-2 mb-3">
+											<a className={`w-full block text-gray-900 dark:text-white`}>
+												<div className="flex justify-center">
+													<Avatar
+														size={48}
+														src={
+															artist.artist.avatar
+																? artist.artist.avatar
+																: '/images/ATL.png'
+														}
+														alt={artist.artist.fullName}
+													/>
+												</div>
+												<div className="mt-1 flex justify-center text-center">
+													<div>
+														<div className="block">{artist.artist.fullName}</div>
+														<div className="flex pt-2">
+															<Button onClick={() => removeArtist(artist.artist.id)}>
+																Ngừng hợp tác
+															</Button>
+														</div>
+													</div>
+												</div>
+											</a>
 										</div>
-										<div className="mt-1 flex justify-center text-center">
-											<div>
-												<span className="block">{artist.artist.fullName}</span>
-											</div>
+									))}
+							</div>
+							<Heading>Từng hợp tác</Heading>
+							<div className="flex flex-wrap justify-center">
+								{studio.artists
+									?.filter((a) => a.dismissedAt != null)
+									.map((artist, artistIndex) => (
+										<div key={artist.id} className="min-w-max w-1/4 px-2 mb-3">
+											<a className={`w-full block text-gray-900 dark:text-white`}>
+												<div className="flex justify-center">
+													<Avatar
+														size={48}
+														src={
+															artist.artist.avatar
+																? artist.artist.avatar
+																: '/images/ATL.png'
+														}
+														alt={artist.artist.fullName}
+													/>
+												</div>
+												<div className="mt-1 flex justify-center text-center">
+													<div>
+														<div className="block">{artist.artist.fullName}</div>
+														<div className="flex pt-2">
+															Từ {formatDate(artist.createdAt)} đến{' '}
+															{formatDate(artist.dismissedAt)}
+														</div>
+													</div>
+												</div>
+											</a>
 										</div>
-									</a>
-									{/* <div className="mx-auto w-max pt-2">
-										<Button onClick={() => removeArtist(artist.artist.id)}>
-											Ngừng hợp tác
-										</Button>
-									</div> */}
-								</div>
-							))}
+									))}
+							</div>
 						</CardBody>
 					</Card>
 				</div>

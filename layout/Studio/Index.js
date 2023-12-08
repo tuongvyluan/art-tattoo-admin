@@ -28,7 +28,7 @@ function StudioIndexPage({ studioId }) {
 				...studio,
 				id: studioId,
 				ownerId: response.artistId,
-				artists: response.studioArtists,
+				artists: response.studioArtists.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()),
 				bookings: response.bookings
 			});
 		});
@@ -77,9 +77,9 @@ function StudioIndexPage({ studioId }) {
 				{studio.artists && studio.artists.length > 0 ? (
 					<div>
 						<Card>
-							<CardBody className="flex justify-center gap-3">
-								{studio.artists?.map((artist, artistIndex) => (
-									<div key={artist.id} className="w-1/4 px-2 mb-3">
+							<CardBody className="flex flex-wrap justify-center gap-3">
+								{studio.artists?.filter((a) => a.dismissedAt === null).map((artist, artistIndex) => (
+									<div key={artist.id} className="min-w-max w-1/4 px-2 mb-3">
 										<a className="w-full block text-gray-900 dark:text-white">
 											<div className="flex justify-center">
 												<Avatar
