@@ -62,6 +62,7 @@ function StudioInfo({ studio }) {
 		fetcherPost(`${BASE_URL}/studios`, {
 			ownerId: studio.ownerId,
 			studioName: newStudio.studioName,
+			taxCode: newStudio.taxCode,
 			address: newStudio.address,
 			bioContent: newStudio.bioContent,
 			openTime: newStudio.openTime,
@@ -174,7 +175,7 @@ function StudioInfo({ studio }) {
 									</div>
 								</div>
 							</div>
-							<div className="flex flex-wrap items-center justify-between mb-3">
+							<div className="flex flex-wrap items-center justify-start gap-3 mb-3">
 								<div className="w-full sm:w-2/5 lg:w-1/2 sm:pb-0 pb-6">
 									<label>{'Tên'}</label>
 									<MyInput
@@ -185,6 +186,18 @@ function StudioInfo({ studio }) {
 										onChange={handleFormChange}
 										required
 										placeholder={'Tên studio'}
+									/>
+								</div>
+								<div className="w-max sm:pb-0 pb-6">
+									<label>{'Mã số thuế'}</label>
+									<MyInput
+										aria-label={'taxCode'}
+										name="taxCode"
+										type="text"
+										value={profile.taxCode}
+										onChange={handleFormChange}
+										required
+										placeholder={'Mã số thuế'}
 									/>
 								</div>
 								<div className="flex gap-5 mb-3 sm:mb-0 ">

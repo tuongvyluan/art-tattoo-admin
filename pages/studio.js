@@ -39,7 +39,7 @@ const StudioPage = () => {
 					const newStudio = {
 						...response,
 						avatar: data.user.avatar,
-						city: response.city ? response.city : '79'
+						city: response.city ? response.city : 79
 					};
 					setStudio(newStudio);
 				});
@@ -53,7 +53,7 @@ const StudioPage = () => {
 					owner: {
 						phoneNumber: ''
 					},
-					city: '79',
+					city: 79,
 					taxCode: '',
 					openTime: '08:00:00',
 					closeTime: '20:00:00',

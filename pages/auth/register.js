@@ -25,7 +25,7 @@ const RegisterPage = () => {
 		cpassword: '',
 		studioName: '',
 		studioAddress: '',
-		studioCity: '79',
+		studioCity: 79,
 		studioTaxCode: '',
 		studioOpenTime: '09:00:00',
 		studioCloseTime: '21:00:00',
