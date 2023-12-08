@@ -6,33 +6,21 @@ import {
 	fetcherPut,
 	formatDateForInput,
 	formatPrice,
+	hasBookingMeeting,
 	isFuture
 } from 'lib';
 import { BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
 import PropTypes from 'prop-types';
 import { Alert, Card, CardBody, Link } from 'ui';
-import { WidgetOrderStatus } from 'ui/WidgetOrderStatus';
 import { useState } from 'react';
 import Button from 'components/Button';
 import { BASE_URL } from 'lib/env';
 import MyModal from 'components/MyModal';
 import cancelReasons from 'lib/cancelReasons';
-import { Modal } from 'flowbite-react';
 import CustomerServices from './CustomerServices';
 import useSWR from 'swr';
 import Heading from 'components/Heading';
 import { useSession } from 'next-auth/react';
-
-const hasBookingMeeting = (bookingMeetings) => {
-	let result;
-	if (
-		bookingMeetings?.at(0)?.meetingDate &&
-		isFuture(bookingMeetings?.at(0)?.meetingDate)
-	) {
-		result = new Date(bookingMeetings?.at(0)?.meetingDate);
-	}
-	return result;
-};
 
 const calculateTotal = (tattooArts) => {
 	if (!tattooArts) {

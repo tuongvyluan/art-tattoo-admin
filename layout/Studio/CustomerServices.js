@@ -5,7 +5,12 @@ import {
 	stringPlacements,
 	stringSize
 } from 'lib/status';
-import { formatDateTimeForInput, formatPrice, formatTime } from 'lib';
+import {
+	formatDateTimeForInput,
+	formatPrice,
+	formatTime,
+	hasBookingMeeting
+} from 'lib';
 import { Avatar, Card, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
 import { MdEdit, MdOutlineCalendarMonth, MdOutlineClose } from 'react-icons/md';
 import MyModal from 'components/MyModal';
@@ -70,7 +75,7 @@ const CustomerServices = ({
 
 						{selectedBookingDetail?.serviceCategory ? (
 							<div className="pr-1">
-								{selectedBookingDetail.serviceCategory.name},
+								{selectedBookingDetail?.serviceCategory.name},
 							</div>
 						) : (
 							<></>
@@ -169,15 +174,24 @@ const CustomerServices = ({
 					<div className="flex gap-2 w-full items-center">
 						<div className="flex items-start gap-1 w-full">
 							<div className="w-20">Ngày hẹn:</div>
-							<div className="w-min">
-								<input
+							<div className="w-max">
+								{/* <input
 									className="appearance-none relative block w-full text-base mb-2 px-3 py-1 border border-gray-600 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
 									type="datetime-local"
 									value={selectedMeetingDate}
 									onChange={(e) =>
 										setSelectedMeetingDate(formatDateTimeForInput(e.target.value))
 									}
-								/>
+								/> */}
+								{hasBookingMeeting(selectedBookingDetail?.bookingMeetings) ? (
+									<div>
+										{formatTime(
+											hasBookingMeeting(selectedBookingDetail?.bookingMeetings)
+										)}
+									</div>
+								) : (
+									<div>Chưa có ngày hẹn mới</div>
+								)}
 							</div>
 						</div>
 					</div>
