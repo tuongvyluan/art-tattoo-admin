@@ -9,7 +9,8 @@ import {
 	formatDateTimeForInput,
 	formatPrice,
 	formatTime,
-	hasBookingMeeting
+	hasBookingMeeting,
+	showTextMaxLength
 } from 'lib';
 import { Avatar, Card, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
 import { MdEdit, MdOutlineCalendarMonth, MdOutlineClose } from 'react-icons/md';
@@ -282,6 +283,12 @@ const CustomerServices = ({
 										{formatPrice(bookingDetail.serviceMinPrice)} -{' '}
 										{formatPrice(bookingDetail.serviceMaxPrice)}
 									</div>
+								</div>
+								{
+									//Description
+								}
+								<div className="pb-1">
+									{showTextMaxLength(bookingDetail.description, 50)}
 								</div>
 								<div className="flex flex-wrap gap-3 items-center ">
 									{

@@ -238,5 +238,6 @@ export const stringServiceCategories = [
 	'Xăm hình mới',
 	'Xăm đè',
 	'Bảo hành sau xăm',
-	'Xoá xăm'
+	'Xoá xăm',
+	'Tư vấn'
 ];

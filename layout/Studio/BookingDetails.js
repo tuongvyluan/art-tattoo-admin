@@ -224,7 +224,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							}
 							<div className="pt-5 border-b border-gray-300 pb-3">
 								<div className="flex justify-start flex-wrap">
-									<div className="w-full md:pr-1 md:w-1/3 md:border-r mb-5 md:mb-0 md:border-b-0 border-b border-gray-300">
+									<div className="w-full md:pr-1 md:w-1/2 md:border-r mb-5 md:mb-0 md:border-b-0 border-b border-gray-300">
 										<div>
 											<Heading>Thông tin khách hàng</Heading>
 											<div className="text-base">{renderData.customer.fullName}</div>

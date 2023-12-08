@@ -229,12 +229,12 @@ function BookingPage({ studioId }) {
 										<div className="cursor-pointer ">
 											<div className="flex justify-between mx-auto border-b border-gray-300 pb-3 mb-3">
 												<div className="flex gap-3 items-start">
-													<div className="font-semibold">
+													<div className="font-semibold text-base">
 														{booking.customer.fullName}
 													</div>
 												</div>
 												<div>
-													<div className="text-red-500">
+													<div className="text-red-500 font-semibold text-base">
 														{stringBookingStatuses.at(booking.status)}
 													</div>
 												</div>
