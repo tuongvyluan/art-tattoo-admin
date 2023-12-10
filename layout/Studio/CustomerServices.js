@@ -216,24 +216,24 @@ const CustomerServices = ({
 						key={bookingDetail.id}
 					>
 						<div className="w-full flex justify-start gap-2 items-start bg-gray-50 py-5 relative">
-							{canEdit && bookingDetail.status !== BOOKING_DETAIL_STATUS.COMPLETED && (
-								<div className="absolute top-4 right-4 cursor-pointer flex flex-wrap gap-2">
-									<div
-										onClick={() => onSelectUpdatedService(bookingServiceIndex)}
-										className="relative"
-									>
-										<MdEdit size={20} />
-									</div>
-									{bookingDetail.status !== BOOKING_DETAIL_STATUS.CANCELLED && (
+							{canEdit &&
+								bookingDetail.status !== BOOKING_DETAIL_STATUS.COMPLETED &&
+								bookingDetail.status !== BOOKING_DETAIL_STATUS.CANCELLED && (
+									<div className="absolute top-4 right-4 cursor-pointer flex flex-wrap gap-2">
+										<div
+											onClick={() => onSelectUpdatedService(bookingServiceIndex)}
+											className="relative"
+										>
+											<MdEdit size={20} />
+										</div>
 										<div className="relative">
 											<MdOutlineClose
 												onClick={() => setRemovedBookingDetail(bookingDetail)}
 												size={20}
 											/>
 										</div>
-									)}
-								</div>
-							)}
+									</div>
+								)}
 							{
 								// Phần hình xăm của booking service
 							}
@@ -280,7 +280,7 @@ const CustomerServices = ({
 
 									{bookingDetail.servicePlacement ? (
 										<div className="flex gap-1 flex-wrap items-center">
-											Vị trí xăm:
+											Vị trí xăm:{' '}
 											{stringPlacements.at(bookingDetail.servicePlacement)},
 										</div>
 									) : (
@@ -296,7 +296,7 @@ const CustomerServices = ({
 									)}
 
 									<div className="flex gap-1 flex-wrap items-center">
-										{formatPrice(bookingDetail.serviceMinPrice)} -
+										{formatPrice(bookingDetail.serviceMinPrice)} -{' '}
 										{formatPrice(bookingDetail.serviceMaxPrice)}
 									</div>
 								</div>
