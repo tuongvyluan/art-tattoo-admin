@@ -12,7 +12,7 @@ export const Alert = ({ color = "blue", children, className, showAlert = true, s
     return () => {
       clearTimeout(timeId);
     }
-  }, [])
+  }, [showAlert])
   return (
     <Transition
       show={showAlert}
@@ -32,7 +32,7 @@ export const Alert = ({ color = "blue", children, className, showAlert = true, s
     >
       {children}
       <span
-        className="absolute top-0 bottom-0 right-0 rtl:left-0 px-4 py-3 cursor-pointer"
+        className="absolute z-100 top-0 bottom-0 right-0 rtl:left-0 px-4 py-3 cursor-pointer"
         onClick={() => setShowAlert(false)}
       >
         <X width={16} height={16} />

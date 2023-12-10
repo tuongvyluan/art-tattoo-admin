@@ -1,6 +1,7 @@
 import { ChevronLeft } from 'icons/solid';
 import {
 	extractBookingStatusTimeline,
+	fetcher,
 	fetcherDelete,
 	fetcherPost,
 	fetcherPut,
@@ -21,6 +22,7 @@ import CustomerServices from './CustomerServices';
 import useSWR from 'swr';
 import Heading from 'components/Heading';
 import { useSession } from 'next-auth/react';
+import AddBookingDetailModal from './AddBookingDetailModal';
 
 const calculateTotal = (bookingDetails) => {
 	if (!bookingDetails) {
@@ -28,7 +30,7 @@ const calculateTotal = (bookingDetails) => {
 	}
 	let total = 0;
 	bookingDetails.forEach((a) => {
-		total += a.price
+		total += a.price;
 	});
 	return total;
 };
@@ -45,8 +47,9 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	const [cancelReason, setCancelReason] = useState(cancelReasons.at(0).reason);
 	const [cancelReasonMore, setCancelReasonMore] = useState('');
 
-	const { data: artistList, error } = useSWR(
-		`${BASE_URL}/artists/${studioId}/artist-studio-list`
+	const { data: serviceData } = useSWR(
+		`${BASE_URL}/studios/${studioId}/services-for-create-booking`,
+		fetcher
 	);
 
 	const handleCancelReason = ({ status, reason }) => {
@@ -63,6 +66,9 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 			: formatDateForInput(Date.now())
 	);
 
+	// Show create booking detail modal
+	const [openAddDetailModal, setOpenAddDetailModal] = useState(false);
+
 	// Service related vars
 	const [showAlert, setShowAlert] = useState(false);
 
@@ -74,7 +80,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 
 	const handleAlert = (state, title, content, isWarn = 0) => {
 		setShowAlert((prev) => state);
-		let color
+		let color;
 		switch (isWarn) {
 			case 1:
 				color = 'green';
@@ -167,6 +173,12 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 				<strong className="font-bold mr-1">{alertContent.title}</strong>
 				<span className="block sm:inline">{alertContent.content}</span>
 			</Alert>
+			<AddBookingDetailModal
+				serviceList={serviceData?.services?.filter((s) => s.status !== 2)}
+				artistList={serviceData?.artists}
+				openModal={openAddDetailModal}
+				setOpenModal={setOpenAddDetailModal}
+			/>
 			<MyModal
 				title="Xác nhận huỷ đơn"
 				warn={true}
@@ -263,9 +275,14 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 									<Heading>
 										Các dịch vụ đã đặt ({renderData.bookingDetails?.length})
 									</Heading>
+									{renderData.status === BOOKING_STATUS.IN_PROGRESS && (
+										<div className="flex">
+											<Button onClick={() => setOpenAddDetailModal(true)}>Thêm dịch vụ</Button>
+										</div>
+									)}
 								</div>
 								<CustomerServices
-									artistList={artistList}
+									artistList={serviceData?.artists}
 									showMore={true}
 									canEdit={renderData.status === BOOKING_STATUS.IN_PROGRESS}
 									bookingDetails={renderData.bookingDetails}
