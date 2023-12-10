@@ -22,11 +22,14 @@ import useSWR from 'swr';
 import Heading from 'components/Heading';
 import { useSession } from 'next-auth/react';
 
-const calculateTotal = (tattooArts) => {
-	if (!tattooArts) {
+const calculateTotal = (bookingDetails) => {
+	if (!bookingDetails) {
 		return 0;
 	}
 	let total = 0;
+	bookingDetails.forEach((a) => {
+		total += a.price
+	});
 	return total;
 };
 
@@ -320,7 +323,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 												</th>
 												<td className="py-3 text-right text-xl text-red-500">
 													{/* {formatPrice(renderData.total)} */}
-													{formatPrice(calculateTotal(renderData.tattooArts))}
+													{formatPrice(calculateTotal(renderData.bookingDetails))}
 												</td>
 											</tr>
 											{/* <tr className="border-t border-gray-300">
