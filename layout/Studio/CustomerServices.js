@@ -1,201 +1,210 @@
 import PropTypes from 'prop-types';
 import {
+	BOOKING_DETAIL_STATUS,
 	stringBookingDetailStatus,
 	stringBookingDetailStatusColor,
 	stringPlacements,
 	stringSize
 } from 'lib/status';
 import {
+	fetcherDelete,
+	fetcherPut,
 	formatDateTimeForInput,
 	formatPrice,
 	formatTime,
-	hasBookingMeeting,
 	showTextMaxLength
 } from 'lib';
-import { Avatar, Card, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
+import { Alert, Avatar, Card } from 'ui';
 import { MdEdit, MdOutlineCalendarMonth, MdOutlineClose } from 'react-icons/md';
-import MyModal from 'components/MyModal';
-import { useState } from 'react';
-import MoneyInput from 'components/MoneyInput';
-import MyInput from 'components/MyInput';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import UpdateBookingDetailModal from './UpdateBookingDetailModal';
+import MyModal from 'components/MyModal';
+import { BASE_URL } from 'lib/env';
 
 const CustomerServices = ({
 	bookingDetails,
 	canEdit = false,
 	showMore = false,
+	setLoading,
 	artistList
 }) => {
-	const [bookingServiceModal, setBookingServiceModal] = useState(false);
+	const [bookingDetailModal, setBookingDetailModal] = useState(false);
+	const [confirmRemoveBookingDetailModal, setConfirmRemoveBookingDetailModal] =
+		useState(false);
 	const [selectedBookingDetail, setSelectedBookingDetail] = useState(undefined);
-	const [selectedArtist, setSelectedArtist] = useState(0);
-	const [selectedMeetingDate, setSelectedMeetingDate] = useState(
-		formatDateTimeForInput(new Date())
-	);
+	const [removedBookingDetail, setRemovedBookingDetail] = useState(undefined);
 
-	const onSelectUpdatedService = (detailIndex) => {
-		setSelectedArtist(0);
-		setSelectedBookingDetail(bookingDetails.at(detailIndex));
-		setBookingServiceModal(true);
-	};
+	// Alert related vars
+	const [showAlert, setShowAlert] = useState(false);
 
-	const handleChangeDetail = (e) => {
-		setSelectedBookingDetail({
-			...selectedBookingDetail,
-			[e.target.name]: e.target.value
+	const [alertContent, setAlertContent] = useState({
+		title: '',
+		content: '',
+		isWarn: 'blue'
+	});
+
+	const handleAlert = (state, title, content, isWarn = 0) => {
+		setShowAlert((prev) => state);
+		let color;
+		switch (isWarn) {
+			case 1:
+				color = 'green';
+				break;
+			case 2:
+				color = 'red';
+				break;
+			default:
+				color = 'blue';
+				break;
+		}
+		setAlertContent({
+			title: title,
+			content: content,
+			isWarn: color
 		});
 	};
 
+	const onSelectUpdatedService = (detailIndex) => {
+		setSelectedBookingDetail(bookingDetails.at(detailIndex));
+	};
+
+	const handleRemoveBookingDetail = () => {
+		fetcherPut(`${BASE_URL}/booking-details/${removedBookingDetail.id}`, {
+			id: removedBookingDetail.id,
+			status: BOOKING_DETAIL_STATUS.CANCELLED
+		})
+			.then(() => {
+				setConfirmRemoveBookingDetailModal(false);
+				setLoading(true);
+			})
+			.catch(() => {
+				setConfirmRemoveBookingDetailModal(false);
+				handleAlert(true, 'Huỷ dịch vụ thất bại.', '', 2);
+			});
+	};
+
+	useEffect(() => {
+		if (selectedBookingDetail) {
+			setBookingDetailModal(true);
+		}
+	}, [selectedBookingDetail]);
+
+	useEffect(() => {
+		if (bookingDetailModal === false) {
+			setSelectedBookingDetail(undefined);
+		}
+	}, [bookingDetailModal]);
+
+	useEffect(() => {
+		if (removedBookingDetail) {
+			setConfirmRemoveBookingDetailModal(true);
+		}
+	}, [removedBookingDetail]);
+
+	useEffect(() => {
+		if (removedBookingDetail === false) {
+			setRemovedBookingDetail(undefined);
+		}
+	}, [removedBookingDetail]);
+
 	return (
 		<div className="relative">
-			<MyModal
-				size="3xl"
-				title="Chỉnh sửa dịch vụ"
-				openModal={bookingServiceModal}
-				setOpenModal={setBookingServiceModal}
+			<Alert
+				showAlert={showAlert}
+				setShowAlert={setShowAlert}
+				color={alertContent.isWarn}
+				className="bottom-2 right-2 fixed max-w-md z-50"
 			>
-				<div className="h-52 overflow-auto">
-					{
-						// Tên dịch vụ
-					}
-					<div className="pb-3 flex flex-wrap text-base font-semibold">
-						<div className="pr-1">{selectedBookingDetail?.serviceTitle},</div>
-						<div className="pr-1">
-							{stringSize.at(selectedBookingDetail?.serviceSize)},
-						</div>
-
-						{selectedBookingDetail?.servicePlacement ? (
-							<div className="pr-1">
-								Vị trí xăm:{' '}
-								{stringPlacements.at(selectedBookingDetail?.servicePlacement)},
-							</div>
-						) : (
-							<></>
-						)}
-
-						{selectedBookingDetail?.serviceCategory ? (
-							<div className="pr-1">
-								{selectedBookingDetail?.serviceCategory.name},
-							</div>
-						) : (
-							<></>
-						)}
-
-						<div className="pr-1">
-							{formatPrice(selectedBookingDetail?.serviceMinPrice)} -{' '}
-							{formatPrice(selectedBookingDetail?.serviceMaxPrice)}
-						</div>
+				<strong className="font-bold mr-1">{alertContent.title}</strong>
+				<span className="block sm:inline">{alertContent.content}</span>
+			</Alert>
+			<UpdateBookingDetailModal
+				openModal={bookingDetailModal}
+				setLoading={setLoading}
+				artistList={artistList}
+				bookingDetail={selectedBookingDetail}
+				setOpenModal={setBookingDetailModal}
+			/>
+			<MyModal
+				openModal={confirmRemoveBookingDetailModal}
+				setOpenModal={setConfirmRemoveBookingDetailModal}
+				onSubmit={handleRemoveBookingDetail}
+				warn={true}
+				confirmTitle="Xác nhận"
+				title="Xác nhận huỷ dịch vụ"
+			>
+				<div className="font-semibold text-lg pb-3">
+					Bạn có chắc sẽ huỷ dịch vụ sau chứ?
+				</div>
+				<div>
+					<div className="pb-3 flex gap-1 flex-wrap items-center">
+						<div className="w-28">Tên dịch vụ:</div>
+						<span className="font-semibold">
+							{removedBookingDetail?.serviceTitle}
+						</span>
 					</div>
-					{
-						// Thông tin cơ bản của dịch vụ
-					}
-					<div className="flex gap-8 w-full">
-						<div className="">
+					<div className="pb-3 flex gap-1 flex-wrap items-center">
+						<div className="w-28">Kích thước:</div>
+						<span className="font-semibold">
+							{stringSize.at(removedBookingDetail?.serviceSize)}
+						</span>
+					</div>
+
+					{removedBookingDetail?.servicePlacement ? (
+						<div className="pb-3 flex gap-1 flex-wrap items-center">
+							<div className="w-28">Vị trí xăm:</div>
+							<span className="font-semibold">
+								{stringPlacements.at(removedBookingDetail?.servicePlacement)}
+							</span>
+						</div>
+					) : (
+						<></>
+					)}
+
+					{removedBookingDetail?.serviceCategory ? (
+						<div className="pb-3 flex gap-1 flex-wrap items-center">
+							<div className="w-28">Loại dịch vụ:</div>
+							<span className="font-semibold">
+								{removedBookingDetail?.serviceCategory.name}
+							</span>
+						</div>
+					) : (
+						<></>
+					)}
+
+					<div className="pb-3 flex gap-1 flex-wrap items-center">
+						<div className="w-28">Khoảng giá:</div>
+						<span className="font-semibold">
+							{formatPrice(removedBookingDetail?.serviceMinPrice)} -{' '}
+							{formatPrice(removedBookingDetail?.serviceMaxPrice)}
+						</span>
+					</div>
+				</div>
+				{removedBookingDetail?.artistId && (
+					<div className="pb-3 flex gap-1 flex-wrap items-center">
+						<div className="w-28">Nghệ sĩ xăm:</div>
+						<span className="font-semibold">
 							{
-								// Trạng thái
+								artistList
+									?.filter((a) => a?.id === removedBookingDetail.artistId)
+									?.at(0).account.fullName
 							}
-							<div className="pb-3 flex items-center gap-1">
-								<div className="w-20">Trạng thái: </div>
-								<Dropdown className="relative h-full flex items-center">
-									<DropdownToggle>
-										<div className="w-40 rounded-lg p-1 border border-gray-600">
-											{stringBookingDetailStatus.at(0)}
-										</div>
-									</DropdownToggle>
-									<DropdownMenu>
-										<div>
-											{stringBookingDetailStatus.map((status, statusIndex) => (
-												<div
-													key={status}
-													// onClick={() => setTattooState('serviceSize', statusIndex)}
-													className={`px-2 py-1 cursor-pointer hover:bg-gray-100`}
-												>
-													{status}
-												</div>
-											))}
-										</div>
-									</DropdownMenu>
-								</Dropdown>
-							</div>
-							<div className="pb-3 flex items-center gap-1">
-								<div className="w-20">Giá: </div>
-								<div className="w-40">
-									<MoneyInput
-										value={1000000}
-										onAccept={(value, mask) => {
-											return value;
-										}}
-									/>
-								</div>
-							</div>
-						</div>
-						<div>
-							<div className="pb-3 flex items-center gap-1">
-								<div className="w-20">Phân công: </div>
-								<Dropdown className="relative h-full flex items-center">
-									<DropdownToggle>
-										<div className="w-40 rounded-lg p-1 border border-gray-600">
-											{artistList?.at(selectedArtist)?.fullName}
-										</div>
-									</DropdownToggle>
-									<DropdownMenu>
-										<div>
-											{artistList?.map((artist, artistIndex) => (
-												<div
-													key={artist.id}
-													// onClick={() => setTattooState('serviceSize', statusIndex)}
-													className={`px-2 py-1 cursor-pointer hover:bg-gray-100`}
-												>
-													{artist?.fullName}
-												</div>
-											))}
-										</div>
-									</DropdownMenu>
-								</Dropdown>
-							</div>
-						</div>
+						</span>
 					</div>
-					{
-						// Description của booking details
-					}
-					<div className="pb-3 flex items-center gap-1 pr-3">
-						<div className="w-20">Lưu ý: </div>
-						<div className="flex-grow">
-							<MyInput
-								name="description"
-								value={selectedBookingDetail?.description}
-								onChange={handleChangeDetail}
-							/>
-						</div>
-					</div>
-					{
-						// Thông tin về booking meeting cho dịch vụ
-					}
-					<div className="flex gap-2 w-full items-center">
-						<div className="flex items-start gap-1 w-full">
-							<div className="w-20">Ngày hẹn:</div>
-							<div className="w-max">
-								{/* <input
-									className="appearance-none relative block w-full text-base mb-2 px-3 py-1 border border-gray-600 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
-									type="datetime-local"
-									value={selectedMeetingDate}
-									onChange={(e) =>
-										setSelectedMeetingDate(formatDateTimeForInput(e.target.value))
-									}
-								/> */}
-								{hasBookingMeeting(selectedBookingDetail?.bookingMeetings) ? (
-									<div>
-										{formatTime(
-											hasBookingMeeting(selectedBookingDetail?.bookingMeetings)
-										)}
-									</div>
-								) : (
-									<div>Chưa có ngày hẹn mới</div>
-								)}
-							</div>
-						</div>
-					</div>
+				)}
+				<div className="pb-3 flex gap-1 flex-wrap items-center">
+					<div className="w-28">Giá tiền:</div>{' '}
+					<span className="font-semibold">
+						{formatPrice(removedBookingDetail?.price)}
+					</span>
+				</div>
+				<div className="pb-3 flex gap-1 flex-wrap items-center">
+					<div className="w-28">Trạng thái:</div>{' '}
+					<span className="font-semibold">
+						{stringBookingDetailStatus.at(removedBookingDetail?.status)}
+					</span>
 				</div>
 			</MyModal>
 			<div className="block">
@@ -207,7 +216,7 @@ const CustomerServices = ({
 						key={bookingDetail.id}
 					>
 						<div className="w-full flex justify-start gap-2 items-start bg-gray-50 py-5 relative">
-							{canEdit && (
+							{canEdit && bookingDetail.status !== BOOKING_DETAIL_STATUS.COMPLETED && (
 								<div className="absolute top-4 right-4 cursor-pointer flex flex-wrap gap-2">
 									<div
 										onClick={() => onSelectUpdatedService(bookingServiceIndex)}
@@ -215,9 +224,14 @@ const CustomerServices = ({
 									>
 										<MdEdit size={20} />
 									</div>
-									<div className="relative">
-										<MdOutlineClose size={20} />
-									</div>
+									{bookingDetail.status !== BOOKING_DETAIL_STATUS.CANCELLED && (
+										<div className="relative">
+											<MdOutlineClose
+												onClick={() => setRemovedBookingDetail(bookingDetail)}
+												size={20}
+											/>
+										</div>
+									)}
 								</div>
 							)}
 							{
@@ -254,19 +268,19 @@ const CustomerServices = ({
 							{
 								// Phần bên phải của khung booking service
 							}
-							<div className="pl-3 pr-16 w-full">
+							<div className="pl-3 w-full">
 								<div
 									key={bookingDetail.id}
-									className="pb-1 flex flex-wrap text-base"
+									className="pb-1 flex flex-wrap gap-1 text-base"
 								>
 									<div>{bookingServiceIndex + 1}</div>
-									<div className="pr-1">
+									<div className="flex gap-1 flex-wrap items-center">
 										. {stringSize.at(bookingDetail.serviceSize)},
 									</div>
 
 									{bookingDetail.servicePlacement ? (
-										<div className="pr-1">
-											Vị trí xăm:{' '}
+										<div className="flex gap-1 flex-wrap items-center">
+											Vị trí xăm:
 											{stringPlacements.at(bookingDetail.servicePlacement)},
 										</div>
 									) : (
@@ -274,13 +288,15 @@ const CustomerServices = ({
 									)}
 
 									{bookingDetail.serviceCategory ? (
-										<div className="pr-1">{bookingDetail.serviceCategory.name},</div>
+										<div className="flex gap-1 flex-wrap items-center">
+											{bookingDetail.serviceCategory.name},
+										</div>
 									) : (
 										<></>
 									)}
 
-									<div className="pr-1">
-										{formatPrice(bookingDetail.serviceMinPrice)} -{' '}
+									<div className="flex gap-1 flex-wrap items-center">
+										{formatPrice(bookingDetail.serviceMinPrice)} -
 										{formatPrice(bookingDetail.serviceMaxPrice)}
 									</div>
 								</div>
@@ -348,7 +364,8 @@ CustomerServices.propTypes = {
 	bookingDetails: PropTypes.array,
 	canEdit: PropTypes.bool,
 	showMore: PropTypes.bool,
-	artistList: PropTypes.array
+	artistList: PropTypes.array,
+	setLoading: PropTypes.func
 };
 
 export default CustomerServices;

@@ -64,6 +64,18 @@ export const stringSize = [
 	'Size bất kỳ'
 ];
 
+export const enum TRANSACTION_METHOD {
+	CASH = 0,
+	BANKING = 1,
+	EWALLET = 2
+}
+
+export const stringTransactionMethod = [
+	'Tiền mặt',
+	'Thẻ ngân hàng',
+	'Ví điện tử'
+]
+
 export const stringServiceStatus = ['Đang thực hiện', 'Hoàn thành', 'Đã huỷ'];
 
 export const stringColor = (isColor: boolean) => {

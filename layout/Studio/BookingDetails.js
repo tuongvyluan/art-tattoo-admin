@@ -1,6 +1,5 @@
 import { ChevronLeft } from 'icons/solid';
 import {
-	extractBookingStatusTimeline,
 	fetcher,
 	fetcherDelete,
 	fetcherPost,
@@ -10,7 +9,7 @@ import {
 	hasBookingMeeting,
 	isFuture
 } from 'lib';
-import { BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
+import { BOOKING_DETAIL_STATUS, BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
 import PropTypes from 'prop-types';
 import { Alert, Card, CardBody, Link } from 'ui';
 import { useState } from 'react';
@@ -30,7 +29,9 @@ const calculateTotal = (bookingDetails) => {
 	}
 	let total = 0;
 	bookingDetails.forEach((a) => {
-		total += a.price;
+		if (a.status !== BOOKING_DETAIL_STATUS.CANCELLED) {
+			total += a.price;
+		}
 	});
 	return total;
 };
@@ -51,6 +52,14 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 		`${BASE_URL}/studios/${studioId}/services-for-create-booking`,
 		fetcher
 	);
+	const artists = [
+		{
+			id: null,
+			account: {
+				fullName: 'Nghệ sĩ bất kỳ'
+			}
+		}
+	].concat(serviceData?.artists);
 
 	const handleCancelReason = ({ status, reason }) => {
 		setCancelReason(reason);
@@ -174,9 +183,11 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 				<span className="block sm:inline">{alertContent.content}</span>
 			</Alert>
 			<AddBookingDetailModal
+				bookingId={renderData.id}
 				serviceList={serviceData?.services?.filter((s) => s.status !== 2)}
-				artistList={serviceData?.artists}
+				artistList={artists}
 				openModal={openAddDetailModal}
+				setLoading={setLoading}
 				setOpenModal={setOpenAddDetailModal}
 			/>
 			<MyModal
@@ -277,12 +288,15 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 									</Heading>
 									{renderData.status === BOOKING_STATUS.IN_PROGRESS && (
 										<div className="flex">
-											<Button onClick={() => setOpenAddDetailModal(true)}>Thêm dịch vụ</Button>
+											<Button onClick={() => setOpenAddDetailModal(true)}>
+												Thêm dịch vụ
+											</Button>
 										</div>
 									)}
 								</div>
 								<CustomerServices
-									artistList={serviceData?.artists}
+									artistList={artists}
+									setLoading={setLoading}
 									showMore={true}
 									canEdit={renderData.status === BOOKING_STATUS.IN_PROGRESS}
 									bookingDetails={renderData.bookingDetails}
