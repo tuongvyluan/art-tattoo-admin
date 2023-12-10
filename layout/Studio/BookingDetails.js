@@ -12,7 +12,7 @@ import {
 import { BOOKING_DETAIL_STATUS, BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
 import PropTypes from 'prop-types';
 import { Alert, Card, CardBody, Link } from 'ui';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from 'components/Button';
 import { BASE_URL } from 'lib/env';
 import MyModal from 'components/MyModal';
@@ -52,14 +52,25 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 		`${BASE_URL}/studios/${studioId}/services-for-create-booking`,
 		fetcher
 	);
-	const artists = [
+	const [artists, setArtists] = useState([
 		{
 			id: null,
 			account: {
 				fullName: 'Nghệ sĩ bất kỳ'
 			}
 		}
-	].concat(serviceData?.artists);
+	]);
+
+	useEffect(() => {
+		setArtists([
+			{
+				id: null,
+				account: {
+					fullName: 'Nghệ sĩ bất kỳ'
+				}
+			}
+		].concat(serviceData?.artists))
+	}, [serviceData])
 
 	const handleCancelReason = ({ status, reason }) => {
 		setCancelReason(reason);

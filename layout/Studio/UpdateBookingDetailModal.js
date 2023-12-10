@@ -87,6 +87,10 @@ const UpdateBookingDetailModal = ({
 		}
 		updateBookingDetail();
 	};
+
+	useEffect(() => {
+		setArtists(artistList)
+	}, [artistList])
 	return (
 		<div>
 			<MyModal
