@@ -19,7 +19,7 @@ const TattooList = () => {
 	if (status === 'authenticated' && data.user.role === ROLE.STUDIO) {
 		return (
 			<TattooListNotFilter
-				url={`${BASE_URL}/TattooArts/TattooUser?studioId=${data?.user?.studioId}`}
+				url={`${BASE_URL}/TattooArts/TattooUser?studioId=${data?.user?.studioId}&accountId=${data?.user?.id}`}
 				pageSize={12}
 				studioId={data?.user?.studioId}
 			/>

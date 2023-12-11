@@ -67,12 +67,12 @@ const TattooIndexPage = () => {
 										<div>
 											<Link href={`/artist/${item.artist.id}`}>
 												<div className="cursor-pointer font-semibold">
-													{item.artist.name}
+													{item.fullName}
 												</div>
 											</Link>
 										</div>
 										<Link href={`/tattoo/${item.id}`}>
-											<div className="cursor-pointer">
+											<div className="cursor-pointer pt-1">
 												<div className="text-gray-400">
 													Vị trí xăm:{' '}
 													<span className="text-black">
@@ -80,8 +80,16 @@ const TattooIndexPage = () => {
 													</span>
 												</div>
 												<div className="text-gray-400">
+													Kích thước:{' '}
+													<span className="text-black">
+														{stringSize.at(item.size)}
+													</span>
+												</div>
+												<div className="text-gray-400">
 													Style:{' '}
-													<span className="text-black">{item.style?.name}</span>
+													<span className="text-black">
+														{tattooStyleById(item.styleId)?.name}
+													</span>
 												</div>
 											</div>
 										</Link>

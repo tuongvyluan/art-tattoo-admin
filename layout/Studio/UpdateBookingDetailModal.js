@@ -183,7 +183,7 @@ const UpdateBookingDetailModal = ({
 								<div className="w-20">Giá: </div>
 								<div className="w-40">
 									<MoneyInput
-										value={detail?.price}
+										value={detail?.price ? detail.price : 0}
 										onAccept={(value, mask) => {
 											handleChangeDetail({
 												target: {
@@ -290,7 +290,7 @@ const UpdateBookingDetailModal = ({
 
 UpdateBookingDetailModal.propTypes = {
 	artistList: PropTypes.array.isRequired,
-	bookingDetail: PropTypes.object.isRequired,
+	bookingDetail: PropTypes.object,
 	openModal: PropTypes.bool.isRequired,
 	setOpenModal: PropTypes.func.isRequired,
 	setLoading: PropTypes.func

@@ -6,16 +6,14 @@ import {
 	stringPlacements,
 	stringSize
 } from 'lib/status';
-import {
-	fetcherDelete,
-	fetcherPut,
-	formatDateTimeForInput,
-	formatPrice,
-	formatTime,
-	showTextMaxLength
-} from 'lib';
+import { fetcherPut, formatPrice, formatTime, showTextMaxLength } from 'lib';
 import { Alert, Avatar, Card } from 'ui';
-import { MdEdit, MdOutlineCalendarMonth, MdOutlineClose } from 'react-icons/md';
+import {
+	MdCalendarMonth,
+	MdEdit,
+	MdOutlineCalendarMonth,
+	MdOutlineClose
+} from 'react-icons/md';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -33,8 +31,10 @@ const CustomerServices = ({
 	const [bookingDetailModal, setBookingDetailModal] = useState(false);
 	const [confirmRemoveBookingDetailModal, setConfirmRemoveBookingDetailModal] =
 		useState(false);
+	const [scheduleModal, setScheduleModal] = useState(false);
 	const [selectedBookingDetail, setSelectedBookingDetail] = useState(undefined);
 	const [removedBookingDetail, setRemovedBookingDetail] = useState(undefined);
+	const [scheduledBookingDetail, setScheduledBookingDetail] = useState(undefined);
 
 	// Alert related vars
 	const [showAlert, setShowAlert] = useState(false);
@@ -66,8 +66,12 @@ const CustomerServices = ({
 		});
 	};
 
-	const onSelectUpdatedService = (detailIndex) => {
+	const onSelectUpdatedBookingDetail = (detailIndex) => {
 		setSelectedBookingDetail(bookingDetails.at(detailIndex));
+	};
+
+	const onSelectScheduledBookingDetail = (detailIndex) => {
+		setScheduledBookingDetail(bookingDetails.at(detailIndex));
 	};
 
 	const handleRemoveBookingDetail = () => {
@@ -85,24 +89,42 @@ const CustomerServices = ({
 			});
 	};
 
+	// Open update booking detail modal when selectedBookingDetail not null
 	useEffect(() => {
 		if (selectedBookingDetail) {
 			setBookingDetailModal(true);
 		}
 	}, [selectedBookingDetail]);
 
+	// Reset selectedBookingDetail when bookingDetailModal is close
 	useEffect(() => {
 		if (bookingDetailModal === false) {
 			setSelectedBookingDetail(undefined);
 		}
 	}, [bookingDetailModal]);
 
+	// Oprn schedule modal when scheduledBookingDetail is not null
+	useEffect(() => {
+		if (scheduledBookingDetail) {
+			setScheduleModal(true);
+		}
+	}, [scheduledBookingDetail]);
+
+	// Reset scheduledBookingDetail when scheduleModal is closed
+	useEffect(() => {
+		if (scheduleModal === false) {
+			setScheduledBookingDetail(undefined);
+		}
+	}, [scheduleModal]);
+
+	// Open confirm remove modal when removedBookingDetail is not null
 	useEffect(() => {
 		if (removedBookingDetail) {
 			setConfirmRemoveBookingDetailModal(true);
 		}
 	}, [removedBookingDetail]);
 
+	// Reset removedBookingDetail when confirm remove modal is close
 	useEffect(() => {
 		if (removedBookingDetail === false) {
 			setRemovedBookingDetail(undefined);
@@ -120,13 +142,21 @@ const CustomerServices = ({
 				<strong className="font-bold mr-1">{alertContent.title}</strong>
 				<span className="block sm:inline">{alertContent.content}</span>
 			</Alert>
-			<UpdateBookingDetailModal
-				openModal={bookingDetailModal}
-				setLoading={setLoading}
-				artistList={artistList}
-				bookingDetail={selectedBookingDetail}
-				setOpenModal={setBookingDetailModal}
-			/>
+			{
+				// Update booking detail modal
+			}
+			{canEdit && (
+				<UpdateBookingDetailModal
+					openModal={bookingDetailModal}
+					setLoading={setLoading}
+					artistList={artistList}
+					bookingDetail={selectedBookingDetail}
+					setOpenModal={setBookingDetailModal}
+				/>
+			)}
+			{
+				// Confirm remove modal
+			}
 			<MyModal
 				openModal={confirmRemoveBookingDetailModal}
 				setOpenModal={setConfirmRemoveBookingDetailModal}
@@ -197,7 +227,9 @@ const CustomerServices = ({
 				<div className="pb-3 flex gap-1 flex-wrap items-center">
 					<div className="w-28">Giá tiền:</div>{' '}
 					<span className="font-semibold">
-						{removedBookingDetail?.price ? formatPrice(removedBookingDetail?.price) : 'Chưa xác định'}
+						{removedBookingDetail?.price
+							? formatPrice(removedBookingDetail?.price)
+							: 'Chưa xác định'}
 					</span>
 				</div>
 				<div className="pb-3 flex gap-1 flex-wrap items-center">
@@ -221,7 +253,17 @@ const CustomerServices = ({
 								bookingDetail.status !== BOOKING_DETAIL_STATUS.CANCELLED && (
 									<div className="absolute top-4 right-4 cursor-pointer flex flex-wrap gap-2">
 										<div
-											onClick={() => onSelectUpdatedService(bookingServiceIndex)}
+											onClick={() =>
+												onSelectScheduledBookingDetail(bookingServiceIndex)
+											}
+											className="relative"
+										>
+											<MdCalendarMonth size={20} />
+										</div>
+										<div
+											onClick={() =>
+												onSelectUpdatedBookingDetail(bookingServiceIndex)
+											}
 											className="relative"
 										>
 											<MdEdit size={20} />
@@ -320,7 +362,7 @@ const CustomerServices = ({
 									}
 									{bookingDetail.bookingMeetings?.length > 0 && (
 										<div className="flex flex-wrap gap-1 items-center text-base font-semibold bg-indigo-100 px-2 rounded-full">
-											<MdOutlineCalendarMonth serviceSize={20} />
+											<MdOutlineCalendarMonth size={20} />
 											<div>{formatTime(new Date())}</div>
 										</div>
 									)}
@@ -341,7 +383,7 @@ const CustomerServices = ({
 								{bookingDetail.artist && (
 									<div className="flex flex-wrap gap-1 items-center text-base font-semibold pt-3">
 										<Avatar
-											serviceSize={40}
+											size={25}
 											src={
 												bookingDetail.artist?.account?.avatar
 													? bookingDetail.artist.account.avatar

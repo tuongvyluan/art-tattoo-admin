@@ -2,13 +2,8 @@ import { ChevronLeft } from 'icons/solid';
 import {
 	calculateTotal,
 	fetcher,
-	fetcherDelete,
-	fetcherPost,
 	fetcherPut,
-	formatDateForInput,
-	formatPrice,
-	hasBookingMeeting,
-	isFuture
+	formatPrice
 } from 'lib';
 import { BOOKING_DETAIL_STATUS, BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
 import PropTypes from 'prop-types';
@@ -50,29 +45,23 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	]);
 
 	useEffect(() => {
-		setArtists([
-			{
-				id: null,
-				account: {
-					fullName: 'Nghệ sĩ bất kỳ'
+		const artistList = serviceData?.artists
+		if (artistList) {
+			setArtists([
+				{
+					id: null,
+					account: {
+						fullName: 'Nghệ sĩ bất kỳ'
+					}
 				}
-			}
-		].concat(serviceData?.artists))
+			].concat(artistList))
+		}
 	}, [serviceData])
 
 	const handleCancelReason = ({ status, reason }) => {
 		setCancelReason(reason);
 		setCancelStatus(status);
 	};
-
-	// Booking meeting related vars
-	const [showBookingMeetingModal, setShowBookingMeetingModal] = useState(false);
-
-	const [currentMeetingDate, setCurrentMeetingDate] = useState(
-		hasBookingMeeting(renderData.bookingMeetings)
-			? formatDateForInput(hasBookingMeeting(renderData.bookingMeetings))
-			: formatDateForInput(Date.now())
-	);
 
 	// Show create booking detail modal
 	const [openAddDetailModal, setOpenAddDetailModal] = useState(false);
@@ -107,28 +96,6 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 		});
 	};
 
-	const createBookingMeeting = (date) => {
-		fetcherPost(`${BASE_URL}/booking-meetings`, {
-			bookingId: renderData.id,
-			meetingDate: date
-		}).then((data) => {
-			setLoading(true);
-		});
-	};
-
-	const updateBookingMeeting = (id, date) => {
-		fetcherPut(`${BASE_URL}/booking-meetings`, {
-			id: id,
-			meetingDate: date
-		});
-	};
-
-	const deleteBookingMeeting = (id) => {
-		fetcherDelete(`${BASE_URL}/booking-meetings/${id}`).then(() => {
-			setLoading(true);
-		});
-	};
-
 	const handleAfterConfirmed = (status) => {
 		handleAlert(true, 'Đang cập nhật trạng thái');
 		const body = {
@@ -151,23 +118,6 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 				handleAlert(true, 'Cập nhật trạng thái đơn hàng thành công');
 			});
 		setConfirmCancelBookingModal(false);
-	};
-
-	const handleChangeMeetingDate = (newDate) => {
-		if (!isFuture(newDate)) {
-			handleAlert(
-				true,
-				'Ngày hẹn không hợp lệ',
-				'Ngày hẹn phải trong tương lai',
-				true
-			);
-		} else {
-			if (hasBookingMeeting(renderData.bookingMeetings)) {
-				updateBookingMeeting(renderData.bookingMeetings.at(0).id, newDate);
-			} else {
-				createBookingMeeting(newDate);
-			}
-		}
 	};
 
 	return (

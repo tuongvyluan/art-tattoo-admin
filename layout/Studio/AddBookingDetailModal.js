@@ -26,7 +26,6 @@ const AddBookingDetailModal = ({
 		status: BOOKING_DETAIL_STATUS.PENDING,
 		description: ''
 	});
-	const [selectedArtist, setSelectedArtist] = useState(0);
 
 	// Alert related vars
 	const [showAlert, setShowAlert] = useState(false);

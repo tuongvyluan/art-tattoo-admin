@@ -1,5 +1,5 @@
 import { fetcher, fetcherPost, fetcherPut, formatDate } from 'lib';
-import { BASE_URL } from 'lib/env';
+import { BASE_URL, SOCIAL_PAGE } from 'lib/env';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Alert, Avatar, Card, CardBody, Loading } from 'ui';
@@ -151,15 +151,18 @@ const StudioArtist = ({ studioId }) => {
 										<div key={artist.id} className="min-w-max w-1/4 px-2 mb-3">
 											<a className={`w-full block text-gray-900 dark:text-white`}>
 												<div className="flex justify-center">
-													<Avatar
-														size={48}
-														src={
-															artist.artist.avatar
-																? artist.artist.avatar
-																: '/images/ATL.png'
-														}
-														alt={artist.artist.fullName}
-													/>
+													<a href={`${SOCIAL_PAGE}/artist/${artist.artist.id}`}>
+														<Avatar
+															size={48}
+															src={
+																artist.artist.avatar
+																	? artist.artist.avatar
+																	: '/images/ATL.png'
+															}
+															alt={artist.artist.fullName}
+															className={'cursor-pointer'}
+														/>
+													</a>
 												</div>
 												<div className="mt-1 flex justify-center text-center">
 													<div>
@@ -187,15 +190,18 @@ const StudioArtist = ({ studioId }) => {
 														className={`w-full block text-gray-900 dark:text-white`}
 													>
 														<div className="flex justify-center">
-															<Avatar
-																size={48}
-																src={
-																	artist.artist.avatar
-																		? artist.artist.avatar
-																		: '/images/ATL.png'
-																}
-																alt={artist.artist.fullName}
-															/>
+															<a href={`${SOCIAL_PAGE}/artist/${artist.artist.id}`}>
+																<Avatar
+																	size={48}
+																	src={
+																		artist.artist.avatar
+																			? artist.artist.avatar
+																			: '/images/ATL.png'
+																	}
+																	alt={artist.artist.fullName}
+																	className={'cursor-pointer'}
+																/>
+															</a>
 														</div>
 														<div className="mt-1 flex justify-center text-center">
 															<div>

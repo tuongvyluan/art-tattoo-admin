@@ -6,6 +6,8 @@ import debounce from 'lodash.debounce';
 import { useSession } from 'next-auth/react';
 import { randomPhoto } from 'lib/tattooPhoto';
 import MyInfiniteScroll from 'ui/MyInfiniteScroll';
+import { stringPlacements, stringSize } from 'lib/status';
+import { tattooStyleById } from 'lib/tattooStyle';
 
 const TattooListNotFilter = ({ url, pageSize = 20 }) => {
 	const [items, setItems] = useState([]);
@@ -40,9 +42,7 @@ const TattooListNotFilter = ({ url, pageSize = 20 }) => {
 				</div>
 			);
 		}
-		return (
-			<div></div>
-		);
+		return <div></div>;
 	};
 
 	useEffect(() => {
@@ -82,9 +82,7 @@ const TattooListNotFilter = ({ url, pageSize = 20 }) => {
 								</div>
 							}
 						>
-							<div
-								className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4"
-							>
+							<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
 								{Array.from({ length: tattooCol }).map((col, colIndex) => (
 									<div key={colIndex}>
 										{items.map((item, index) => (
@@ -92,22 +90,17 @@ const TattooListNotFilter = ({ url, pageSize = 20 }) => {
 												{index % tattooCol === colIndex && (
 													<WidgetPostCard
 														image={item.thumbnail ? item.thumbnail : randomPhoto}
-														link={`/tattoo/${item.id}`}
+														link={`/tattoo/${item.id}?booking=${item.bookingId}&back=tattoo`}
+														className='cursor-pointer'
 													>
 														<div className="block">
 															<div className="flex items-start gap-1">
 																<div className="flex gap-1 items-center">
 																	<div>
-																		<div
-																			onClick={() => {
-																				window.open('/auth/signin', 'blank');
-																			}}
-																		>
-																			<IoMdHeartEmpty
-																				className="hover:text-gray-600 font-semibold cursor-pointer"
-																				size={20}
-																			/>
-																		</div>
+																		<IoMdHeartEmpty
+																			className="hover:text-gray-600 font-semibold cursor-pointer"
+																			size={20}
+																		/>
 																	</div>
 																	<div className="flex gap-1 items-end text-gray-700">
 																		<div className="text-left text-xs font-semibold w-14">
@@ -125,9 +118,29 @@ const TattooListNotFilter = ({ url, pageSize = 20 }) => {
 																			}
 																			size={20}
 																		/>
-																		<div>
-																			{item.firstName} {item.lastName}
-																		</div>
+																		<div>{item.fullName}</div>
+																	</div>
+																</div>
+															</Link>
+															<Link href={`/tattoo/${item.id}?booking=${item.bookingId}&back=tattoo`}>
+																<div className="cursor-pointer pt-1">
+																	<div className="text-gray-400">
+																		Vị trí xăm:{' '}
+																		<span className="text-black">
+																			{stringPlacements.at(item.placement)}
+																		</span>
+																	</div>
+																	<div className="text-gray-400">
+																		Kích thước:{' '}
+																		<span className="text-black">
+																			{stringSize.at(item.size)}
+																		</span>
+																	</div>
+																	<div className="text-gray-400">
+																		Style:{' '}
+																		<span className="text-black">
+																			{tattooStyleById(item.styleId)?.name}
+																		</span>
 																	</div>
 																</div>
 															</Link>

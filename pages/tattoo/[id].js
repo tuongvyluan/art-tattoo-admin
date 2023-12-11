@@ -14,10 +14,9 @@ const TattooDetails = () => {
 	const router = useRouter();
 	const booking =
 		typeof router.query['booking'] !== 'undefined' ? router.query['booking'] : '';
+	const back = typeof router.query['back'] !== 'undefined';
 	const { id } = router.query;
 	const [artTattoo, setArtTattoo] = useState(undefined);
-	const [artist, setArtist] = useState(undefined);
-	const [artistList, setArtistList] = useState(undefined);
 
 	if (status === 'loading') {
 		return (
@@ -28,7 +27,7 @@ const TattooDetails = () => {
 	}
 
 	if (status === 'unauthenticated') {
-		Router.replace('/')
+		Router.replace('/');
 		return (
 			<div className="flex items-center justify-center h-full">
 				<Loading />
@@ -36,44 +35,14 @@ const TattooDetails = () => {
 		);
 	}
 
-	if (!artistList) {
-		fetcher(`${BASE_URL}/artists/${data.user.studioId}/artist-studio-list`)
-			.then((data) => {
-				setArtistList(data);
-			})
-			.catch((e) => {
-				setArtistList([]);
-			});
-	}
-
 	if (!artTattoo) {
 		if (id !== 'new') {
 			fetcher(`${BASE_URL}/TattooArts/Details?id=${id}`).then((data) => {
 				// Get all stages from medias
-				const stageMap = new Map(
-					data.medias.map((obj) => {
-						return [
-							obj.tattooArtStageId,
-							{
-								id: obj.tattooArtStageId,
-								name: obj.stageName,
-								description: obj.description ? obj.description : '',
-								medias: [],
-								saved: true
-							}
-						];
-					})
-				);
 
-				// Push medias to related stage
-				data.medias.map((obj) => {
-					const value = stageMap.get(obj.tattooArtStageId);
-					value.medias.push({ ...obj, saved: true }); // saved field to note that this image has been saved to db
-					stageMap.set(obj.tattooArtStageId, value);
-				});
 				const renderData = {
 					...data,
-					stages: Array.from(stageMap, ([id, value]) => value),
+					stages: data.tattooArtStages
 					// bookingDetails: data.bookingDetails.map((bookingDetail) => {
 					// 	return {
 					// 		...bookingDetail,
@@ -82,7 +51,6 @@ const TattooDetails = () => {
 					// })
 				};
 				setArtTattoo(renderData);
-				setArtist(renderData.artist);
 			});
 		} else {
 			setArtTattoo({
@@ -97,29 +65,13 @@ const TattooDetails = () => {
 				status: 0,
 				totalRevenue: 0,
 				thumbnail: '',
-				medias: [],
-				// bookingDetails: [{
-				// 	bookingDetailsId: v4(),
-				// 	operationId: 0,
-				// 	price: 0,
-				// 	saved: false,
-				// 	paymentId: null
-				// }],
 				stages: []
 			});
 		}
 	}
 
-	const handleSubmit = (newArtTattoo) => {
-		if (id === 'new') {
-			Router.replace(`/tattoo/${newArtTattoo.id}?booking=${booking}`)
-			setArtTattoo(undefined)
-		}
-		setArtTattoo(newArtTattoo);
-	};
-
 	if (status === 'authenticated' && data.user.role === ROLE.STUDIO) {
-		if ((id !== 'new' && (!artTattoo || !artist)) || !artistList) {
+		if (id !== 'new' && !artTattoo) {
 			return (
 				<div className="flex items-center justify-center h-full">
 					<Loading />
@@ -127,13 +79,7 @@ const TattooDetails = () => {
 			);
 		}
 		return (
-			<TattooDetailsPage
-				artistList={artistList}
-				bookingId={booking}
-				artTattoo={artTattoo}
-				artist={artist}
-				handleSubmit={handleSubmit}
-			/>
+			<TattooDetailsPage bookingId={booking} artTattoo={artTattoo} myTattoo={back} />
 		);
 	}
 };
