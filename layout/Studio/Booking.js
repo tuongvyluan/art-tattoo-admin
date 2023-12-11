@@ -1,13 +1,10 @@
 import PropTypes from 'prop-types';
-import { fetcher, formatPrice, formatTime } from 'lib';
+import { calculateTotal, fetcher, formatPrice, formatTime } from 'lib';
 import { useEffect, useState } from 'react';
 import { Card, CardBody, Loading, Ripple } from 'ui';
 import { Search } from 'icons/outline';
 import debounce from 'lodash.debounce';
-import {
-	BOOKING_STATUS,
-	stringBookingStatuses,
-} from 'lib/status';
+import { BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
 import MyPagination from 'ui/MyPagination';
 import { BASE_URL } from 'lib/env';
 import CustomerServices from './CustomerServices';
@@ -275,6 +272,14 @@ function BookingPage({ studioId }) {
 															</span>
 														</div>
 													)}
+													{
+														<div>
+															Tổng tiền:{' '}
+															<span className="text-xl text-red-500">
+																{formatPrice(calculateTotal(booking.bookingDetails))}
+															</span>
+														</div>
+													}
 												</div>
 											</div>
 										</div>
