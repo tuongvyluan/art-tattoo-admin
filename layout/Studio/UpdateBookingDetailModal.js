@@ -14,14 +14,14 @@ const UpdateBookingDetailModal = ({
 	bookingDetail,
 	openModal,
 	setOpenModal,
-  setLoading
+	setLoading
 }) => {
 	const [detail, setDetail] = useState(bookingDetail);
 	const [artists, setArtists] = useState(artistList);
 
-  useEffect(() => {
-    setDetail(bookingDetail)
-  }, [bookingDetail])
+	useEffect(() => {
+		setDetail(bookingDetail);
+	}, [bookingDetail]);
 
 	const handleChangeDetail = (e) => {
 		setDetail({
@@ -70,7 +70,7 @@ const UpdateBookingDetailModal = ({
 			});
 	};
 
-	const handleCheckSubmit = () => {    
+	const handleCheckSubmit = () => {
 		if (
 			detail?.serviceMinPrice > detail.price ||
 			detail?.serviceMaxPrice < detail.price
@@ -89,8 +89,8 @@ const UpdateBookingDetailModal = ({
 	};
 
 	useEffect(() => {
-		setArtists(artistList)
-	}, [artistList])
+		setArtists(artistList);
+	}, [artistList]);
 	return (
 		<div>
 			<MyModal
@@ -199,41 +199,50 @@ const UpdateBookingDetailModal = ({
 						<div>
 							<div className="pb-3 flex items-center gap-1">
 								<div className="w-20">Phân công: </div>
-								<Dropdown className="relative h-full flex items-center">
-									<DropdownToggle>
-										<div className="w-40 rounded-lg p-1 border border-gray-600">
-											{
-												artists?.filter((a) => a?.id === detail?.artistId)?.at(0)
-													?.account?.fullName
-											}
-										</div>
-										<div className="absolute top-2 right-2">
-											<ChevronDown width={16} height={16} />
-										</div>
-									</DropdownToggle>
-									<DropdownMenu>
-										<div>
-											{artists?.map((artist, artistIndex) => (
-												<div
-													key={artist?.id}
-													onClick={() =>
-														handleChangeDetail({
-															target: {
-																name: 'artistId',
-																value: artist?.id
-															}
-														})
-													}
-													className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
-														detail?.artistId === artist?.id && 'bg-blue-50'
-													}`}
-												>
-													{artist?.account?.fullName}
-												</div>
-											))}
-										</div>
-									</DropdownMenu>
-								</Dropdown>
+								{detail?.tattooArtId !== null ? (
+									<div>
+										{
+											artists?.filter((a) => a?.id === detail?.artistId)?.at(0)
+												?.account?.fullName
+										}
+									</div>
+								) : (
+									<Dropdown className="relative h-full flex items-center">
+										<DropdownToggle>
+											<div className="w-40 rounded-lg p-1 border border-gray-600">
+												{
+													artists?.filter((a) => a?.id === detail?.artistId)?.at(0)
+														?.account?.fullName
+												}
+											</div>
+											<div className="absolute top-2 right-2">
+												<ChevronDown width={16} height={16} />
+											</div>
+										</DropdownToggle>
+										<DropdownMenu>
+											<div>
+												{artists?.map((artist, artistIndex) => (
+													<div
+														key={artist?.id}
+														onClick={() =>
+															handleChangeDetail({
+																target: {
+																	name: 'artistId',
+																	value: artist?.id
+																}
+															})
+														}
+														className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
+															detail?.artistId === artist?.id && 'bg-blue-50'
+														}`}
+													>
+														{artist?.account?.fullName}
+													</div>
+												))}
+											</div>
+										</DropdownMenu>
+									</Dropdown>
+								)}
 							</div>
 						</div>
 					</div>
@@ -284,7 +293,7 @@ UpdateBookingDetailModal.propTypes = {
 	bookingDetail: PropTypes.object.isRequired,
 	openModal: PropTypes.bool.isRequired,
 	setOpenModal: PropTypes.func.isRequired,
-  setLoading: PropTypes.func
+	setLoading: PropTypes.func
 };
 
 export default UpdateBookingDetailModal;

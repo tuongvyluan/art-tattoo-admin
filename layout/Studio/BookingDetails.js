@@ -1,5 +1,6 @@
 import { ChevronLeft } from 'icons/solid';
 import {
+	calculateTotal,
 	fetcher,
 	fetcherDelete,
 	fetcherPost,
@@ -22,19 +23,6 @@ import useSWR from 'swr';
 import Heading from 'components/Heading';
 import { useSession } from 'next-auth/react';
 import AddBookingDetailModal from './AddBookingDetailModal';
-
-const calculateTotal = (bookingDetails) => {
-	if (!bookingDetails) {
-		return 0;
-	}
-	let total = 0;
-	bookingDetails.forEach((a) => {
-		if (a.status !== BOOKING_DETAIL_STATUS.CANCELLED) {
-			total += a.price;
-		}
-	});
-	return total;
-};
 
 function BookingDetailsPage({ data, studioId, setLoading }) {
 	const { data: account } = useSession();
@@ -263,10 +251,22 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								<div className="flex justify-start flex-wrap">
 									<div className="w-full md:pr-1 md:w-1/2 md:border-r mb-5 md:mb-0 md:border-b-0 border-b border-gray-300">
 										<div>
-											<Heading>Thông tin khách hàng</Heading>
-											<div className="text-base">{renderData.customer.fullName}</div>
-											<div>{renderData.customer.phoneNumber}</div>
-											<div>{renderData.customer.email}</div>
+										<Heading>Thông tin khách hàng</Heading>
+											<div className="text-lg font-semibold">
+												{renderData.customer.fullName}
+											</div>
+											<div>
+												Số điện thoại:{' '}
+												<span className="font-semibold">
+													{renderData.customer.phoneNumber}
+												</span>
+											</div>
+											<div>
+												Email:{' '}
+												<span className="font-semibold">
+													{renderData.customer.email}
+												</span>
+											</div>
 										</div>
 									</div>
 									<div className="flex flex-col justify-start flex-grow pt-3 md:pt-0">

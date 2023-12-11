@@ -197,7 +197,7 @@ const CustomerServices = ({
 				<div className="pb-3 flex gap-1 flex-wrap items-center">
 					<div className="w-28">Giá tiền:</div>{' '}
 					<span className="font-semibold">
-						{formatPrice(removedBookingDetail?.price)}
+						{removedBookingDetail?.price ? formatPrice(removedBookingDetail?.price) : 'Chưa xác định'}
 					</span>
 				</div>
 				<div className="pb-3 flex gap-1 flex-wrap items-center">
