@@ -6,7 +6,7 @@ import {
 	stringPlacements,
 	stringSize
 } from 'lib/status';
-import { fetcherPut, formatPrice, formatTime, showTextMaxLength } from 'lib';
+import { fetcherPut, formatPrice, formatTime, hasBookingMeeting, showTextMaxLength } from 'lib';
 import { Alert, Avatar, Card } from 'ui';
 import {
 	MdCalendarMonth,
@@ -377,7 +377,7 @@ const CustomerServices = ({
 									{bookingDetail.bookingMeetings?.length > 0 && (
 										<div className="flex flex-wrap gap-1 items-center text-base font-semibold bg-indigo-100 px-2 rounded-full">
 											<MdOutlineCalendarMonth size={20} />
-											<div>{formatTime(new Date())}</div>
+											<div>{formatTime(hasBookingMeeting(bookingDetail.bookingMeetings))}</div>
 										</div>
 									)}
 									{

@@ -5,7 +5,7 @@ import {
 	fetcherPut,
 	formatPrice
 } from 'lib';
-import { BOOKING_DETAIL_STATUS, BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
+import { BOOKING_DETAIL_STATUS, BOOKING_STATUS, SERVICE_STATUS, stringBookingStatuses } from 'lib/status';
 import PropTypes from 'prop-types';
 import { Alert, Card, CardBody, Link } from 'ui';
 import { useEffect, useState } from 'react';
@@ -133,7 +133,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 			</Alert>
 			<AddBookingDetailModal
 				bookingId={renderData.id}
-				serviceList={serviceData?.services?.filter((s) => s.status !== 2)}
+				serviceList={serviceData?.services?.filter((s) => s.status !== SERVICE_STATUS.DELETED)}
 				artistList={artists}
 				openModal={openAddDetailModal}
 				setLoading={setLoading}

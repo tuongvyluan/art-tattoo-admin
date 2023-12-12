@@ -1,11 +1,20 @@
 import Heading from 'components/Heading';
 import MyModal from 'components/MyModal';
-import { fetcherPost, formatDateTimeForInput, formatPrice } from 'lib';
+import { Badge, Tooltip } from 'flowbite-react';
+import { fetcherPost, fetcherPut, formatDateTimeForInput, formatPrice, formatTime } from 'lib';
 import { BASE_URL } from 'lib/env';
-import { BOOKING_DETAIL_STATUS, stringPlacements, stringSize } from 'lib/status';
+import {
+	BOOKING_DETAIL_STATUS,
+	BOOKING_MEETING_STATUS,
+	stringBookingMeetingColors,
+	stringBookingMeetingStatus,
+	stringPlacements,
+	stringSize
+} from 'lib/status';
 import moment from 'moment';
 import PropTypes from 'propTypes';
 import { useState } from 'react';
+import { BsCheck2, BsTrash } from 'react-icons/bs';
 import { Alert } from 'ui';
 
 const ScheduleBookingMeetingModal = ({
@@ -68,6 +77,24 @@ const ScheduleBookingMeetingModal = ({
 				handleAlert(true, 'Tạo lịch hẹn thất bại', '', 2);
 			});
 	};
+
+	const updateBookingMeeting = (id, status) => {
+		handleAlert(true, '', 'Đang cập nhật lịch hẹn', 0);
+		const payload = {
+			id: id,
+			status: status
+		}
+		if (status === BOOKING_MEETING_STATUS.CANCELLED) {
+			payload.cancelAt = formatDateTimeForInput(moment().add(12, 'hours'))
+		}
+		fetcherPut(`${BASE_URL}/booking-meetings`, payload)
+			.then(() => {
+				setLoading(true);
+			})
+			.catch(() => {
+				handleAlert(true, 'Cập nhật lịch hẹn thất bại', '', 2);
+			});
+	}
 
 	return (
 		<div className="relative">
@@ -133,6 +160,60 @@ const ScheduleBookingMeetingModal = ({
 									<th scope="col" className="px-3 py-3 bg-gray-50 text-center"></th>
 								</tr>
 							</thead>
+							<tbody>
+								{bookingDetail?.bookingMeetings.map((time) => (
+									<tr className="text-base" key={time.id}>
+										<td
+											scope="col"
+											className="w-1/3 px-3 py-3 bg-gray-50 text-center"
+										>
+											{formatTime(time.meetingTime)}
+										</td>
+										<td scope="col" className="px-3 py-3 bg-gray-50 text-center">
+											<div className="flex justify-center w-full">
+												<Badge color={stringBookingMeetingColors.at(time.status)}>
+													{stringBookingMeetingStatus.at(time.status)}
+												</Badge>
+											</div>
+										</td>
+										<td
+											scope="col"
+											className="px-3 py-3 bg-gray-50 text-center"
+										>
+											{time.status === BOOKING_MEETING_STATUS.PENDING && (
+												<div className='flex gap-3 flex-wrap'>
+													<Tooltip content="Huỷ hẹn">
+														<div
+															className="cursor-pointer"
+															onClick={() =>
+																updateBookingMeeting(
+																	time.id,
+																	BOOKING_MEETING_STATUS.CANCELLED
+																)
+															}
+														>
+															<BsTrash size={25} />
+														</div>
+													</Tooltip>
+													<Tooltip content="Hoàn thành buổi hẹn">
+														<div
+															className="cursor-pointer"
+															onClick={() =>
+																updateBookingMeeting(
+																	time.id,
+																	BOOKING_MEETING_STATUS.COMPLETED
+																)
+															}
+														>
+															<BsCheck2 size={25} />
+														</div>
+													</Tooltip>
+												</div>
+											)}
+										</td>
+									</tr>
+								))}
+							</tbody>
 						</table>
 					) : (
 						<div>Chưa có lịch hẹn nào cho dịch vụ này</div>

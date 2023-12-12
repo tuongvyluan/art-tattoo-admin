@@ -8,7 +8,6 @@ import { roleString } from 'lib/status';
 
 const Header = ({ toggleOpen }) => {
 	const { data } = useSession();
-	console.log(data?.user?.role)
 	const [state, dispatch] = useAppState();
 
 	return (

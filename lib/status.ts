@@ -121,6 +121,18 @@ export const enum BOOKING_MEETING_STATUS {
 	CANCELLED = 2
 }
 
+export const stringBookingMeetingStatus = [
+	'Đang chờ',
+	'Hoàn thành',
+	'Đã huỷ'
+]
+
+export const stringBookingMeetingColors = [
+	'warning',
+	'success',
+	'failure'
+]
+
 export const enum TRANSACTION_STATUS {
 	AVAILABLE = 0,
 	DELETED = 1

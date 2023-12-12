@@ -136,10 +136,6 @@ const AddBookingDetailModal = ({
 									<tr>
 										<th
 											scope="col"
-											className="min-w-max sm:px-3 sm:py-3 bg-gray-50 text-center"
-										></th>
-										<th
-											scope="col"
 											className="w-1/3 sm:px-3 sm:py-3 bg-gray-50 text-center"
 										>
 											Tên dịch vụ
@@ -167,25 +163,19 @@ const AddBookingDetailModal = ({
 								<tbody className="h-full">
 									{serviceList.map((service, serviceIndex) => (
 										<tr
+											onClick={() =>
+												handleChangeDetail({
+													target: {
+														name: 'serviceId',
+														value: service.id
+													}
+												})
+											}
 											key={service.id}
-											className={`bg-white border-b hover:bg-gray-50 text-black ${
+											className={`bg-white border-b hover:bg-gray-50 text-black cursor-pointer ${
 												service.id === bookingDetail.serviceId && 'bg-blue-50'
 											}`}
 										>
-											<td className="min-w-max p-1 sm:px-3 sm:py-4">
-												<Button
-													onClick={() =>
-														handleChangeDetail({
-															target: {
-																name: 'serviceId',
-																value: service.id
-															}
-														})
-													}
-												>
-													Chọn
-												</Button>
-											</td>
 											<td className="sm:px-3 sm:py-4">
 												<div className="text-base p-1">
 													{extractServiceName(service)}
@@ -198,11 +188,15 @@ const AddBookingDetailModal = ({
 												{service.status === 0 ? 'Mọi người' : 'Khách hàng cũ'}
 											</td>
 											<td className="sm:px-3 sm:py-4">
-												<div className="text-base flex flex-wrap min-w-max mx-auto gap-2 items-center">
-													<div>{formatPrice(service.minPrice)}</div>
-													<span>tới</span>
-													<div>{formatPrice(service.maxPrice)}</div>
-												</div>
+												{service.maxPrice === 0 ? (
+													<div>Miễn phí</div>
+												) : (
+													<div className="text-base flex flex-wrap min-w-max mx-auto gap-2 items-center">
+														<div>{formatPrice(service.minPrice)}</div>
+														<span>tới</span>
+														<div>{formatPrice(service.maxPrice)}</div>
+													</div>
+												)}
 											</td>
 										</tr>
 									))}
@@ -295,6 +289,7 @@ AddBookingDetailModal.propTypes = {
 	openModal: PropTypes.bool.isRequired,
 	setOpenModal: PropTypes.func.isRequired,
 	serviceList: PropTypes.array,
+	setLoading: PropTypes.func,
 	artistList: PropTypes.array
 };
 
