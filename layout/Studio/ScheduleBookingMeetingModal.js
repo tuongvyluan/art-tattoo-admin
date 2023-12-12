@@ -165,11 +165,11 @@ const ScheduleBookingMeetingModal = ({
 									<tr className="text-base" key={time.id}>
 										<td
 											scope="col"
-											className="w-1/3 px-3 py-3 bg-gray-50 text-center"
+											className="w-1/3 px-3 py-3 text-center"
 										>
 											{formatTime(time.meetingTime)}
 										</td>
-										<td scope="col" className="px-3 py-3 bg-gray-50 text-center">
+										<td scope="col" className="px-3 py-3 text-center">
 											<div className="flex justify-center w-full">
 												<Badge color={stringBookingMeetingColors.at(time.status)}>
 													{stringBookingMeetingStatus.at(time.status)}
@@ -178,7 +178,7 @@ const ScheduleBookingMeetingModal = ({
 										</td>
 										<td
 											scope="col"
-											className="px-3 py-3 bg-gray-50 text-center"
+											className="px-3 py-3 text-center"
 										>
 											{time.status === BOOKING_MEETING_STATUS.PENDING && (
 												<div className='flex gap-3 flex-wrap'>
