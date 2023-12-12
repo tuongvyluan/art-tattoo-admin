@@ -374,7 +374,7 @@ const CustomerServices = ({
 									{
 										// Ngày hẹn
 									}
-									{bookingDetail.bookingMeetings?.length > 0 && (
+									{hasBookingMeeting(bookingDetail.bookingMeetings) && (
 										<div className="flex flex-wrap gap-1 items-center text-base font-semibold bg-indigo-100 px-2 rounded-full">
 											<MdOutlineCalendarMonth size={20} />
 											<div>{formatTime(hasBookingMeeting(bookingDetail.bookingMeetings))}</div>
