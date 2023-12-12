@@ -1,10 +1,74 @@
 import Heading from 'components/Heading';
 import MyModal from 'components/MyModal';
-import { formatPrice } from 'lib';
-import { stringPlacements, stringSize } from 'lib/status';
+import { fetcherPost, formatDateTimeForInput, formatPrice } from 'lib';
+import { BASE_URL } from 'lib/env';
+import { BOOKING_DETAIL_STATUS, stringPlacements, stringSize } from 'lib/status';
+import moment from 'moment';
 import PropTypes from 'propTypes';
+import { useState } from 'react';
+import { Alert } from 'ui';
 
-const ScheduleBookingMeetingModal = ({ bookingDetail, openModal, setOpenModal }) => {
+const ScheduleBookingMeetingModal = ({
+	bookingDetail,
+	openModal,
+	setOpenModal,
+	setLoading
+}) => {
+	const [minDate, setMinDate] = useState(
+		formatDateTimeForInput(moment().add(12, 'hours').add(1, 'days'))
+	);
+	const [newMeeting, setNewMeeting] = useState(
+		formatDateTimeForInput(moment().add(12, 'hours').add(1, 'days'))
+	);
+
+	// Alert related vars
+	const [showAlert, setShowAlert] = useState(false);
+
+	const [alertContent, setAlertContent] = useState({
+		title: '',
+		content: '',
+		isWarn: 'blue'
+	});
+
+	const handleAlert = (state, title, content, isWarn = 0) => {
+		setShowAlert((prev) => state);
+		let color;
+		switch (isWarn) {
+			case 1:
+				color = 'green';
+				break;
+			case 2:
+				color = 'red';
+				break;
+			default:
+				color = 'blue';
+				break;
+		}
+		setAlertContent({
+			title: title,
+			content: content,
+			isWarn: color
+		});
+	};
+
+	const handleSetMeeting = (e) => {
+		setNewMeeting(formatDateTimeForInput(e.target.value));
+	};
+
+	const handleCreateMeeting = () => {
+		handleAlert(true, '', 'Đang tạo lịch hẹn', 0);
+		fetcherPost(`${BASE_URL}/booking-meetings`, {
+			bookingDetailId: bookingDetail.id,
+			meetingTime: newMeeting
+		})
+			.then(() => {
+				setLoading(true);
+			})
+			.catch(() => {
+				handleAlert(true, 'Tạo lịch hẹn thất bại', '', 2);
+			});
+	};
+
 	return (
 		<div className="relative">
 			<MyModal
@@ -12,8 +76,18 @@ const ScheduleBookingMeetingModal = ({ bookingDetail, openModal, setOpenModal })
 				openModal={openModal}
 				setOpenModal={setOpenModal}
 				title={'Sắp xếp lịch hẹn'}
-				confirmTitle='Tạo'
+				confirmTitle="Tạo"
+				onSubmit={handleCreateMeeting}
 			>
+				<Alert
+					showAlert={showAlert}
+					setShowAlert={setShowAlert}
+					color={alertContent.isWarn}
+					className="bottom-2 right-2 fixed max-w-md z-50"
+				>
+					<strong className="font-bold mr-1">{alertContent.title}</strong>
+					<span className="block sm:inline">{alertContent.content}</span>
+				</Alert>
 				<div className="max-h-96 overflow-auto">
 					<Heading>
 						<div className="flex flex-wrap gap-1">
@@ -63,6 +137,22 @@ const ScheduleBookingMeetingModal = ({ bookingDetail, openModal, setOpenModal })
 					) : (
 						<div>Chưa có lịch hẹn nào cho dịch vụ này</div>
 					)}
+					{(bookingDetail?.status === BOOKING_DETAIL_STATUS.PENDING ||
+						bookingDetail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS) && (
+						<div>
+							<div className="py-2 font-semibold text-lg">Tạo lịch hẹn mới</div>
+							<div className="max-w-max">
+								<input
+									min={minDate}
+									type="datetime-local"
+									step={1}
+									value={newMeeting}
+									onChange={handleSetMeeting}
+									className="appearance-none relative block w-full px-3 py-2 ring-1 ring-gray-300 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-base leading-none"
+								/>
+							</div>
+						</div>
+					)}
 				</div>
 			</MyModal>
 		</div>
@@ -72,7 +162,8 @@ const ScheduleBookingMeetingModal = ({ bookingDetail, openModal, setOpenModal })
 ScheduleBookingMeetingModal.propTypes = {
 	bookingDetail: PropTypes.object.isRequired,
 	openModal: PropTypes.bool.isRequired,
-	setOpenModal: PropTypes.func.isRequired
+	setOpenModal: PropTypes.func.isRequired,
+	setLoading: PropTypes.func
 };
 
 export default ScheduleBookingMeetingModal;

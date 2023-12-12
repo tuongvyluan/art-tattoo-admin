@@ -247,6 +247,7 @@ const CustomerServices = ({
 			}
 			{canEdit && (
 				<ScheduleBookingMeetingModal
+					setLoading={setLoading}
 					bookingDetail={scheduledBookingDetail}
 					openModal={scheduleModal}
 					setOpenModal={setScheduleModal}

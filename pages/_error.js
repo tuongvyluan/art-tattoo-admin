@@ -1,11 +1,19 @@
 import NotFound from "components/NotFound";
+import PropTypes from "prop-types";
 import React from "react";
-import { withTranslation } from "i18n";
 
 const Error = ({ statusCode }) => statusCode && <NotFound code={statusCode} />;
 Error.getInitialProps = async ({ res, err }) => {
   const statusCode = res ? res.statusCode : err ? err.statusCode : null;
-  return { namespacesRequired: ["not-found"], statusCode };
+  return { statusCode };
 };
 
-export default withTranslation("not-found")(Error);
+NotFound.getInitialProps = () => ({
+	namespacesRequired: ['header']
+});
+
+NotFound.propTypes = {
+  statusCode: PropTypes.string
+}
+
+export default Error;

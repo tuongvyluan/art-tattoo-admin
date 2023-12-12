@@ -21,10 +21,7 @@ import { MdAdd } from 'react-icons/md';
 import { Alert, Card, CardBody, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
 
 const sortServiceByCategory = (a, b) => {
-	if (b.status === SERVICE_STATUS.DELETED) {
-		return -1;
-	}
-	return b.serviceCategoryId - a.serviceCategoryId;
+	return a.status * 10 - b.status * 10 + b.serviceCategoryId - a.serviceCategoryId;
 };
 
 const filterDuplicate = (newService, oldService) => {
@@ -655,8 +652,15 @@ function ServicePage({ services, studioId, onReload }) {
 															{stringPlacements.at(service.placement)}
 														</td>
 														<td className="px-3 py-4">
-															{formatPrice(service.minPrice)} -{' '}
-															{formatPrice(service.maxPrice)}
+															{service.maxPrice === 0 ? (
+																<div>Miễn phí</div>
+															) : (
+																<div className="text-base flex flex-wrap min-w-max mx-auto gap-2 items-center">
+																	<div>{formatPrice(service.minPrice)}</div>
+																	<span>tới</span>
+																	<div>{formatPrice(service.maxPrice)}</div>
+																</div>
+															)}
 														</td>
 														<td className="px-3 py-4">
 															<div className="flex">
@@ -665,7 +669,7 @@ function ServicePage({ services, studioId, onReload }) {
 																</Badge>
 															</div>
 														</td>
-														<td className="px-3 py-4 flex flex-wrap gap-5">
+														<td className="px-3 py-4 flex flex-wrap gap-1">
 															<Tooltip content="Sửa dịch vụ" placement="top-end">
 																<div
 																	onClick={() => handleOpenUpdateModal(service)}

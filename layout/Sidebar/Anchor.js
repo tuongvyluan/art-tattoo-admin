@@ -1,7 +1,6 @@
 import { Badge, Link, Ripple } from 'ui';
 
 import { ChevronDown } from 'icons/solid';
-import { useTranslation } from 'i18n';
 
 const Anchor = ({
 	icon,
@@ -15,7 +14,6 @@ const Anchor = ({
 	divider,
 	level
 }) => {
-	const { t } = useTranslation('sidebar');
 	const content = (
 		<a
 			className={`flex items-center gap-1 px-3 py-px h-10 text-gray-100 cursor-pointer hover:text-white focus:text-opacity-100 outline-none transition-all duration-150 ease-in-out truncate ${
@@ -26,7 +24,7 @@ const Anchor = ({
 			onClick={expand}
 		>
 			{icon && <span className="mr-4 rtl:ml-4">{icon}</span>}
-			<span className="mr-auto rtl:ml-auto leading-none">{t(name)}</span>
+			<span className="mr-auto rtl:ml-auto leading-none">{name}</span>
 			{badge && <Badge color={badge.type}>{badge.value}</Badge>}
 			{hasItems && (
 				<span
