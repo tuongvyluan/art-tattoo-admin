@@ -8,6 +8,7 @@ import { BOOKING_STATUS, stringBookingStatuses } from 'lib/status';
 import MyPagination from 'ui/MyPagination';
 import { BASE_URL } from 'lib/env';
 import CustomerServices from './CustomerServices';
+import Link from 'next/link';
 
 const ALL_TAB = '1';
 const PENDING_TAB = '2';
@@ -222,7 +223,7 @@ function BookingPage({ studioId }) {
 						{data.map((booking, index) => (
 							<Card key={booking.id}>
 								<CardBody>
-									<a className="text-black" href={`/booking/${booking.id}`}>
+									<Link className="text-black" href={`/booking/${booking.id}`}>
 										<div className="cursor-pointer ">
 											<div className="flex justify-between mx-auto border-b border-gray-300 pb-3 mb-3">
 												<div className="flex gap-3 items-start">
@@ -283,7 +284,7 @@ function BookingPage({ studioId }) {
 												</div>
 											</div>
 										</div>
-									</a>
+									</Link>
 								</CardBody>
 							</Card>
 						))}

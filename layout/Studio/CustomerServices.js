@@ -20,6 +20,7 @@ import Image from 'next/image';
 import UpdateBookingDetailModal from './UpdateBookingDetailModal';
 import MyModal from 'components/MyModal';
 import { BASE_URL } from 'lib/env';
+import ScheduleBookingMeetingModal from './ScheduleBookingMeetingModal';
 
 const CustomerServices = ({
 	bookingDetails,
@@ -157,88 +158,100 @@ const CustomerServices = ({
 			{
 				// Confirm remove modal
 			}
-			<MyModal
-				openModal={confirmRemoveBookingDetailModal}
-				setOpenModal={setConfirmRemoveBookingDetailModal}
-				onSubmit={handleRemoveBookingDetail}
-				warn={true}
-				confirmTitle="Xác nhận"
-				title="Xác nhận huỷ dịch vụ"
-			>
-				<div className="font-semibold text-lg pb-3">
-					Bạn có chắc sẽ huỷ dịch vụ sau chứ?
-				</div>
-				<div>
-					<div className="pb-3 flex gap-1 flex-wrap items-center">
-						<div className="w-28">Tên dịch vụ:</div>
-						<span className="font-semibold">
-							{removedBookingDetail?.serviceTitle}
-						</span>
+			{canEdit && (
+				<MyModal
+					openModal={confirmRemoveBookingDetailModal}
+					setOpenModal={setConfirmRemoveBookingDetailModal}
+					onSubmit={handleRemoveBookingDetail}
+					warn={true}
+					confirmTitle="Xác nhận"
+					title="Xác nhận huỷ dịch vụ"
+				>
+					<div className="font-semibold text-lg pb-3">
+						Bạn có chắc sẽ huỷ dịch vụ sau chứ?
 					</div>
-					<div className="pb-3 flex gap-1 flex-wrap items-center">
-						<div className="w-28">Kích thước:</div>
-						<span className="font-semibold">
-							{stringSize.at(removedBookingDetail?.serviceSize)}
-						</span>
-					</div>
-
-					{removedBookingDetail?.servicePlacement ? (
+					<div>
 						<div className="pb-3 flex gap-1 flex-wrap items-center">
-							<div className="w-28">Vị trí xăm:</div>
+							<div className="w-28">Tên dịch vụ:</div>
 							<span className="font-semibold">
-								{stringPlacements.at(removedBookingDetail?.servicePlacement)}
+								{removedBookingDetail?.serviceTitle}
 							</span>
 						</div>
-					) : (
-						<></>
-					)}
-
-					{removedBookingDetail?.serviceCategory ? (
 						<div className="pb-3 flex gap-1 flex-wrap items-center">
-							<div className="w-28">Loại dịch vụ:</div>
+							<div className="w-28">Kích thước:</div>
 							<span className="font-semibold">
-								{removedBookingDetail?.serviceCategory.name}
+								{stringSize.at(removedBookingDetail?.serviceSize)}
 							</span>
 						</div>
-					) : (
-						<></>
-					)}
 
+						{removedBookingDetail?.servicePlacement ? (
+							<div className="pb-3 flex gap-1 flex-wrap items-center">
+								<div className="w-28">Vị trí xăm:</div>
+								<span className="font-semibold">
+									{stringPlacements.at(removedBookingDetail?.servicePlacement)}
+								</span>
+							</div>
+						) : (
+							<></>
+						)}
+
+						{removedBookingDetail?.serviceCategory ? (
+							<div className="pb-3 flex gap-1 flex-wrap items-center">
+								<div className="w-28">Loại dịch vụ:</div>
+								<span className="font-semibold">
+									{removedBookingDetail?.serviceCategory.name}
+								</span>
+							</div>
+						) : (
+							<></>
+						)}
+
+						<div className="pb-3 flex gap-1 flex-wrap items-center">
+							<div className="w-28">Khoảng giá:</div>
+							<span className="font-semibold">
+								{formatPrice(removedBookingDetail?.serviceMinPrice)} -{' '}
+								{formatPrice(removedBookingDetail?.serviceMaxPrice)}
+							</span>
+						</div>
+					</div>
+					{removedBookingDetail?.artistId && (
+						<div className="pb-3 flex gap-1 flex-wrap items-center">
+							<div className="w-28">Nghệ sĩ xăm:</div>
+							<span className="font-semibold">
+								{
+									artistList
+										?.filter((a) => a?.id === removedBookingDetail.artistId)
+										?.at(0).account.fullName
+								}
+							</span>
+						</div>
+					)}
 					<div className="pb-3 flex gap-1 flex-wrap items-center">
-						<div className="w-28">Khoảng giá:</div>
+						<div className="w-28">Giá tiền:</div>{' '}
 						<span className="font-semibold">
-							{formatPrice(removedBookingDetail?.serviceMinPrice)} -{' '}
-							{formatPrice(removedBookingDetail?.serviceMaxPrice)}
+							{removedBookingDetail?.price
+								? formatPrice(removedBookingDetail?.price)
+								: 'Chưa xác định'}
 						</span>
 					</div>
-				</div>
-				{removedBookingDetail?.artistId && (
 					<div className="pb-3 flex gap-1 flex-wrap items-center">
-						<div className="w-28">Nghệ sĩ xăm:</div>
+						<div className="w-28">Trạng thái:</div>{' '}
 						<span className="font-semibold">
-							{
-								artistList
-									?.filter((a) => a?.id === removedBookingDetail.artistId)
-									?.at(0).account.fullName
-							}
+							{stringBookingDetailStatus.at(removedBookingDetail?.status)}
 						</span>
 					</div>
-				)}
-				<div className="pb-3 flex gap-1 flex-wrap items-center">
-					<div className="w-28">Giá tiền:</div>{' '}
-					<span className="font-semibold">
-						{removedBookingDetail?.price
-							? formatPrice(removedBookingDetail?.price)
-							: 'Chưa xác định'}
-					</span>
-				</div>
-				<div className="pb-3 flex gap-1 flex-wrap items-center">
-					<div className="w-28">Trạng thái:</div>{' '}
-					<span className="font-semibold">
-						{stringBookingDetailStatus.at(removedBookingDetail?.status)}
-					</span>
-				</div>
-			</MyModal>
+				</MyModal>
+			)}
+			{
+				// Schedule bookingMeeting modal
+			}
+			{canEdit && (
+				<ScheduleBookingMeetingModal
+					bookingDetail={scheduledBookingDetail}
+					openModal={scheduleModal}
+					setOpenModal={setScheduleModal}
+				/>
+			)}
 			<div className="block">
 				{bookingDetails.map((bookingDetail, bookingServiceIndex) => (
 					<Card

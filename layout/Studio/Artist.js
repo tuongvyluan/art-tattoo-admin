@@ -6,6 +6,7 @@ import { Alert, Avatar, Card, CardBody, Loading } from 'ui';
 import CryptoJS from 'crypto-js';
 import Button from 'components/Button';
 import Heading from 'components/Heading';
+import Link from 'next/link';
 
 const ENCRYPT_SECRET = 'qo7r0q3yrwfdngposdgv';
 
@@ -149,9 +150,9 @@ const StudioArtist = ({ studioId }) => {
 									?.filter((a) => a.dismissedAt === null)
 									.map((artist, artistIndex) => (
 										<div key={artist.id} className="min-w-max w-1/4 px-2 mb-3">
-											<a className={`w-full block text-gray-900 dark:text-white`}>
+											<div className={`w-full block text-gray-900 dark:text-white`}>
 												<div className="flex justify-center">
-													<a href={`${SOCIAL_PAGE}/artist/${artist.artist.id}`}>
+													<Link target='_blank' href={`${SOCIAL_PAGE}/artist/${artist.artist.id}`}>
 														<Avatar
 															size={48}
 															src={
@@ -162,7 +163,7 @@ const StudioArtist = ({ studioId }) => {
 															alt={artist.artist.fullName}
 															className={'cursor-pointer'}
 														/>
-													</a>
+													</Link>
 												</div>
 												<div className="mt-1 flex justify-center text-center">
 													<div>
@@ -174,7 +175,7 @@ const StudioArtist = ({ studioId }) => {
 														</div>
 													</div>
 												</div>
-											</a>
+											</div>
 										</div>
 									))}
 							</div>
@@ -190,7 +191,7 @@ const StudioArtist = ({ studioId }) => {
 														className={`w-full block text-gray-900 dark:text-white`}
 													>
 														<div className="flex justify-center">
-															<a href={`${SOCIAL_PAGE}/artist/${artist.artist.id}`}>
+															<Link target='_blank' href={`${SOCIAL_PAGE}/artist/${artist.artist.id}`}>
 																<Avatar
 																	size={48}
 																	src={
@@ -201,7 +202,7 @@ const StudioArtist = ({ studioId }) => {
 																	alt={artist.artist.fullName}
 																	className={'cursor-pointer'}
 																/>
-															</a>
+															</Link>
 														</div>
 														<div className="mt-1 flex justify-center text-center">
 															<div>

@@ -13,7 +13,7 @@ const StudioService = () => {
 	const [loading, setLoading] = useState(true);
 	const [services, setServices] = useState([]);
 
-	if (status === 'loading') {
+	if (status === 'loading' && services.length === 0) {
 		return (
 			<div className="flex items-center justify-center h-full">
 				<Loading />
@@ -33,7 +33,7 @@ const StudioService = () => {
 					setLoading(false);
 					return (
 						<div className="flex items-center justify-center h-full">
-							Failed to load chart data
+							Tải dữ liệu thất bại.
 						</div>
 					);
 				});
