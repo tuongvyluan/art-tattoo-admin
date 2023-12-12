@@ -132,8 +132,14 @@ const UpdateBookingDetailModal = ({
 						)}
 
 						<div className="pr-1">
-							{formatPrice(detail?.serviceMinPrice)} -{' '}
-							{formatPrice(detail?.serviceMaxPrice)}
+							{detail?.serviceMaxPrice === 0 ? (
+								<div>Miễn phí</div>
+							) : (
+								<div>
+									{formatPrice(detail?.serviceMinPrice)} -{' '}
+									{formatPrice(detail?.serviceMaxPrice)}
+								</div>
+							)}
 						</div>
 					</div>
 					{

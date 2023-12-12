@@ -189,7 +189,7 @@ const AddBookingDetailModal = ({
 											</td>
 											<td className="sm:px-3 sm:py-4">
 												{service.maxPrice === 0 ? (
-													<div>Miễn phí</div>
+													<div className="text-base ">Miễn phí</div>
 												) : (
 													<div className="text-base flex flex-wrap min-w-max mx-auto gap-2 items-center">
 														<div>{formatPrice(service.minPrice)}</div>

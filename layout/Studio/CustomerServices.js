@@ -6,7 +6,13 @@ import {
 	stringPlacements,
 	stringSize
 } from 'lib/status';
-import { fetcherPut, formatPrice, formatTime, hasBookingMeeting, showTextMaxLength } from 'lib';
+import {
+	fetcherPut,
+	formatPrice,
+	formatTime,
+	hasBookingMeeting,
+	showTextMaxLength
+} from 'lib';
 import { Alert, Avatar, Card } from 'ui';
 import {
 	MdCalendarMonth,
@@ -25,6 +31,7 @@ import ScheduleBookingMeetingModal from './ScheduleBookingMeetingModal';
 const CustomerServices = ({
 	bookingDetails,
 	canEdit = false,
+	showDetails = false,
 	showMore = false,
 	setLoading,
 	artistList
@@ -146,7 +153,7 @@ const CustomerServices = ({
 			{
 				// Update booking detail modal
 			}
-			{canEdit && (
+			{canEdit && showDetails && (
 				<UpdateBookingDetailModal
 					openModal={bookingDetailModal}
 					setLoading={setLoading}
@@ -158,7 +165,7 @@ const CustomerServices = ({
 			{
 				// Confirm remove modal
 			}
-			{canEdit && (
+			{canEdit && showDetails && (
 				<MyModal
 					openModal={confirmRemoveBookingDetailModal}
 					setOpenModal={setConfirmRemoveBookingDetailModal}
@@ -209,8 +216,14 @@ const CustomerServices = ({
 						<div className="pb-3 flex gap-1 flex-wrap items-center">
 							<div className="w-28">Khoảng giá:</div>
 							<span className="font-semibold">
-								{formatPrice(removedBookingDetail?.serviceMinPrice)} -{' '}
-								{formatPrice(removedBookingDetail?.serviceMaxPrice)}
+								{removedBookingDetail?.serviceMaxPrice === 0 ? (
+									<div>Miễn phí</div>
+								) : (
+									<div>
+										{formatPrice(removedBookingDetail?.serviceMinPrice)} -{' '}
+										{formatPrice(removedBookingDetail?.serviceMaxPrice)}
+									</div>
+								)}
 							</span>
 						</div>
 					</div>
@@ -245,8 +258,9 @@ const CustomerServices = ({
 			{
 				// Schedule bookingMeeting modal
 			}
-			{canEdit && (
+			{showDetails && (
 				<ScheduleBookingMeetingModal
+					canEdit={canEdit}
 					setLoading={setLoading}
 					bookingDetail={scheduledBookingDetail}
 					openModal={scheduleModal}
@@ -262,18 +276,17 @@ const CustomerServices = ({
 						key={bookingDetail.id}
 					>
 						<div className="w-full flex justify-start gap-2 items-start bg-gray-50 py-5 relative">
-							{canEdit &&
-								bookingDetail.status !== BOOKING_DETAIL_STATUS.COMPLETED &&
-								bookingDetail.status !== BOOKING_DETAIL_STATUS.CANCELLED && (
-									<div className="absolute top-4 right-4 cursor-pointer flex flex-wrap gap-2">
-										<div
-											onClick={() =>
-												onSelectScheduledBookingDetail(bookingServiceIndex)
-											}
-											className="relative"
-										>
-											<MdCalendarMonth size={20} />
-										</div>
+							{showDetails && (
+								<div className="absolute top-4 right-4 cursor-pointer flex flex-wrap gap-2">
+									<div
+										onClick={() =>
+											onSelectScheduledBookingDetail(bookingServiceIndex)
+										}
+										className="relative"
+									>
+										<MdCalendarMonth size={20} />
+									</div>
+									{canEdit && (
 										<div
 											onClick={() =>
 												onSelectUpdatedBookingDetail(bookingServiceIndex)
@@ -282,14 +295,17 @@ const CustomerServices = ({
 										>
 											<MdEdit size={20} />
 										</div>
+									)}
+									{canEdit && (
 										<div className="relative">
 											<MdOutlineClose
 												onClick={() => setRemovedBookingDetail(bookingDetail)}
 												size={20}
 											/>
 										</div>
-									</div>
-								)}
+									)}
+								</div>
+							)}
 							{
 								// Phần hình xăm của booking service
 							}
@@ -352,8 +368,14 @@ const CustomerServices = ({
 									)}
 
 									<div className="flex gap-1 flex-wrap items-center">
-										{formatPrice(bookingDetail.serviceMinPrice)} -{' '}
-										{formatPrice(bookingDetail.serviceMaxPrice)}
+										{bookingDetail.serviceMaxPrice === 0 ? (
+											<div>Miễn phí</div>
+										) : (
+											<div>
+												{formatPrice(bookingDetail.serviceMinPrice)} -{' '}
+												{formatPrice(bookingDetail.serviceMaxPrice)}
+											</div>
+										)}
 									</div>
 								</div>
 								{
@@ -377,7 +399,11 @@ const CustomerServices = ({
 									{hasBookingMeeting(bookingDetail.bookingMeetings) && (
 										<div className="flex flex-wrap gap-1 items-center text-base font-semibold bg-indigo-100 px-2 rounded-full">
 											<MdOutlineCalendarMonth size={20} />
-											<div>{formatTime(hasBookingMeeting(bookingDetail.bookingMeetings))}</div>
+											<div>
+												{formatTime(
+													hasBookingMeeting(bookingDetail.bookingMeetings)
+												)}
+											</div>
 										</div>
 									)}
 									{
@@ -421,7 +447,8 @@ CustomerServices.propTypes = {
 	canEdit: PropTypes.bool,
 	showMore: PropTypes.bool,
 	artistList: PropTypes.array,
-	setLoading: PropTypes.func
+	setLoading: PropTypes.func,
+	showDetails: PropTypes.bool
 };
 
 export default CustomerServices;

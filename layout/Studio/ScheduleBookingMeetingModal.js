@@ -1,7 +1,13 @@
 import Heading from 'components/Heading';
 import MyModal from 'components/MyModal';
 import { Badge, Tooltip } from 'flowbite-react';
-import { fetcherPost, fetcherPut, formatDateTimeForInput, formatPrice, formatTime } from 'lib';
+import {
+	fetcherPost,
+	fetcherPut,
+	formatDateTimeForInput,
+	formatPrice,
+	formatTime
+} from 'lib';
 import { BASE_URL } from 'lib/env';
 import {
 	BOOKING_DETAIL_STATUS,
@@ -21,7 +27,8 @@ const ScheduleBookingMeetingModal = ({
 	bookingDetail,
 	openModal,
 	setOpenModal,
-	setLoading
+	setLoading,
+	canEdit = false
 }) => {
 	const [minDate, setMinDate] = useState(
 		formatDateTimeForInput(moment().add(12, 'hours').add(1, 'days'))
@@ -65,17 +72,21 @@ const ScheduleBookingMeetingModal = ({
 	};
 
 	const handleCreateMeeting = () => {
-		handleAlert(true, '', 'Đang tạo lịch hẹn', 0);
-		fetcherPost(`${BASE_URL}/booking-meetings`, {
-			bookingDetailId: bookingDetail.id,
-			meetingTime: newMeeting
-		})
-			.then(() => {
-				setLoading(true);
+		if (canEdit) {
+			handleAlert(true, '', 'Đang tạo lịch hẹn', 0);
+			fetcherPost(`${BASE_URL}/booking-meetings`, {
+				bookingDetailId: bookingDetail?.id,
+				meetingTime: newMeeting
 			})
-			.catch(() => {
-				handleAlert(true, 'Tạo lịch hẹn thất bại', '', 2);
-			});
+				.then(() => {
+					setLoading(true);
+				})
+				.catch(() => {
+					handleAlert(true, 'Tạo lịch hẹn thất bại', '', 2);
+				});
+		} else {
+			setOpenModal(false)
+		}
 	};
 
 	const updateBookingMeeting = (id, status) => {
@@ -83,9 +94,9 @@ const ScheduleBookingMeetingModal = ({
 		const payload = {
 			id: id,
 			status: status
-		}
+		};
 		if (status === BOOKING_MEETING_STATUS.CANCELLED) {
-			payload.cancelAt = formatDateTimeForInput(moment().add(12, 'hours'))
+			payload.cancelAt = formatDateTimeForInput(moment().add(12, 'hours'));
 		}
 		fetcherPut(`${BASE_URL}/booking-meetings`, payload)
 			.then(() => {
@@ -94,7 +105,7 @@ const ScheduleBookingMeetingModal = ({
 			.catch(() => {
 				handleAlert(true, 'Cập nhật lịch hẹn thất bại', '', 2);
 			});
-	}
+	};
 
 	return (
 		<div className="relative">
@@ -103,7 +114,7 @@ const ScheduleBookingMeetingModal = ({
 				openModal={openModal}
 				setOpenModal={setOpenModal}
 				title={'Sắp xếp lịch hẹn'}
-				confirmTitle="Tạo"
+				confirmTitle={canEdit ? 'Tạo' : 'Đóng'}
 				onSubmit={handleCreateMeeting}
 			>
 				<Alert
@@ -139,8 +150,14 @@ const ScheduleBookingMeetingModal = ({
 							)}
 
 							<div className="flex gap-1 flex-wrap items-center">
-								{formatPrice(bookingDetail?.serviceMinPrice)} -{' '}
-								{formatPrice(bookingDetail?.serviceMaxPrice)}
+								{bookingDetail?.serviceMaxPrice === 0 ? (
+									<div>Miễn phí</div>
+								) : (
+									<div>
+										{formatPrice(bookingDetail?.serviceMinPrice)} -{' '}
+										{formatPrice(bookingDetail?.serviceMaxPrice)}
+									</div>
+								)}
 							</div>
 						</div>
 					</Heading>
@@ -163,10 +180,7 @@ const ScheduleBookingMeetingModal = ({
 							<tbody>
 								{bookingDetail?.bookingMeetings.map((time) => (
 									<tr className="text-base" key={time.id}>
-										<td
-											scope="col"
-											className="w-1/3 px-3 py-3 text-center"
-										>
+										<td scope="col" className="w-1/3 px-3 py-3 text-center">
 											{formatTime(time.meetingTime)}
 										</td>
 										<td scope="col" className="px-3 py-3 text-center">
@@ -176,12 +190,9 @@ const ScheduleBookingMeetingModal = ({
 												</Badge>
 											</div>
 										</td>
-										<td
-											scope="col"
-											className="px-3 py-3 text-center"
-										>
+										<td scope="col" className="px-3 py-3 text-center">
 											{time.status === BOOKING_MEETING_STATUS.PENDING && (
-												<div className='flex gap-3 flex-wrap'>
+												<div className="flex gap-3 flex-wrap">
 													<Tooltip content="Huỷ hẹn">
 														<div
 															className="cursor-pointer"
@@ -219,7 +230,7 @@ const ScheduleBookingMeetingModal = ({
 						<div>Chưa có lịch hẹn nào cho dịch vụ này</div>
 					)}
 					{(bookingDetail?.status === BOOKING_DETAIL_STATUS.PENDING ||
-						bookingDetail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS) && (
+						bookingDetail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS) && canEdit && (
 						<div>
 							<div className="py-2 font-semibold text-lg">Tạo lịch hẹn mới</div>
 							<div className="max-w-max">
@@ -244,7 +255,8 @@ ScheduleBookingMeetingModal.propTypes = {
 	bookingDetail: PropTypes.object.isRequired,
 	openModal: PropTypes.bool.isRequired,
 	setOpenModal: PropTypes.func.isRequired,
-	setLoading: PropTypes.func
+	setLoading: PropTypes.func,
+	canEdit: PropTypes.func
 };
 
 export default ScheduleBookingMeetingModal;

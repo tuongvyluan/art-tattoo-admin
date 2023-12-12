@@ -253,8 +253,12 @@ function ServicePage({ services, studioId, onReload }) {
 					{currentService.title && <span>{currentService.title + ', '}</span>}
 					{stringSize.at(currentService.size) + ', '}
 					{stringPlacements.at(currentService.placement) + ', '}
-					{formatPrice(currentService?.minPrice)} -{' '}
-					{formatPrice(currentService?.maxPrice)}?
+					{currentService?.maxPrice === 0
+						? 'Miễn phí'
+						: `${formatPrice(currentService?.minPrice)} - ${formatPrice(
+								currentService?.maxPrice
+						  )}`}
+					?
 				</div>
 			</MyModal>
 			<MyModal
@@ -556,10 +560,14 @@ function ServicePage({ services, studioId, onReload }) {
 														<div>{service.title}</div>
 													</td>
 													<td className="px-3 py-4">
-														<div>
-															{formatPrice(service.minPrice)} -{' '}
-															{formatPrice(service.maxPrice)}
-														</div>
+														{service.maxPrice === 0 ? (
+															<div>Miễn phí</div>
+														) : (
+															<div>
+																{formatPrice(service.minPrice)} -{' '}
+																{formatPrice(service.maxPrice)}
+															</div>
+														)}
 													</td>
 													<td>
 														<div className="max-w-max px-2">
@@ -653,7 +661,7 @@ function ServicePage({ services, studioId, onReload }) {
 														</td>
 														<td className="px-3 py-4">
 															{service.maxPrice === 0 ? (
-																<div>Miễn phí</div>
+																<div className='text-base '>Miễn phí</div>
 															) : (
 																<div className="text-base flex flex-wrap min-w-max mx-auto gap-2 items-center">
 																	<div>{formatPrice(service.minPrice)}</div>

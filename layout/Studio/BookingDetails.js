@@ -260,6 +260,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 									setLoading={setLoading}
 									showMore={true}
 									canEdit={renderData.status === BOOKING_STATUS.IN_PROGRESS}
+									showDetails={true}
 									bookingDetails={renderData.bookingDetails}
 								/>
 							</div>

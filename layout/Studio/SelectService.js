@@ -7,7 +7,7 @@ import { Alert, Card, CardBody } from 'ui';
 
 function ServicePage({ services, studioId, onReload }) {
 	const [serviceList, setServiceList] = useState(services);
-	const [selectedService, setSelectedService] = useState(0)
+	const [selectedService, setSelectedService] = useState(0);
 
 	const [showAlert, setShowAlert] = useState(false);
 
@@ -108,18 +108,26 @@ function ServicePage({ services, studioId, onReload }) {
 													</div>
 												</td>
 												<td className="px-3 py-4">
-													<div className="flex flex-wrap max-w-max mx-auto gap-2 items-center">
-														<div className="w-32">
-															{formatPrice(service.minPrice)}
+													{service.maxPrice === 0 ? (
+														<div>Miễn phí</div>
+													) : (
+														<div className="flex flex-wrap max-w-max mx-auto gap-2 items-center">
+															<div className="w-32">
+																{formatPrice(service.minPrice)}
+															</div>
+															<span>tới</span>
+															<div className="w-32">
+																{formatPrice(service.maxPrice)}
+															</div>
 														</div>
-														<span>tới</span>
-														<div className="w-32">
-															{formatPrice(service.maxPrice)}
-														</div>
-													</div>
+													)}
 												</td>
 												<td className="px-3 py-4 flex flex-wrap gap-2">
-													<input type="radio" name="service" value={selectedService} />
+													<input
+														type="radio"
+														name="service"
+														value={selectedService}
+													/>
 												</td>
 											</tr>
 										))}
