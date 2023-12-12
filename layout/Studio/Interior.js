@@ -8,6 +8,7 @@ import MyInfiniteScroll from 'ui/MyInfiniteScroll';
 import { CldUploadButton } from 'next-cloudinary';
 import { BASE_URL, UPLOAD_PRESET } from 'lib/env';
 import { fetcherPost } from 'lib';
+import { BsTrash, BsX } from 'react-icons/bs';
 
 const StudioInterior = ({ url, pageSize = 20, studioId }) => {
 	const [items, setItems] = useState([]);
@@ -22,8 +23,10 @@ const StudioInterior = ({ url, pageSize = 20, studioId }) => {
 		}).then((data) => {
 			const interiors = [...items];
 			interiors.splice(0, 0, {
+				id: data.id,
 				url: result.info?.url
 			});
+			setItems(interiors);
 		});
 	};
 
@@ -35,9 +38,7 @@ const StudioInterior = ({ url, pageSize = 20, studioId }) => {
 				</div>
 			);
 		}
-		return (
-			<div></div>
-		);
+		return <div></div>;
 	};
 
 	if (status === 'loading') {
@@ -76,9 +77,14 @@ const StudioInterior = ({ url, pageSize = 20, studioId }) => {
 								</div>
 							}
 						>
-							<div className='grid grid-cols-2 gap-3'>
+							<div className="grid grid-cols-2 gap-3">
 								{items.map((item, index) => (
-									<div key={index}>
+									<div className="relative" key={item.id}>
+										<div className="flex w-full justify-end">
+											<div className="cursor-pointer">
+												<BsX size={25} />
+											</div>
+										</div>
 										<WidgetPostCard
 											hasChildren={false}
 											image={item.url ? item.url : randomPhoto}
