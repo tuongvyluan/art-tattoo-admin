@@ -56,7 +56,8 @@ const authOptions = {
 					email: jwtObj['emailaddress'],
 					fullName: res.fullName,
 					accountId: res.accountId,
-					avatar: res.avatar
+					avatar: res.avatar,
+					studioName: res.studioName
 				};
 			}
 		}),
@@ -68,7 +69,7 @@ const authOptions = {
 	callbacks: {
 		async jwt({ token, user, profile, trigger, session }) {
 			if (trigger === 'update') {
-				return {...token, ...session.user }
+				return { ...token, ...session.user };
 			}
 			// Only login with google the first time profile is not null
 			// Here we fetch BE to get user info, the following time jwt will
@@ -99,13 +100,15 @@ const authOptions = {
 						signOut();
 					}
 					return {
-						fullName: profile.family_name + ' ' + profile.given_name,
-						avatar: data.accountResult.avatar,
-						id: data.accountResult.accountId,
-						customerId: data.accountResult.customerId,
-						studioId: data.accountResult.studioId,
-						artistId: data.accountResult.artistId,
-						role: role
+						id: res.accountId,
+						studioId: res.studioId,
+						token: res.jwt,
+						role: role,
+						email: jwtObj['emailaddress'],
+						fullName: res.fullName,
+						accountId: res.accountId,
+						avatar: res.avatar,
+						studioName: res.studioName
 					};
 				} else {
 					signOut();
@@ -122,7 +125,8 @@ const authOptions = {
 					customerId: user.customerId,
 					artistId: user.artistId,
 					accountId: user.accountId,
-					avatar: user.avatar
+					avatar: user.avatar,
+					studioName: user.studioName
 				};
 			}
 			return token;
@@ -138,6 +142,7 @@ const authOptions = {
 				session.user.artistId = token.artistId;
 				session.user.accountId = token.accountId;
 				session.user.avatar = token.avatar;
+				session.user.studioName = token.studioName;
 			}
 			return session;
 		},
@@ -155,6 +160,8 @@ const authOptions = {
 					password: password
 				};
 				const res = await fetcherPost(BASE_URL + '/Auth/Login', payload);
+
+				console.log(res)
 
 				// Read token from response
 				const jwtObj = readJwt(res.jwt);
@@ -187,7 +194,8 @@ const authOptions = {
 					customerId: res.customerId,
 					artistId: res.artistId,
 					accountId: res.accountId,
-					avatar: res.avatar
+					avatar: res.avatar,
+					studioName: res.studioName
 				};
 
 				// if everything is fine

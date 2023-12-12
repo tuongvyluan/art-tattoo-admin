@@ -5,7 +5,7 @@ import { useTranslation } from 'i18n';
 
 import PropTypes from 'prop-types';
 import { useAppState } from 'components/AppProvider';
-import { ROLE } from 'lib/status';
+import { ROLE, roleString } from 'lib/status';
 import { formatDate } from 'lib';
 
 const colors = [
@@ -190,23 +190,26 @@ const Header = ({ toggleOpen }) => {
 
 						<Dropdown className="px-3 relative h-full flex items-center">
 							<DropdownToggle>
-								<div className="mx-auto">
+								<div className="flex flex-wrap gap-2 items-center">
 									<div className="flex justify-center">
 										<Avatar
-											size={28}
+											size={32}
 											src={
-												data?.user?.avatar
-													? data?.user?.avatar
-													: `/images/avatar.png`
+												data?.user?.avatar ? data.user.avatar : `/images/avatar.png`
 											}
-											alt={data ? data.user.firstName : 'Unknown'}
+											alt={data ? data?.user?.fullName : 'Unknown'}
 										/>
 									</div>
-									{data?.user.role === ROLE.STUDIO
-										? 'Quản lí tiệm xăm'
-										: data?.user.role === ROLE.ADMIN
-										? 'Admin'
-										: ''}
+									<div>
+										<div className="font-semibold">
+											{data?.user?.studioName
+												? data?.user?.studioName
+												: data?.user?.fullName}
+										</div>
+										<div>
+											{data?.user.role != 0 && roleString.at(data?.user?.role)}
+										</div>
+									</div>
 								</div>
 							</DropdownToggle>
 							<DropdownMenu>

@@ -593,7 +593,7 @@ function ServicePage({ services, studioId, onReload }) {
 														key={service.id}
 														className={`bg-white border-b hover:bg-gray-50 text-black ${
 															service.status === SERVICE_STATUS.DELETED
-																? 'bg-gray-200 text-gray-500'
+																? 'bg-gray-200 opacity-40'
 																: ''
 														}`}
 													>
