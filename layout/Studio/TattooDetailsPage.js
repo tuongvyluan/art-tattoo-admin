@@ -124,7 +124,7 @@ function TattooDetailNoUpdatePage({ bookingId, artTattoo, myTattoo = false }) {
 
 															<BackgroundImg
 																key={media.id}
-																className="relative w-full bg-center bg-cover bg-fallback mt-1"
+																className="relative w-full bg-center bg-cover bg-fallback mt-7"
 																image={media.url}
 																height={150}
 															/>

@@ -91,9 +91,8 @@ const TattooListNotFilter = ({ url, pageSize = 20 }) => {
 													<WidgetPostCard
 														image={item.thumbnail ? item.thumbnail : randomPhoto}
 														link={`/tattoo/${item.id}?booking=${item.bookingId}&back=tattoo`}
-														className='cursor-pointer'
 													>
-														<div className="block">
+														<div className="block cursor-pointer">
 															<div className="flex items-start gap-1">
 																<div className="flex gap-1 items-center">
 																	<div>

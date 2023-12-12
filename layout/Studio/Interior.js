@@ -76,7 +76,7 @@ const StudioInterior = ({ url, pageSize = 20, studioId }) => {
 								</div>
 							}
 						>
-							<div>
+							<div className='grid grid-cols-2 gap-3'>
 								{items.map((item, index) => (
 									<div key={index}>
 										<WidgetPostCard
