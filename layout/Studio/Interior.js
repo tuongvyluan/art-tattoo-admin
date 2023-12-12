@@ -8,7 +8,7 @@ import MyInfiniteScroll from 'ui/MyInfiniteScroll';
 import { CldUploadButton } from 'next-cloudinary';
 import { BASE_URL, UPLOAD_PRESET } from 'lib/env';
 import { fetcherPost } from 'lib';
-import { BsTrash, BsX } from 'react-icons/bs';
+import { BsX } from 'react-icons/bs';
 
 const StudioInterior = ({ url, pageSize = 20, studioId }) => {
 	const [items, setItems] = useState([]);

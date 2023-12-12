@@ -36,6 +36,26 @@ const filterDuplicate = (newService, oldService) => {
 	);
 };
 
+const getServiceStatusColor = (status) => {
+	if (status === 0) {
+		return 'success';
+	}
+	if (status === 1) {
+		return 'warning';
+	}
+	return 'failure';
+};
+
+const getServiceStatusString = (status) => {
+	if (status === 0) {
+		return 'Mọi người';
+	}
+	if (status === 1) {
+		return 'Khách hàng cũ';
+	}
+	return 'Không ai cả (đã xoá)';
+};
+
 function ServicePage({ services, studioId, onReload }) {
 	const [serviceList, setServiceList] = useState(
 		JSON.parse(JSON.stringify(services.sort(sortServiceByCategory)))
@@ -137,13 +157,13 @@ function ServicePage({ services, studioId, onReload }) {
 	};
 
 	const updateService = (id) => {
+		handleAlert(true, 'Đang sửa dịch vụ', '', 0);
 		fetcherPut(`${BASE_URL}/studios/${studioId}/services/${id}`, {
 			...currentService,
 			id: id
 		}).then(() => {
 			onReload();
 		});
-		handleAlert(true, 'Đang sửa dịch vụ', '', 0);
 		setOpenAddModal(false);
 	};
 
@@ -207,7 +227,7 @@ function ServicePage({ services, studioId, onReload }) {
 			serviceCategoryId: service.serviceCategoryId,
 			size: service.size,
 			placement: service.placement,
-			status: 0,
+			status: service.status,
 			minPrice: service.minPrice,
 			maxPrice: service.maxPrice
 		});
@@ -286,7 +306,7 @@ function ServicePage({ services, studioId, onReload }) {
 								<div className="w-32">Loại dịch vụ</div>
 								<Dropdown className="relative">
 									<DropdownToggle>
-										<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
+										<div className="w-48 rounded-lg px-3 py-1 border border-gray-600">
 											{stringServiceCategories.at(currentService.serviceCategoryId)}
 										</div>
 										<div className="absolute top-2 right-2">
@@ -294,26 +314,28 @@ function ServicePage({ services, studioId, onReload }) {
 										</div>
 									</DropdownToggle>
 									<DropdownMenu className={'h-24 overflow-auto w-40'}>
-										{stringServiceCategories.map((cate, cateIndex) => (
-											<div
-												key={cate}
-												onClick={() =>
-													handleChangeService({
-														target: {
-															name: 'serviceCategoryId',
-															value: cateIndex
-														}
-													})
-												}
-												className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
-													currentService.category === cateIndex
-														? 'bg-indigo-100'
-														: ''
-												}`}
-											>
-												{cate}
-											</div>
-										))}
+										<div className="w-44">
+											{stringServiceCategories.map((cate, cateIndex) => (
+												<div
+													key={cate}
+													onClick={() =>
+														handleChangeService({
+															target: {
+																name: 'serviceCategoryId',
+																value: cateIndex
+															}
+														})
+													}
+													className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
+														currentService.category === cateIndex
+															? 'bg-indigo-100'
+															: ''
+													}`}
+												>
+													{cate}
+												</div>
+											))}
+										</div>
 									</DropdownMenu>
 								</Dropdown>
 							</div>
@@ -324,7 +346,7 @@ function ServicePage({ services, studioId, onReload }) {
 								<label className="w-32">Kích thước</label>
 								<Dropdown className="relative">
 									<DropdownToggle>
-										<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
+										<div className="w-48 rounded-lg px-3 py-1 border border-gray-600">
 											{stringSize.at(currentService.size)}
 										</div>
 										<div className="absolute top-2 right-2">
@@ -332,24 +354,26 @@ function ServicePage({ services, studioId, onReload }) {
 										</div>
 									</DropdownToggle>
 									<DropdownMenu className={'h-24 overflow-auto w-40'}>
-										{stringSize.map((size, sizeIndex) => (
-											<div
-												key={size}
-												onClick={() =>
-													handleChangeService({
-														target: {
-															name: 'size',
-															value: sizeIndex
-														}
-													})
-												}
-												className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
-													currentService.size === sizeIndex ? 'bg-indigo-100' : ''
-												}`}
-											>
-												{size}
-											</div>
-										))}
+										<div className="w-44">
+											{stringSize.map((size, sizeIndex) => (
+												<div
+													key={size}
+													onClick={() =>
+														handleChangeService({
+															target: {
+																name: 'size',
+																value: sizeIndex
+															}
+														})
+													}
+													className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
+														currentService.size === sizeIndex ? 'bg-indigo-100' : ''
+													}`}
+												>
+													{size}
+												</div>
+											))}
+										</div>
 									</DropdownMenu>
 								</Dropdown>
 							</div>
@@ -360,7 +384,7 @@ function ServicePage({ services, studioId, onReload }) {
 								<label className="w-32">Vị trí xăm</label>
 								<Dropdown className="relative">
 									<DropdownToggle>
-										<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
+										<div className="w-48 rounded-lg px-3 py-1 border border-gray-600">
 											{stringPlacements.at(currentService.placement)}
 										</div>
 										<div className="absolute top-2 right-2">
@@ -368,26 +392,28 @@ function ServicePage({ services, studioId, onReload }) {
 										</div>
 									</DropdownToggle>
 									<DropdownMenu className={'h-24 overflow-auto w-40'}>
-										{stringPlacements.map((placement, placementIndex) => (
-											<div
-												key={placement}
-												onClick={() =>
-													handleChangeService({
-														target: {
-															name: 'placement',
-															value: placementIndex
-														}
-													})
-												}
-												className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
-													currentService.placement === placementIndex
-														? 'bg-indigo-100'
-														: ''
-												}`}
-											>
-												{placement}
-											</div>
-										))}
+										<div className="w-44">
+											{stringPlacements.map((placement, placementIndex) => (
+												<div
+													key={placement}
+													onClick={() =>
+														handleChangeService({
+															target: {
+																name: 'placement',
+																value: placementIndex
+															}
+														})
+													}
+													className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
+														currentService.placement === placementIndex
+															? 'bg-indigo-100'
+															: ''
+													}`}
+												>
+													{placement}
+												</div>
+											))}
+										</div>
 									</DropdownMenu>
 								</Dropdown>
 							</div>
@@ -395,15 +421,15 @@ function ServicePage({ services, studioId, onReload }) {
 								<div className="w-32">Đối tượng</div>
 								<Dropdown className="relative">
 									<DropdownToggle>
-										<div className="w-44 rounded-lg px-3 py-1 border border-gray-600">
-											{currentService.status === 0 ? 'Mọi người' : 'Khách hàng cũ'}
+										<div className="w-48 rounded-lg px-3 py-1 border border-gray-600">
+											{getServiceStatusString(currentService.status)}
 										</div>
 										<div className="absolute top-2 right-2">
 											<ChevronDown width={16} height={16} />
 										</div>
 									</DropdownToggle>
-									<DropdownMenu className={'w-40'}>
-										<div>
+									<DropdownMenu className={'h-16 overflow-auto'}>
+										<div className="w-44">
 											<div
 												onClick={() =>
 													handleChangeService({
@@ -433,6 +459,21 @@ function ServicePage({ services, studioId, onReload }) {
 												}`}
 											>
 												Khách hàng cũ
+											</div>
+											<div
+												onClick={() =>
+													handleChangeService({
+														target: {
+															name: 'status',
+															value: 2
+														}
+													})
+												}
+												className={`px-3 py-1 cursor-pointer hover:bg-gray-100 ${
+													currentService.status === 2 ? 'bg-indigo-100' : ''
+												}`}
+											>
+												Không ai cả
 											</div>
 										</div>
 									</DropdownMenu>
@@ -598,11 +639,7 @@ function ServicePage({ services, studioId, onReload }) {
 														}`}
 													>
 														<td className="px-3 py-4">
-															<div>
-																{service.title}{' '}
-																{service.status === SERVICE_STATUS.DELETED &&
-																	'(Đã xoá)'}
-															</div>
+															<div>{service.title} </div>
 														</td>
 														<td className="px-3 py-4">
 															<div>
@@ -623,14 +660,8 @@ function ServicePage({ services, studioId, onReload }) {
 														</td>
 														<td className="px-3 py-4">
 															<div className="flex">
-																<Badge
-																	color={
-																		service.status === 0 ? 'success' : 'warning'
-																	}
-																>
-																	{service.status === 0
-																		? 'Mọi người'
-																		: 'Khách hàng cũ'}
+																<Badge color={getServiceStatusColor(service.status)}>
+																	{getServiceStatusString(service.status)}
 																</Badge>
 															</div>
 														</td>
