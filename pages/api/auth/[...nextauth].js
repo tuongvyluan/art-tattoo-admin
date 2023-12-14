@@ -28,7 +28,6 @@ const authOptions = {
 
 				// Read token from response
 				const jwtObj = readJwt(res.jwt);
-				console.log(jwtObj);
 				// Check role
 				const roleString = jwtObj['role'];
 				let role;
@@ -100,15 +99,15 @@ const authOptions = {
 						signOut();
 					}
 					return {
-						id: res.accountId,
-						studioId: res.studioId,
-						token: res.jwt,
+						id: data?.accountResult?.accountId,
+						studioId: data?.accountResult?.studioId,
+						token: data?.accountResult?.jwt,
 						role: role,
 						email: jwtObj['emailaddress'],
-						fullName: res.fullName,
-						accountId: res.accountId,
-						avatar: res.avatar,
-						studioName: res.studioName
+						fullName: data?.accountResult?.fullName,
+						accountId: data?.accountResult?.accountId,
+						avatar: data?.accountResult?.avatar,
+						studioName: data?.accountResult?.studioName
 					};
 				} else {
 					signOut();

@@ -36,10 +36,16 @@ const LoginPage = () => {
 
 		if (res.ok) {
 			Router.replace('/');
-		} else {
-			console.log(res);
-			handleAlert(true, 'Đăng nhập thất bại', 'Sai email hoặc password.', true);
-		}
+		} else if (res.error.includes('unverified')) {
+			handleAlert(
+				true,
+				'Đăng nhập thất bại.',
+				'Email chưa được xác thực, hãy kiểm tra hộp mail để xác thực tài khoản nhé.',
+				true
+			);
+		} else if (res.error.includes('banned')) {
+			handleAlert(true, 'Đăng nhập thất bại.', 'Tài khoản này đã bị khoá.', true);
+		} else handleAlert(true, 'Đăng nhập thất bại.', 'Sai email hoặc password.', true);
 	};
 
 	const handleAlert = (state, title, content, isWarn = false) => {
