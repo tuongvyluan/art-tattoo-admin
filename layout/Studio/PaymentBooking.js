@@ -156,6 +156,7 @@ const PaymentBooking = ({ booking }) => {
 			}
 		} else {
 			const newAmount = paidTotal + amount;
+			console.log(newAmount > total)
 			if (newAmount > total) {
 				handleAlert(
 					true,
@@ -172,31 +173,30 @@ const PaymentBooking = ({ booking }) => {
 	};
 
 	const handleSubmit = () => {
-		if (!checkValidAmount) {
-			return;
+		if (checkValidAmount()) {
+			handleAlert(true, 'Đang thực hiện thanh toán.');
+			fetcherPost(`${BASE_URL}/transactions`, {
+				bookingId: booking.id,
+				amount: amount,
+				description: description,
+				isRefund: isRefund,
+				method: method
+			}).then((response) => {
+				const promises = [];
+				bookingDetails.forEach((detail) => {
+					if (detail.selected) {
+						promises.push(
+							fetcherPut(`${BASE_URL}/booking-details/${detail.id}`, {
+								status: BOOKING_DETAIL_STATUS.COMPLETED
+							})
+						);
+					}
+				});
+				Promise.all(promises).then(() => {
+					handleCreateSuccess(response.id);
+				});
+			});
 		}
-		handleAlert(true, 'Đang thực hiện thanh toán.');
-		fetcherPost(`${BASE_URL}/transactions`, {
-			bookingId: booking.id,
-			amount: amount,
-			description: description,
-			isRefund: isRefund,
-			method: method
-		}).then((response) => {
-			const promises = [];
-			bookingDetails.forEach((detail) => {
-				if (detail.selected) {
-					promises.push(
-						fetcherPut(`${BASE_URL}/booking-details/${detail.id}`, {
-							status: BOOKING_DETAIL_STATUS.COMPLETED
-						})
-					);
-				}
-			});
-			Promise.all(promises).then(() => {
-				handleCreateSuccess(response.id);
-			});
-		});
 	};
 
 	return (
@@ -296,7 +296,10 @@ const PaymentBooking = ({ booking }) => {
 									</thead>
 									<tbody>
 										{transactions.map((transaction, transactionIndex) => (
-											<tr key={transaction.id} className="text-base hover:bg-gray-50">
+											<tr
+												key={transaction.id}
+												className="text-base hover:bg-gray-50"
+											>
 												<td
 													scope="col"
 													className="text-left w-28 text-gray-900 px-4 py-3"
@@ -402,11 +405,11 @@ const PaymentBooking = ({ booking }) => {
 												</td>
 												<td
 													scope="col"
-													className="text-left text-gray-900 w-40 px-4 py-3"
+													className="text-left text-gray-900 px-4 py-3"
 												>
 													<div className="flex w-full">
 														<div
-															className={`text-base text-black font-semibold bg-${stringBookingDetailStatusColor.at(
+															className={`text-base min-w-max text-black font-semibold bg-${stringBookingDetailStatusColor.at(
 																detail.status
 															)} px-2 rounded-full`}
 														>

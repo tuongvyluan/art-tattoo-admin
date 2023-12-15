@@ -244,16 +244,16 @@ function BookingPage({ studioId }) {
 														: '0'}
 													)
 												</div>
+												<div>
+													Ngày tạo đơn:{' '}
+													<span className="text-base">
+														{formatTime(booking.createdAt)}
+													</span>
+												</div>
 											</div>
 											<CustomerServices bookingDetails={booking.bookingDetails} />
 											<div className="flex justify-end pt-3 items-start">
 												<div className="text-right">
-													<div>
-														Ngày tạo đơn:{' '}
-														<span className="text-base">
-															{formatTime(booking.createdAt)}
-														</span>
-													</div>
 													{booking.cancelledAt && (
 														<div>
 															<div>
