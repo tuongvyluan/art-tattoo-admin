@@ -129,16 +129,16 @@ const StudioPayment = ({ studioId }) => {
 												{stringTransactionMethod.at(transaction.method)}
 											</td>
 											<td className="text-left text-gray-900 px-4 py-3 text-base">
-												<Link href={`/booking/${transaction.bookingId}`}>
-													<Tooltip content="Xem đơn hàng">
+												<Tooltip content='Xem đơn hàng'>
+													<Link href={`/booking/${transaction.bookingId}`}>
 														<div className="cursor-pointer flex justify-center">
 															<HiMiniMagnifyingGlass
 																className="hover:text-gray-600 cursor-pointer"
 																size={20}
 															/>
 														</div>
-													</Tooltip>
-												</Link>
+													</Link>
+												</Tooltip>
 											</td>
 										</tr>
 									))}

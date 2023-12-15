@@ -1,4 +1,5 @@
 import PaymentBooking from 'layout/Studio/PaymentBooking';
+import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -10,7 +11,8 @@ import { Loading } from 'ui';
 const PaymentPage = () => {
 	const router = useRouter();
 	const bookingId = router.query.id;
-	const { data, error } = useSWR(`${BASE_URL}/transactions/${bookingId}`);
+	const [data, setData] = useState(undefined);
+	const [error, setError] = useState(false);
 	const [myError, setMyError] = useState(false);
 	const { data: userData, status } = useSession();
 	const [errorMessage, setErrorMessage] = useState('Tải dữ liệu thất bại.');
@@ -43,6 +45,16 @@ const PaymentPage = () => {
 				<Loading />
 			</div>
 		);
+	}
+
+	if (!data) {
+		fetcher(`${BASE_URL}/transactions/${bookingId}`)
+			.then((res) => {
+				setData(res);
+			})
+			.catch(() => {
+				setError(true);
+			});
 	}
 
 	if (data && userData) {
