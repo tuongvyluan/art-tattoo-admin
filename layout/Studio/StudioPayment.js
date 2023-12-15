@@ -1,10 +1,12 @@
 import Heading from 'components/Heading';
+import { Tooltip } from 'flowbite-react';
 import { fetcher, formatPrice, formatTime } from 'lib';
 import { BASE_URL } from 'lib/env';
 import { stringTransactionMethod } from 'lib/status';
 import Link from 'next/link';
 import PropTypes from 'propTypes';
 import { useEffect, useState } from 'react';
+import { HiMiniMagnifyingGlass } from 'react-icons/hi2';
 import { Card, CardBody } from 'ui';
 import MyPagination from 'ui/MyPagination';
 
@@ -59,7 +61,7 @@ const StudioPayment = ({ studioId }) => {
 						// Transaction table
 					}
 					<div className="w-full">
-						<div className="w-full overflow-auto relative shadow-md sm:rounded-lg">
+						<div className="w-full overflow-auto relative shadow-md sm:rounded-lg mb-5">
 							<table className="w-full min-w-3xl text-sm text-left text-gray-500">
 								<thead className="text-xs text-gray-700 uppercase">
 									<tr>
@@ -93,6 +95,10 @@ const StudioPayment = ({ studioId }) => {
 										>
 											Phương thức thanh toán
 										</th>
+										<th
+											scope="col"
+											className="px-2 py-3 bg-gray-50 dark:bg-gray-800"
+										></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -121,6 +127,18 @@ const StudioPayment = ({ studioId }) => {
 											</td>
 											<td className="text-left text-gray-900 sm:w-28 px-4 py-3 text-base">
 												{stringTransactionMethod.at(transaction.method)}
+											</td>
+											<td className="text-left text-gray-900 px-4 py-3 text-base">
+												<Link href={`/booking/${transaction.bookingId}`}>
+													<Tooltip content="Xem đơn hàng">
+														<div className="cursor-pointer flex justify-center">
+															<HiMiniMagnifyingGlass
+																className="hover:text-gray-600 cursor-pointer"
+																size={20}
+															/>
+														</div>
+													</Tooltip>
+												</Link>
 											</td>
 										</tr>
 									))}
