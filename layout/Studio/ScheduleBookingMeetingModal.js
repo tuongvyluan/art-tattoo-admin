@@ -252,11 +252,11 @@ const ScheduleBookingMeetingModal = ({
 };
 
 ScheduleBookingMeetingModal.propTypes = {
-	bookingDetail: PropTypes.object.isRequired,
+	bookingDetail: PropTypes.object,
 	openModal: PropTypes.bool.isRequired,
 	setOpenModal: PropTypes.func.isRequired,
 	setLoading: PropTypes.func,
-	canEdit: PropTypes.func
+	canEdit: PropTypes.bool
 };
 
 export default ScheduleBookingMeetingModal;

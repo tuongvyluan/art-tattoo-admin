@@ -1,11 +1,17 @@
 import { ChevronLeft } from 'icons/solid';
 import {
+	calculateBookingTransactions,
 	calculateTotal,
 	fetcher,
 	fetcherPut,
 	formatPrice
 } from 'lib';
-import { BOOKING_DETAIL_STATUS, BOOKING_STATUS, SERVICE_STATUS, stringBookingStatuses } from 'lib/status';
+import {
+	BOOKING_DETAIL_STATUS,
+	BOOKING_STATUS,
+	SERVICE_STATUS,
+	stringBookingStatuses
+} from 'lib/status';
 import PropTypes from 'prop-types';
 import { Alert, Card, CardBody, Link } from 'ui';
 import { useEffect, useState } from 'react';
@@ -22,6 +28,10 @@ import AddBookingDetailModal from './AddBookingDetailModal';
 function BookingDetailsPage({ data, studioId, setLoading }) {
 	const { data: account } = useSession();
 	const [renderData, setRenderData] = useState(data);
+	const [total, setTotal] = useState(calculateTotal(renderData.bookingDetails));
+	const [paidTotal, setPaidTotal] = useState(
+		calculateBookingTransactions(renderData.transactions)
+	);
 
 	const [bookingStatus, setBookingStatus] = useState(renderData.status);
 
@@ -45,18 +55,20 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	]);
 
 	useEffect(() => {
-		const artistList = serviceData?.artists
+		const artistList = serviceData?.artists;
 		if (artistList) {
-			setArtists([
-				{
-					id: null,
-					account: {
-						fullName: 'Nghệ sĩ bất kỳ'
+			setArtists(
+				[
+					{
+						id: null,
+						account: {
+							fullName: 'Nghệ sĩ bất kỳ'
+						}
 					}
-				}
-			].concat(artistList))
+				].concat(artistList)
+			);
 		}
-	}, [serviceData])
+	}, [serviceData]);
 
 	const handleCancelReason = ({ status, reason }) => {
 		setCancelReason(reason);
@@ -120,6 +132,36 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 		setConfirmCancelBookingModal(false);
 	};
 
+	const completeBooking = () => {
+		const promises = [];
+		const bookingDetails = renderData.bookingDetails;
+		bookingDetails.forEach((detail) => {
+			if (
+				detail.status !== BOOKING_DETAIL_STATUS.CANCELLED &&
+				detail.status !== BOOKING_DETAIL_STATUS.COMPLETED
+			) {
+				promises.push(
+					fetcherPut(`${BASE_URL}/booking-details/${detail.id}`, {
+						status: BOOKING_DETAIL_STATUS.COMPLETED
+					})
+				);
+			}
+		});
+		Promise.all(promises).then(() => {
+			fetcherPut(`${BASE_URL}/bookings/${renderData.id}`, {
+				status: BOOKING_STATUS.COMPLETED
+			})
+				.then((data) => {
+					setBookingStatus(BOOKING_STATUS.COMPLETED);
+					handleAlert(true, 'Cập nhật trạng thái đơn hàng thành công');
+					setLoading(true);
+				})
+				.catch((e) => {
+					handleAlert(true, 'Cập nhật trạng thái đơn hàng thành công');
+				});
+		});
+	};
+
 	return (
 		<div className="relative">
 			<Alert
@@ -133,7 +175,9 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 			</Alert>
 			<AddBookingDetailModal
 				bookingId={renderData.id}
-				serviceList={serviceData?.services?.filter((s) => s.status !== SERVICE_STATUS.DELETED)}
+				serviceList={serviceData?.services?.filter(
+					(s) => s.status !== SERVICE_STATUS.DELETED
+				)}
 				artistList={artists}
 				openModal={openAddDetailModal}
 				setLoading={setLoading}
@@ -201,7 +245,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								<div className="flex justify-start flex-wrap">
 									<div className="w-full md:pr-1 md:w-1/2 md:border-r mb-5 md:mb-0 md:border-b-0 border-b border-gray-300">
 										<div>
-										<Heading>Thông tin khách hàng</Heading>
+											<Heading>Thông tin khách hàng</Heading>
 											<div className="text-lg font-semibold">
 												{renderData.customer.fullName}
 											</div>
@@ -306,60 +350,71 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								// Final sum
 							}
 							{(renderData.status === BOOKING_STATUS.IN_PROGRESS ||
-								renderData.status === BOOKING_STATUS.COMPLETED) && (
-								<div>
-									<table className="w-full mb-3">
-										<tbody>
-											<tr className="border-t border-gray-300">
-												<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
-													Tổng tiền
-												</th>
-												<td className="py-3 text-right text-xl text-red-500">
-													{/* {formatPrice(renderData.total)} */}
-													{formatPrice(calculateTotal(renderData.bookingDetails))}
-												</td>
-											</tr>
-											{/* <tr className="border-t border-gray-300">
-												<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
-													Thanh toán
-												</th>
-												<td className="py-3 text-right text-sm">
-													<div>
-														<span className="text-gray-600">
-															{formatTime(new Date())} - Tiền mặt -{' '}
-														</span>
-														<span className="text-base">{formatPrice(1000000)}</span>
+								renderData.status === BOOKING_STATUS.COMPLETED) &&
+								renderData.bookingDetails?.length > 0 && (
+									<div>
+										<table className="w-full mb-3">
+											<tbody>
+												<tr className="border-t border-gray-300">
+													<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
+														Tổng tiền
+													</th>
+													<td className="py-3 text-right text-xl text-red-500">
+														{/* {formatPrice(renderData.total)} */}
+														{formatPrice(total)}
+													</td>
+												</tr>
+												<tr className="border-t border-gray-300">
+													<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
+														Đã thanh toán
+													</th>
+													<td className="py-3 text-right text-xl text-green-500">
+														{formatPrice(paidTotal)}
+													</td>
+												</tr>
+												{total !== paidTotal && (
+													<tr className="border-t border-gray-300">
+														<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
+															Còn {total > paidTotal ? 'lại' : 'thừa'}
+														</th>
+														<td className="py-3 text-right text-xl text-red-500">
+															<div>
+																{total > paidTotal
+																	? formatPrice(total - paidTotal)
+																	: formatPrice(paidTotal - total)}
+															</div>
+														</td>
+													</tr>
+												)}
+											</tbody>
+										</table>
+										{
+											// Chuyển qua màn hình payment
+										}
+										{total !== paidTotal ? (
+											<div className="flex justify-center">
+												<Link href={`/payment/${renderData.id}`}>
+													<div className="w-32">
+														<Button>Thanh toán</Button>
 													</div>
-													<div>
-														<span className="text-gray-600">
-															{formatTime(new Date())} - Ví điện tử -{' '}
-														</span>
-														<span className="text-base">{formatPrice(500000)}</span>
-													</div>
-												</td>
-											</tr>
-											<tr className="border-t border-gray-300">
-												<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
-													Còn lại
-												</th>
-												<td className="py-3 text-right text-xl text-red-500">
-													<div>{formatPrice(500000)}</div>
-												</td>
-											</tr> */}
-										</tbody>
-									</table>
-									{
-										// Chuyển qua màn hình payment
-									}
-									<div className="flex justify-center">
-										<Link href={`/payment/${renderData.id}`}>
-											<div className="w-32">
-												<Button>Thanh toán</Button>
+												</Link>
 											</div>
-										</Link>
+										) : (
+											<div className="flex justify-center flex-wrap gap-3">
+												<Link href={`/payment/${renderData.id}`}>
+													<div className="flex">
+														<Button outline>Xem thanh toán</Button>
+													</div>
+												</Link>
+												{renderData.status !== BOOKING_STATUS.COMPLETED && (
+													<div className="flex">
+														<Button onClick={completeBooking}>Hoàn thành</Button>
+													</div>
+												)}
+											</div>
+										)}
 									</div>
-								</div>
-							)}
+								)}
 						</div>
 					</CardBody>
 				</Card>

@@ -275,7 +275,7 @@ const CustomerServices = ({
 						}`}
 						key={bookingDetail.id}
 					>
-						<div className="w-full flex justify-start gap-2 items-start bg-gray-50 py-5 relative">
+						<div className="w-full flex flex-wrap sm:flex-nowrap justify-start gap-2 items-start bg-gray-50 py-5 relative">
 							{showDetails && (
 								<div className="absolute top-4 right-4 cursor-pointer flex flex-wrap gap-2">
 									<div
@@ -340,7 +340,7 @@ const CustomerServices = ({
 							{
 								// Phần bên phải của khung booking service
 							}
-							<div className="pl-3 w-full">
+							<div className="pl-3 w-full pr-3 sm:pr-24">
 								<div
 									key={bookingDetail.id}
 									className="pb-1 flex flex-wrap gap-1 text-base"

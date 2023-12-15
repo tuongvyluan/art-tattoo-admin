@@ -1,141 +1,401 @@
 import { ChevronLeft } from 'icons/solid';
 import { BsCashCoin, BsCreditCard, BsWallet2 } from 'react-icons/bs';
-import { formatPrice } from 'lib';
+import {
+	calculateBookingTransactions,
+	calculateMinBookingTotal,
+	calculateTotal,
+	extractServiceFromBookingDetail,
+	fetcherPost,
+	fetcherPut,
+	formatPrice,
+	formatTime
+} from 'lib';
 import Link from 'next/link';
 import PropTypes from 'prop-types';
-import { Card, CardBody } from 'ui';
+import { Alert, Card, CardBody } from 'ui';
 import Button from 'components/Button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Heading from 'components/Heading';
+import {
+	BOOKING_DETAIL_STATUS,
+	BOOKING_STATUS,
+	TRANSACTION_METHOD,
+	stringBookingDetailStatus,
+	stringBookingDetailStatusColor,
+	stringTransactionMethod
+} from 'lib/status';
+import MoneyInput from 'components/MoneyInput';
+import { BASE_URL } from 'lib/env';
+import { useRouter } from 'next/router';
 
-const PaymentBooking = ({ bookingId, payments }) => {
-	const [selectedMethod, setSelectedMethod] = useState(0);
-	const [total, setTotal] = useState(0);
+const PaymentBooking = ({ booking }) => {
+	const router = useRouter();
+	const [method, setMethod] = useState(0);
+	const [bookingDetails, setBookingDetails] = useState(
+		booking.bookingDetails.map((detail) => {
+			return {
+				...detail,
+				selected: false
+			};
+		})
+	);
+	const [total, setTotal] = useState(calculateTotal(booking.bookingDetails));
+	const [paidTotal, setPaidTotal] = useState(
+		calculateBookingTransactions(booking.transactions)
+	);
+	const [minTotal, setMinTotal] = useState(
+		calculateMinBookingTotal(booking.bookingDetails)
+	);
+	const [isRefund, setIsRefund] = useState(false);
+	const [amount, setAmount] = useState(0);
+	const [description, setDescription] = useState('');
+
+	// Alert related vars
+	const [showAlert, setShowAlert] = useState(false);
+
+	const [alertContent, setAlertContent] = useState({
+		title: '',
+		content: '',
+		isWarn: 'blue'
+	});
+
+	const handleAlert = (state, title, content, isWarn = 0) => {
+		setShowAlert((prev) => state);
+		let color;
+		switch (isWarn) {
+			case 1:
+				color = 'green';
+				break;
+			case 2:
+				color = 'red';
+				break;
+			default:
+				color = 'blue';
+				break;
+		}
+		setAlertContent({
+			title: title,
+			content: content,
+			isWarn: color
+		});
+	};
+
+	const handleSelectDetail = (detailIndex) => {
+		const details = [...bookingDetails];
+		const detail = details.at(detailIndex);
+		detail.selected = !detail.selected;
+		details[detailIndex] = detail;
+		setBookingDetails(details);
+	};
+
+	useEffect(() => {
+		let paid = 0;
+		let note = '';
+		bookingDetails.forEach((detail) => {
+			if (detail.selected) {
+				paid += detail.price;
+				note = note.concat(
+					`Thanh toán ${extractServiceFromBookingDetail(detail)}. `
+				);
+			}
+		});
+		setAmount(paid);
+		setDescription(note);
+	}, [bookingDetails]);
+
+	const handleSubmit = () => {
+		if (isRefund) {
+			const newAmount = paidTotal - amount;
+			console.log(newAmount);
+			if (newAmount < minTotal) {
+				handleAlert(
+					true,
+					'Thanh toán thất bại.',
+					`Tổng tiền sau khi thanh toán không được thấp hơn chi phí cho các dịch vụ đã hoàn thành ${formatPrice(
+						minTotal
+					)}.`,
+					2
+				);
+				return;
+			}
+		} else {
+			const newAmount = paidTotal + amount;
+			console.log(newAmount, paidTotal);
+			if (newAmount > total) {
+				handleAlert(
+					true,
+					'Thanh toán thất bại.',
+					`Tổng tiền sau khi thanh toán không được vượt quá giá trị đơn hàng ${formatPrice(
+						total
+					)}.`,
+					2
+				);
+				return;
+			}
+		}
+		handleAlert(true, 'Đang thực hiện thanh toán.');
+		fetcherPost(`${BASE_URL}/transactions`, {
+			bookingId: booking.id,
+			amount: amount,
+			description: description,
+			isRefund: isRefund,
+			method: method
+		}).then(() => {
+			const promises = [];
+			bookingDetails.forEach((detail) => {
+				if (detail.selected) {
+					promises.push(
+						fetcherPut(`${BASE_URL}/booking-details/${detail.id}`, {
+							status: BOOKING_DETAIL_STATUS.COMPLETED
+						})
+					);
+				}
+			});
+			Promise.all(promises).then(() => {
+				handleAlert(true, 'Thanh toán thành công.', '', 1);
+				router.reload();
+			});
+		});
+	};
 
 	return (
-		<div className="relative sm:px-12 md:px-3 lg:px-10 xl:px-44">
+		<div className="relative sm:px-12 md:px-3 lg:px-10 xl:px-20">
+			<Alert
+				showAlert={showAlert}
+				setShowAlert={setShowAlert}
+				color={alertContent.isWarn}
+				className="bottom-2 right-2 fixed max-w-md z-50"
+			>
+				<strong className="font-bold mr-1">{alertContent.title}</strong>
+				<span className="block sm:inline">{alertContent.content}</span>
+			</Alert>
 			<Card>
 				<CardBody>
 					{
 						// Booking ID & back icon
 					}
 					<div className="flex justify-between border-b border-gray-300 pb-3 mb-3">
-						<Link href={`/booking/${bookingId}`}>
+						<Link href={`/booking/${booking.id}`}>
 							<div className="cursor-pointer flex gap-1 text-gray-500 hover:text-indigo-500">
 								<ChevronLeft width={20} heigh={20} /> TRỞ LẠI
 							</div>
 						</Link>
 						<div>
-							<span>Mã đơn hàng: 0ffd71102da6</span>
+							<span>Mã đơn hàng: {booking?.id?.split('-').at(0)}</span>
 						</div>
 					</div>
-					<div>
-						<Heading>Thông tin thanh toán:</Heading>
+					{
+						// Customer info & booking status
+					}
+					<div className="border-b border-gray-300 pb-3 mb-3">
+						<div className="flex justify-start flex-wrap">
+							<div className="w-full">
+								<div>
+									<Heading>Thông tin khách hàng</Heading>
+									<div className="text-lg font-semibold">
+										{booking.customer.fullName}
+									</div>
+									<div>
+										Số điện thoại:{' '}
+										<span className="font-semibold">
+											{booking.customer.phoneNumber}
+										</span>
+									</div>
+									<div>
+										Email:{' '}
+										<span className="font-semibold">{booking.customer.email}</span>
+									</div>
+								</div>
+							</div>
+							<div className="flex flex-col justify-start flex-grow pt-3 md:pt-0">
+								{(booking.status === BOOKING_STATUS.CUSTOMER_CANCEL ||
+									booking.status === BOOKING_STATUS.STUDIO_CANCEL) && (
+									<div className="text-center my-auto text-base text-red-500">
+										<div>ĐƠN HÀNG ĐÃ BỊ HUỶ</div>
+									</div>
+								)}
+							</div>
+						</div>
+					</div>
+					{
+						// Transaction list
+					}
+					{booking.transactions?.length > 0 && (
+						<div className="border-b border-gray-300 pb-6 mb-3">
+							<Heading>Lịch sử thanh toán</Heading>
+							<div className="min-w-min overflow-auto">
+								<table className="w-full min-w-min text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+									<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
+										<tr>
+											<th
+												scope="col"
+												className="w-28 px-4 py-3 bg-gray-50 dark:bg-gray-800"
+											>
+												Thời gian
+											</th>
+											<th
+												scope="col"
+												className="w-36 px-2 py-3 bg-gray-50 dark:bg-gray-800"
+											>
+												Phương thức thanh toán
+											</th>
+											<th
+												scope="col"
+												className="w-1/3 px-4 py-3 bg-gray-50 dark:bg-gray-800"
+											>
+												Ghi chú
+											</th>
+											<th
+												scope="col"
+												className="w-28 px-4 py-3 bg-gray-50 dark:bg-gray-800"
+											>
+												Số tiền
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{booking.transactions.map((transaction, transactionIndex) => (
+											<tr key={transaction.id} className="text-base">
+												<td
+													scope="col"
+													className="text-left text-gray-900 px-4 py-3 bg-white dark:bg-gray-800"
+												>
+													{formatTime(transaction.createdAt)}
+												</td>
+												<td className="text-left text-gray-900 sm:w-28 px-4 py-3 bg-white dark:bg-gray-800 text-base">
+													{stringTransactionMethod.at(transaction.method)}
+												</td>
+												<td className="text-left text-gray-900 w-1/3 px-4 py-3 bg-white dark:bg-gray-800 text-base">
+													{transaction.description}
+												</td>
+												<td
+													scope="col"
+													className={`text-left ${
+														transaction.isRefund ? 'text-red-500' : 'text-gray-900'
+													} w-16 lg:w-24 px-4 py-3 bg-white dark:bg-gray-800`}
+												>
+													{transaction.isRefund && '-'}
+													{formatPrice(transaction.price)}
+												</td>
+											</tr>
+										))}
+										<tr>
+											<td
+												colSpan={3}
+												className="text-right bg-blue-50 text-gray-900 w-24 lg:w-40 px-4 py-3 dark:bg-gray-800 text-base"
+											>
+												Tổng cộng
+											</td>
+											<td className="font-semibold text-left text-gray-900 w-24 lg:w-40 px-4 py-3 bg-yellow-50 dark:bg-gray-800 text-base">
+												{formatPrice(paidTotal)}
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					)}
+					{
+						// Booking details
+					}
+					<div className="border-b border-gray-300 pb-6 mb-3">
+						<Heading>Chi tiết đơn hàng</Heading>
 						{
 							// Tổng tiền
 						}
-						<div className="relative shadow-md sm:rounded-lg">
-							<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+						<div className="relative shadow-md sm:rounded-lg min-w-max overflow-x-auto">
+							<table className="w-full min-w-max text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 								<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
 									<tr>
 										<th
 											scope="col"
-											className="max-w-16 px-6 py-3 bg-gray-50 dark:bg-gray-800"
+											className="w-8 px-4 py-3 bg-gray-50 dark:bg-gray-800"
 										>
-											STT
+											Chọn
 										</th>
 										<th
 											scope="col"
-											className="w-1/2 px-6 py-3 bg-gray-50 dark:bg-gray-800"
+											className="w-1/2 px-4 py-3 bg-gray-50 dark:bg-gray-800"
 										>
 											Dịch vụ
 										</th>
 										<th
 											scope="col"
-											className="px-6 py-3 bg-gray-50 dark:bg-gray-800"
+											className="px-4 py-3 w-40 bg-gray-50 dark:bg-gray-800"
+										>
+											Trạng thái
+										</th>
+										<th
+											scope="col"
+											className="px-4 py-3 bg-gray-50 dark:bg-gray-800"
 										>
 											Giá
 										</th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr className="text-base">
-										<td
-											scope="col"
-											className="text-left text-gray-900 w-16 lg:w-24 px-6 py-3 bg-white dark:bg-gray-800"
-										>
-											1
-										</td>
-										<td
-											scope="col"
-											className="text-left text-gray-900 w-16 lg:w-24 px-6 py-3 bg-white dark:bg-gray-800"
-										>
-											{'Size S (<8cm), Trắng đen, Đơn giản, ₫400,000 - ₫800,000'}
-										</td>
-										<td className="text-left text-gray-900 w-24 lg:w-40 px-6 py-3 bg-white dark:bg-gray-800 text-base">
-											{formatPrice(100000)}
-										</td>
-									</tr>
-									<tr className="text-base">
-										<td
-											scope="col"
-											className="text-left text-gray-900 w-16 lg:w-24 px-6 py-3 bg-blue-50 dark:bg-gray-800"
-										>
-											2
-										</td>
-										<td
-											scope="col"
-											className="text-left text-gray-900 w-16 lg:w-24 px-6 py-3 bg-blue-50 dark:bg-gray-800"
-										>
-											{'Size S (<8cm), Trắng đen, Phức tạp, ₫800,000 - ₫1,200,000'}
-										</td>
-										<td className="text-left text-gray-900 w-24 lg:w-40 px-6 py-3 bg-blue-50 dark:bg-gray-800 text-base">
-											{formatPrice(400000)}
-										</td>
-									</tr>
-									<tr className="text-base">
-										<td
-											scope="col"
-											className="text-left text-gray-900 w-16 lg:w-24 px-6 py-3 bg-white dark:bg-gray-800"
-										>
-											3
-										</td>
-										<td
-											scope="col"
-											className="text-left text-gray-900 w-16 lg:w-24 px-6 py-3 bg-white dark:bg-gray-800"
-										>
-											{'Size S (<8cm), Trắng đen, Phức tạp, ₫800,000 - ₫1,200,000'}
-										</td>
-										<td className="text-left text-gray-900 w-24 lg:w-40 px-6 py-3 bg-white dark:bg-gray-800 text-base">
-											{formatPrice(300000)}
-										</td>
-									</tr>
-									<tr className="text-base">
-										<td
-											scope="col"
-											className="text-left text-gray-900 w-16 lg:w-24 px-6 py-3 bg-blue-50 dark:bg-gray-800"
-										>
-											4
-										</td>
-										<td
-											scope="col"
-											className="text-left text-gray-900 w-16 lg:w-24 px-6 py-3 bg-blue-50 dark:bg-gray-800"
-										>
-											{'Size S (<8cm), Trắng đen, Phức tạp, ₫800,000 - ₫1,200,000'}
-										</td>
-										<td className="text-left text-gray-900 w-24 lg:w-40 px-6 py-3 bg-blue-50 dark:bg-gray-800 text-base">
-											{formatPrice(700000)}
-										</td>
-									</tr>
+									{bookingDetails?.length > 0 ? (
+										bookingDetails.map((detail, detailIndex) => (
+											<tr key={detail.id} className="text-base">
+												<td
+													scope="col"
+													className="flex w-full justify-center pt-4 text-gray-900 px-4 py-3 bg-white"
+												>
+													{detail.status === BOOKING_DETAIL_STATUS.IN_PROGRESS && (
+														<input
+															type="checkbox"
+															checked={detail.selected}
+															onChange={() => handleSelectDetail(detailIndex)}
+														/>
+													)}
+												</td>
+												<td
+													scope="col"
+													className="text-left text-gray-900 w-16 lg:w-24 px-4 py-3 bg-white dark:bg-gray-800"
+												>
+													{extractServiceFromBookingDetail(detail)}
+												</td>
+												<td
+													scope="col"
+													className="text-left text-gray-900 w-40 px-4 py-3 bg-white dark:bg-gray-800"
+												>
+													<div className="flex w-full">
+														<div
+															className={`text-base text-black font-semibold bg-${stringBookingDetailStatusColor.at(
+																detail.status
+															)} px-2 rounded-full`}
+														>
+															<div>
+																{stringBookingDetailStatus.at(detail.status)}
+															</div>
+														</div>
+													</div>
+												</td>
+												<td className="text-left text-gray-900 w-24 lg:w-40 px-4 py-3 bg-white dark:bg-gray-800 text-base">
+													<div
+														className={`${
+															detail.status === BOOKING_DETAIL_STATUS.CANCELLED &&
+															'line-through'
+														}`}
+													>
+														{formatPrice(detail.price)}
+													</div>
+												</td>
+											</tr>
+										))
+									) : (
+										<div>Đơn hàng còn trống</div>
+									)}
+
 									<tr>
 										<td
-											colSpan={2}
-											className="text-right text-gray-900 w-24 lg:w-40 px-6 py-3 bg-gray-50 dark:bg-gray-800 text-base"
+											colSpan={3}
+											className="text-right bg-blue-50 text-gray-900 w-24 lg:w-40 px-4 py-3 dark:bg-gray-800 text-base"
 										>
 											Thành tiền
 										</td>
-										<td className="font-semibold text-left text-gray-900 w-24 lg:w-40 px-6 py-3 bg-yellow-50 dark:bg-gray-800 text-base">
-											{formatPrice(1500000)}
+										<td className="font-semibold text-left text-gray-900 w-24 lg:w-40 px-4 py-3 bg-yellow-50 dark:bg-gray-800 text-base">
+											{formatPrice(total)}
 										</td>
 									</tr>
 								</tbody>
@@ -143,60 +403,85 @@ const PaymentBooking = ({ bookingId, payments }) => {
 						</div>
 					</div>
 
-					{
-						// Payment method
-					}
-					<div className="pt-5">
-						<Heading>Chọn phương thức thanh toán:</Heading>
-						<div className="flex justify-center gap-5">
-							<div
-								className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
-									selectedMethod === 0 && 'bg-blue-100'
-								}`}
-								onClick={() => setSelectedMethod(0)}
-							>
-								<div>
-									<BsCashCoin size={20} />
+					{total > 0 && paidTotal !== total && (
+						<div>
+							{
+								// Payment method
+							}
+							<div className="pt-5">
+								<Heading>Chọn phương thức thanh toán:</Heading>
+								<div className="flex justify-center gap-5">
+									<div
+										className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
+											method === 0 && 'bg-blue-100'
+										}`}
+										onClick={() => setMethod(TRANSACTION_METHOD.CASH)}
+									>
+										<div>
+											<BsCashCoin size={20} />
+										</div>
+										<div>Tiền mặt</div>
+									</div>
+									<div
+										className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
+											method === 1 && 'bg-blue-100'
+										}`}
+										onClick={() => setMethod(TRANSACTION_METHOD.BANKING)}
+									>
+										<div>
+											<BsCreditCard size={20} />
+										</div>
+										<div>Thanh toán qua ngân hàng</div>
+									</div>
+									<div
+										className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
+											method === 2 && 'bg-blue-100'
+										}`}
+										onClick={() => setMethod(TRANSACTION_METHOD.EWALLET)}
+									>
+										<div>
+											<BsWallet2 size={20} />
+										</div>
+										<div>Ví điện tử</div>
+									</div>
 								</div>
-								<div>Tiền mặt</div>
 							</div>
-							<div
-								className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
-									selectedMethod === 1 && 'bg-blue-100'
-								}`}
-								onClick={() => setSelectedMethod(1)}
-							>
-								<div>
-									<BsCreditCard size={20} />
+							{
+								// Fill in payment
+							}
+							<div className="flex flex-wrap gap-3 items-center pb-3 pt-5">
+								<div className="flex flex-wrap gap-1 items-center">
+									<input
+										type="checkbox"
+										checked={isRefund}
+										onChange={() => setIsRefund((prev) => !prev)}
+									/>
+									<div>Hoàn tiền</div>
 								</div>
-								<div>Thanh toán qua ngân hàng</div>
+								<div className="max-w-max">
+									<MoneyInput
+										value={amount}
+										onAccept={(value) => setAmount(value)}
+									/>
+								</div>
 							</div>
-							<div
-								className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
-									selectedMethod === 2 && 'bg-blue-100'
-								}`}
-								onClick={() => setSelectedMethod(2)}
-							>
-								<div>
-									<BsWallet2 size={20} />
+							<div>
+								<label className="text-base font-semibold">Ghi chú</label>
+								<textarea
+									rows={4}
+									type="text"
+									value={description}
+									onChange={(e) => setDescription(e.target.value)}
+									className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
+								/>
+							</div>
+							<div className="flex justify-center pt-5">
+								<div className="w-32">
+									<Button onClick={handleSubmit}>Thanh toán</Button>
 								</div>
-								<div>Ví điện tử</div>
 							</div>
 						</div>
-					</div>
-					{
-						// Fill in payment
-					}
-					<div>
-						<div className="flex flex-wrap">
-							<input type="checkbox" />
-						</div>
-					</div>
-					<div className="flex justify-center pt-5">
-						<div className="w-32">
-							<Button>Thanh toán</Button>
-						</div>
-					</div>
+					)}
 				</CardBody>
 			</Card>
 		</div>
@@ -204,8 +489,7 @@ const PaymentBooking = ({ bookingId, payments }) => {
 };
 
 PaymentBooking.propTypes = {
-	bookingId: PropTypes.string,
-	payments: PropTypes.array
+	booking: PropTypes.object.isRequired
 };
 
 export default PaymentBooking;
