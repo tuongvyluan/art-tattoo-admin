@@ -345,9 +345,12 @@ const CustomerServices = ({
 									key={bookingDetail.id}
 									className="pb-1 flex flex-wrap gap-1 text-base"
 								>
-									<div>{bookingServiceIndex + 1}</div>
+									<div>{bookingServiceIndex + 1}.</div>
 									<div className="flex gap-1 flex-wrap items-center">
-										. {stringSize.at(bookingDetail.serviceSize)},
+										{bookingDetail.serviceTitle},
+									</div>
+									<div className="flex gap-1 flex-wrap items-center">
+										{stringSize.at(bookingDetail.serviceSize)},
 									</div>
 
 									{bookingDetail.servicePlacement ? (

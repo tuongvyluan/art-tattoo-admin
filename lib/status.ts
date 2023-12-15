@@ -143,7 +143,7 @@ export const stringBookingStatuses = [
 	'Đang thực hiện',
 	'Khách hàng huỷ',
 	'Studio huỷ',
-	'Đã hoàn thành'
+	'Hoàn thành'
 ];
 
 export const operationNames = ['Khác', 'Trọn gói', 'Xoá xăm', 'Dặm lại', 'Sửa xăm'];

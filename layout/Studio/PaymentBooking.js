@@ -20,16 +20,15 @@ import {
 	BOOKING_DETAIL_STATUS,
 	BOOKING_STATUS,
 	TRANSACTION_METHOD,
+	TRANSACTION_STATUS,
 	stringBookingDetailStatus,
 	stringBookingDetailStatusColor,
 	stringTransactionMethod
 } from 'lib/status';
 import MoneyInput from 'components/MoneyInput';
 import { BASE_URL } from 'lib/env';
-import { useRouter } from 'next/router';
 
 const PaymentBooking = ({ booking }) => {
-	const router = useRouter();
 	const [method, setMethod] = useState(0);
 	const [bookingDetails, setBookingDetails] = useState(
 		booking.bookingDetails.map((detail) => {
@@ -39,16 +38,25 @@ const PaymentBooking = ({ booking }) => {
 			};
 		})
 	);
-	const [total, setTotal] = useState(calculateTotal(booking.bookingDetails));
+	const [transactions, setTransactions] = useState(booking.transactions);
+	const [total, setTotal] = useState(calculateTotal(bookingDetails));
+	const [minTotal, setMinTotal] = useState(calculateMinBookingTotal(bookingDetails));
 	const [paidTotal, setPaidTotal] = useState(
-		calculateBookingTransactions(booking.transactions)
-	);
-	const [minTotal, setMinTotal] = useState(
-		calculateMinBookingTotal(booking.bookingDetails)
+		calculateBookingTransactions(transactions)
 	);
 	const [isRefund, setIsRefund] = useState(false);
 	const [amount, setAmount] = useState(0);
 	const [description, setDescription] = useState('');
+
+	// Watching booking details or transactions change
+	useEffect(() => {
+		setMinTotal(calculateMinBookingTotal(bookingDetails));
+		setTotal(calculateTotal(bookingDetails));
+		setPaidTotal(calculateBookingTransactions(transactions));
+		setDescription('');
+		setIsRefund(false);
+		setAmount(0);
+	}, [transactions]);
 
 	// Alert related vars
 	const [showAlert, setShowAlert] = useState(false);
@@ -103,10 +111,36 @@ const PaymentBooking = ({ booking }) => {
 		setDescription(note);
 	}, [bookingDetails]);
 
-	const handleSubmit = () => {
+	const handleCreateSuccess = (newTransactionId) => {
+		handleAlert(true, 'Thanh toán thành công.', '', 1);
+		const details = [...bookingDetails].map((detail) => {
+			if (detail.selected) {
+				return {
+					...detail,
+					selected: false,
+					status: BOOKING_DETAIL_STATUS.COMPLETED
+				};
+			}
+			return detail
+		});
+		setBookingDetails(details);
+		const newTransactions = [...transactions];
+		newTransactions.push({
+			id: newTransactionId,
+			method: method,
+			description: description,
+			price: amount,
+			isRefund: isRefund,
+			createdAt: new Date(),
+			status: TRANSACTION_STATUS.AVAILABLE
+		});
+		newTransactions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+		setTransactions(newTransactions);
+	};
+
+	const checkValidAmount = () => {
 		if (isRefund) {
 			const newAmount = paidTotal - amount;
-			console.log(newAmount);
 			if (newAmount < minTotal) {
 				handleAlert(
 					true,
@@ -116,11 +150,10 @@ const PaymentBooking = ({ booking }) => {
 					)}.`,
 					2
 				);
-				return;
+				return false;
 			}
 		} else {
 			const newAmount = paidTotal + amount;
-			console.log(newAmount, paidTotal);
 			if (newAmount > total) {
 				handleAlert(
 					true,
@@ -130,8 +163,15 @@ const PaymentBooking = ({ booking }) => {
 					)}.`,
 					2
 				);
-				return;
+				return false;
 			}
+		}
+		return true;
+	};
+
+	const handleSubmit = () => {
+		if (!checkValidAmount) {
+			return;
 		}
 		handleAlert(true, 'Đang thực hiện thanh toán.');
 		fetcherPost(`${BASE_URL}/transactions`, {
@@ -140,7 +180,7 @@ const PaymentBooking = ({ booking }) => {
 			description: description,
 			isRefund: isRefund,
 			method: method
-		}).then(() => {
+		}).then((response) => {
 			const promises = [];
 			bookingDetails.forEach((detail) => {
 				if (detail.selected) {
@@ -152,8 +192,7 @@ const PaymentBooking = ({ booking }) => {
 				}
 			});
 			Promise.all(promises).then(() => {
-				handleAlert(true, 'Thanh toán thành công.', '', 1);
-				router.reload();
+				handleCreateSuccess(response.id);
 			});
 		});
 	};
@@ -220,7 +259,7 @@ const PaymentBooking = ({ booking }) => {
 					{
 						// Transaction list
 					}
-					{booking.transactions?.length > 0 && (
+					{transactions?.length > 0 && (
 						<div className="border-b border-gray-300 pb-6 mb-3">
 							<Heading>Lịch sử thanh toán</Heading>
 							<div className="min-w-min overflow-auto">
@@ -254,7 +293,7 @@ const PaymentBooking = ({ booking }) => {
 										</tr>
 									</thead>
 									<tbody>
-										{booking.transactions.map((transaction, transactionIndex) => (
+										{transactions.map((transaction, transactionIndex) => (
 											<tr key={transaction.id} className="text-base">
 												<td
 													scope="col"
@@ -403,7 +442,7 @@ const PaymentBooking = ({ booking }) => {
 						</div>
 					</div>
 
-					{total > 0 && paidTotal !== total && (
+					{total > 0 && booking.status === BOOKING_STATUS.IN_PROGRESS && (
 						<div>
 							{
 								// Payment method

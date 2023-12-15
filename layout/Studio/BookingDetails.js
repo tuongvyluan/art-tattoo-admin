@@ -149,7 +149,8 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 		});
 		Promise.all(promises).then(() => {
 			fetcherPut(`${BASE_URL}/bookings/${renderData.id}`, {
-				status: BOOKING_STATUS.COMPLETED
+				status: BOOKING_STATUS.COMPLETED,
+				updaterId: account.user.id
 			})
 				.then((data) => {
 					setBookingStatus(BOOKING_STATUS.COMPLETED);
