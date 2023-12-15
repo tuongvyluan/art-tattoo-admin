@@ -264,8 +264,8 @@ const PaymentBooking = ({ booking }) => {
 					{transactions?.length > 0 && (
 						<div className="border-b border-gray-300 pb-6 mb-3">
 							<Heading>Lịch sử thanh toán</Heading>
-							<div className="min-w-min overflow-auto">
-								<table className="w-full min-w-min text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+							<div className="w-full overflow-auto relative shadow-md sm:rounded-lg">
+								<table className="w-full min-w-3xl text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 									<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
 										<tr>
 											<th
@@ -276,7 +276,7 @@ const PaymentBooking = ({ booking }) => {
 											</th>
 											<th
 												scope="col"
-												className="w-36 px-2 py-3 bg-gray-50 dark:bg-gray-800"
+												className="w-24 px-2 py-3 bg-gray-50 dark:bg-gray-800"
 											>
 												Phương thức thanh toán
 											</th>
@@ -288,7 +288,7 @@ const PaymentBooking = ({ booking }) => {
 											</th>
 											<th
 												scope="col"
-												className="w-28 px-4 py-3 bg-gray-50 dark:bg-gray-800"
+												className="w-1/4 px-4 py-3 bg-gray-50 dark:bg-gray-800"
 											>
 												Số tiền
 											</th>
@@ -296,24 +296,24 @@ const PaymentBooking = ({ booking }) => {
 									</thead>
 									<tbody>
 										{transactions.map((transaction, transactionIndex) => (
-											<tr key={transaction.id} className="text-base">
+											<tr key={transaction.id} className="text-base hover:bg-gray-50">
 												<td
 													scope="col"
-													className="text-left text-gray-900 px-4 py-3 bg-white dark:bg-gray-800"
+													className="text-left w-28 text-gray-900 px-4 py-3"
 												>
 													{formatTime(transaction.createdAt)}
 												</td>
-												<td className="text-left text-gray-900 sm:w-28 px-4 py-3 bg-white dark:bg-gray-800 text-base">
+												<td className="text-left text-gray-900 px-4 py-3 text-base">
 													{stringTransactionMethod.at(transaction.method)}
 												</td>
-												<td className="text-left text-gray-900 w-1/3 px-4 py-3 bg-white dark:bg-gray-800 text-base">
-													{transaction.description}
+												<td className="text-left text-gray-900 px-4 py-3 text-base">
+													<div>{transaction.description}</div>
 												</td>
 												<td
 													scope="col"
 													className={`text-left ${
 														transaction.isRefund ? 'text-red-500' : 'text-gray-900'
-													} w-16 lg:w-24 px-4 py-3 bg-white dark:bg-gray-800`}
+													} px-4 py-3`}
 												>
 													{transaction.isRefund && '-'}
 													{formatPrice(transaction.price)}
@@ -344,16 +344,18 @@ const PaymentBooking = ({ booking }) => {
 						{
 							// Tổng tiền
 						}
-						<div className="relative shadow-md sm:rounded-lg min-w-max overflow-x-auto">
-							<table className="w-full min-w-max text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+						<div className="relative shadow-md sm:rounded-lg overflow-x-auto">
+							<table className="w-full min-w-3xl text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 								<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
 									<tr>
-										<th
-											scope="col"
-											className="w-8 px-4 py-3 bg-gray-50 dark:bg-gray-800"
-										>
-											Chọn
-										</th>
+										{booking.status === BOOKING_STATUS.IN_PROGRESS && (
+											<th
+												scope="col"
+												className="w-8 px-4 py-3 bg-gray-50 dark:bg-gray-800"
+											>
+												Chọn
+											</th>
+										)}
 										<th
 											scope="col"
 											className="w-1/2 px-4 py-3 bg-gray-50 dark:bg-gray-800"
@@ -368,7 +370,7 @@ const PaymentBooking = ({ booking }) => {
 										</th>
 										<th
 											scope="col"
-											className="px-4 py-3 bg-gray-50 dark:bg-gray-800"
+											className="w-1/4 px-4 py-3 bg-gray-50 dark:bg-gray-800"
 										>
 											Giá
 										</th>
@@ -377,28 +379,30 @@ const PaymentBooking = ({ booking }) => {
 								<tbody>
 									{bookingDetails?.length > 0 ? (
 										bookingDetails.map((detail, detailIndex) => (
-											<tr key={detail.id} className="text-base">
+											<tr key={detail.id} className="text-base hover:bg-gray-50">
+												{booking.status === BOOKING_STATUS.IN_PROGRESS && (
+													<td
+														scope="col"
+														className="flex w-full justify-center pt-4 text-gray-900 px-4 py-3 bg-white"
+													>
+														{detail.status === BOOKING_DETAIL_STATUS.IN_PROGRESS && (
+															<input
+																type="checkbox"
+																checked={detail.selected}
+																onChange={() => handleSelectDetail(detailIndex)}
+															/>
+														)}
+													</td>
+												)}
 												<td
 													scope="col"
-													className="flex w-full justify-center pt-4 text-gray-900 px-4 py-3 bg-white"
+													className="text-left text-gray-900 w-16 lg:w-24 px-4 py-3"
 												>
-													{detail.status === BOOKING_DETAIL_STATUS.IN_PROGRESS && (
-														<input
-															type="checkbox"
-															checked={detail.selected}
-															onChange={() => handleSelectDetail(detailIndex)}
-														/>
-													)}
+													<div>{extractServiceFromBookingDetail(detail)}</div>
 												</td>
 												<td
 													scope="col"
-													className="text-left text-gray-900 w-16 lg:w-24 px-4 py-3 bg-white dark:bg-gray-800"
-												>
-													{extractServiceFromBookingDetail(detail)}
-												</td>
-												<td
-													scope="col"
-													className="text-left text-gray-900 w-40 px-4 py-3 bg-white dark:bg-gray-800"
+													className="text-left text-gray-900 w-40 px-4 py-3"
 												>
 													<div className="flex w-full">
 														<div
@@ -412,7 +416,7 @@ const PaymentBooking = ({ booking }) => {
 														</div>
 													</div>
 												</td>
-												<td className="text-left text-gray-900 w-24 lg:w-40 px-4 py-3 bg-white dark:bg-gray-800 text-base">
+												<td className="text-left text-gray-900 w-24 lg:w-40 px-4 py-3 text-base">
 													<div
 														className={`${
 															detail.status === BOOKING_DETAIL_STATUS.CANCELLED &&
@@ -430,7 +434,7 @@ const PaymentBooking = ({ booking }) => {
 
 									<tr>
 										<td
-											colSpan={3}
+											colSpan={booking.status === BOOKING_STATUS.IN_PROGRESS ? 3 : 2}
 											className="text-right bg-blue-50 text-gray-900 w-24 lg:w-40 px-4 py-3 dark:bg-gray-800 text-base"
 										>
 											Thành tiền
@@ -451,7 +455,12 @@ const PaymentBooking = ({ booking }) => {
 							}
 							<div className="pt-5">
 								{total > paidTotal && (
-									<Heading>Còn lại: <span className='text-red-500'>{formatPrice(total - paidTotal)}</span></Heading>
+									<Heading>
+										Còn lại:{' '}
+										<span className="text-red-500">
+											{formatPrice(total - paidTotal)}
+										</span>
+									</Heading>
 								)}
 								<Heading>Chọn phương thức thanh toán:</Heading>
 								<div className="flex justify-center gap-5">

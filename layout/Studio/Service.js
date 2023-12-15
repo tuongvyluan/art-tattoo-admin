@@ -610,7 +610,7 @@ function ServicePage({ services, studioId, onReload }) {
 								<div>
 									<div className="relative shadow-md sm:rounded-lg">
 										<table className="w-full text-sm text-left text-gray-500 pb-20">
-											<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
+											<thead className="text-xs text-gray-700 uppercase">
 												<tr>
 													<th scope="col" className="w-1/4 px-3 py-3 bg-gray-50">
 														Tên dịch vụ
