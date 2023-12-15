@@ -121,7 +121,7 @@ const PaymentBooking = ({ booking }) => {
 					status: BOOKING_DETAIL_STATUS.COMPLETED
 				};
 			}
-			return detail
+			return detail;
 		});
 		setBookingDetails(details);
 		const newTransactions = [...transactions];
@@ -134,7 +134,9 @@ const PaymentBooking = ({ booking }) => {
 			createdAt: new Date(),
 			status: TRANSACTION_STATUS.AVAILABLE
 		});
-		newTransactions.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+		newTransactions.sort(
+			(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+		);
 		setTransactions(newTransactions);
 	};
 
@@ -448,6 +450,9 @@ const PaymentBooking = ({ booking }) => {
 								// Payment method
 							}
 							<div className="pt-5">
+								{total > paidTotal && (
+									<Heading>Còn lại: <span className='text-red-500'>{formatPrice(total - paidTotal)}</span></Heading>
+								)}
 								<Heading>Chọn phương thức thanh toán:</Heading>
 								<div className="flex justify-center gap-5">
 									<div
