@@ -114,7 +114,9 @@ const ScheduleBookingMeetingModal = ({
 				openModal={openModal}
 				setOpenModal={setOpenModal}
 				title={'Sắp xếp lịch hẹn'}
-				confirmTitle={canEdit ? 'Tạo' : 'Đóng'}
+				confirmTitle={'Tạo'}
+				cancelTitle='Đóng'
+				canConfirm={canEdit}
 				onSubmit={handleCreateMeeting}
 			>
 				<Alert
@@ -191,7 +193,7 @@ const ScheduleBookingMeetingModal = ({
 											</div>
 										</td>
 										<td scope="col" className="px-3 py-3 text-center">
-											{time.status === BOOKING_MEETING_STATUS.PENDING && (
+											{time.status === BOOKING_MEETING_STATUS.PENDING && canEdit && (
 												<div className="flex gap-3 flex-wrap">
 													<Tooltip content="Huỷ hẹn">
 														<div

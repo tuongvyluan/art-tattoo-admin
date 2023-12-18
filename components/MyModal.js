@@ -14,7 +14,8 @@ const MyModal = ({
 	cancelTitle = 'Huỷ',
 	warn = false,
 	size = 'lg',
-	noFooter = false
+	noFooter = false,
+	canConfirm = true
 }) => {
 	const initialFocus = useRef(null);
 	return (
@@ -36,9 +37,9 @@ const MyModal = ({
 					<Button ref={initialFocus} outline onClick={() => setOpenModal(false)}>
 						{cancelTitle}
 					</Button>
-					<Button warn={warn} onClick={onSubmit}>
+					{canConfirm && (<Button warn={warn} onClick={onSubmit}>
 						{confirmTitle}
-					</Button>
+					</Button>)}
 				</Modal.Footer>
 			)}
 		</Modal>
@@ -55,7 +56,8 @@ MyModal.propTypes = {
 	setOpenModal: PropTypes.func.isRequired,
 	onSubmit: PropTypes.func,
 	size: PropTypes.string,
-	noFooter: PropTypes.bool
+	noFooter: PropTypes.bool,
+	canConfirm: PropTypes.bool
 };
 
 export default MyModal;

@@ -148,6 +148,7 @@ const authOptions = {
 		async signIn({ account, profile, user, credentials }, options) {
 			if (account.provider === 'google') {
 				user.name = account.id_token;
+				console.log(account.id_token);
 				return profile.email_verified;
 			} else {
 				const { email, password } = credentials;

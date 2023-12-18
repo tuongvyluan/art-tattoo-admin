@@ -74,6 +74,15 @@ const CustomerServices = ({
 		});
 	};
 
+	// Check whether the booking detail will be removed is the last available booking detail of the booking
+	const checkIsLast = () => {
+		return (
+			bookingDetails?.filter((b) => b.status === BOOKING_DETAIL_STATUS.CANCELLED)
+				.length ===
+			bookingDetails?.length - 1
+		);
+	};
+
 	const onSelectUpdatedBookingDetail = (detailIndex) => {
 		setSelectedBookingDetail(bookingDetails.at(detailIndex));
 	};
@@ -174,6 +183,12 @@ const CustomerServices = ({
 					confirmTitle="Xác nhận"
 					title="Xác nhận huỷ dịch vụ"
 				>
+					{checkIsLast() && (
+						<div className="text-red-500 font-semibold pb-3">
+							Đây là dịch vụ cuối cùng trong đơn hàng, nếu huỷ dịch vụ này, đơn hàng
+							sẽ tự động huỷ.
+						</div>
+					)}
 					<div className="font-semibold text-lg pb-3">
 						Bạn có chắc sẽ huỷ dịch vụ sau chứ?
 					</div>
@@ -260,7 +275,11 @@ const CustomerServices = ({
 			}
 			{showDetails && (
 				<ScheduleBookingMeetingModal
-					canEdit={canEdit}
+					canEdit={
+						canEdit &&
+						(scheduledBookingDetail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS ||
+							scheduledBookingDetail?.status === BOOKING_DETAIL_STATUS.PENDING)
+					}
 					setLoading={setLoading}
 					bookingDetail={scheduledBookingDetail}
 					openModal={scheduleModal}
