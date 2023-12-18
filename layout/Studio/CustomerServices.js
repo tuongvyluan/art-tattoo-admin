@@ -305,24 +305,28 @@ const CustomerServices = ({
 									>
 										<MdCalendarMonth size={20} />
 									</div>
-									{canEdit && (
-										<div
-											onClick={() =>
-												onSelectUpdatedBookingDetail(bookingServiceIndex)
-											}
-											className="relative"
-										>
-											<MdEdit size={20} />
-										</div>
-									)}
-									{canEdit && (
-										<div className="relative">
-											<MdOutlineClose
-												onClick={() => setRemovedBookingDetail(bookingDetail)}
-												size={20}
-											/>
-										</div>
-									)}
+									{canEdit &&
+										(bookingDetail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS ||
+											bookingDetail?.status === BOOKING_DETAIL_STATUS.PENDING) && (
+											<div
+												onClick={() =>
+													onSelectUpdatedBookingDetail(bookingServiceIndex)
+												}
+												className="relative"
+											>
+												<MdEdit size={20} />
+											</div>
+										)}
+									{canEdit &&
+										(bookingDetail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS ||
+											bookingDetail?.status === BOOKING_DETAIL_STATUS.PENDING) && (
+											<div className="relative">
+												<MdOutlineClose
+													onClick={() => setRemovedBookingDetail(bookingDetail)}
+													size={20}
+												/>
+											</div>
+										)}
 								</div>
 							)}
 							{

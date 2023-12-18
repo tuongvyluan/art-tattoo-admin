@@ -4,7 +4,12 @@ import MyModal from 'components/MyModal';
 import { ChevronDown } from 'icons/outline';
 import { fetcherPut, formatPrice, formatTime, hasBookingMeeting } from 'lib';
 import { BASE_URL } from 'lib/env';
-import { stringBookingDetailStatus, stringPlacements, stringSize } from 'lib/status';
+import {
+	BOOKING_DETAIL_STATUS,
+	stringBookingDetailStatus,
+	stringPlacements,
+	stringSize
+} from 'lib/status';
 import PropTypes from 'propTypes';
 import { useEffect, useState } from 'react';
 import { Alert, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
@@ -152,38 +157,42 @@ const UpdateBookingDetailModal = ({
 							}
 							<div className="pb-3 flex items-center gap-1">
 								<div className="w-20">Trạng thái: </div>
-								<Dropdown className="relative h-full flex items-center">
-									<DropdownToggle>
-										<div className="w-40 rounded-lg p-1 border border-gray-600">
-											{stringBookingDetailStatus.at(detail?.status)}
-										</div>
-										<div className="absolute top-2 right-2">
-											<ChevronDown width={16} height={16} />
-										</div>
-									</DropdownToggle>
-									<DropdownMenu>
-										<div>
-											{stringBookingDetailStatus.map((status, statusIndex) => (
-												<div
-													key={status}
-													onClick={() =>
-														handleChangeDetail({
-															target: {
-																name: 'status',
-																value: statusIndex
-															}
-														})
-													}
-													className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
-														detail?.status === statusIndex && 'bg-blue-50'
-													}`}
-												>
-													{status}
-												</div>
-											))}
-										</div>
-									</DropdownMenu>
-								</Dropdown>
+								{detail?.status !== BOOKING_DETAIL_STATUS.CANCELLED ? (
+									<Dropdown className="relative h-full flex items-center">
+										<DropdownToggle>
+											<div className="w-40 rounded-lg p-1 border border-gray-600">
+												{stringBookingDetailStatus.at(detail?.status)}
+											</div>
+											<div className="absolute top-2 right-2">
+												<ChevronDown width={16} height={16} />
+											</div>
+										</DropdownToggle>
+										<DropdownMenu>
+											<div>
+												{stringBookingDetailStatus.filter((b, index) => index !== BOOKING_DETAIL_STATUS.CANCELLED).map((status, statusIndex) => (
+													<div
+														key={status}
+														onClick={() =>
+															handleChangeDetail({
+																target: {
+																	name: 'status',
+																	value: statusIndex
+																}
+															})
+														}
+														className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
+															detail?.status === statusIndex && 'bg-blue-50'
+														}`}
+													>
+														{status}
+													</div>
+												))}
+											</div>
+										</DropdownMenu>
+									</Dropdown>
+								) : (
+									<div>{stringBookingDetailStatus.at(BOOKING_DETAIL_STATUS.CANCELLED)}</div>
+								)}
 							</div>
 							<div className="pb-3 flex items-center gap-1">
 								<div className="w-20">Giá: </div>
