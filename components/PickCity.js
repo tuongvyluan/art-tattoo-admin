@@ -31,7 +31,7 @@ const PickCity = ({ city, setCity }) => {
 };
 
 PickCity.propTypes = {
-	city: PropTypes.string.isRequired,
+	city: PropTypes.number.isRequired,
 	setCity: PropTypes.func.isRequired
 };
 

@@ -169,7 +169,7 @@ const UpdateBookingDetailModal = ({
 										</DropdownToggle>
 										<DropdownMenu>
 											<div>
-												{stringBookingDetailStatus.filter((b, index) => index !== BOOKING_DETAIL_STATUS.CANCELLED).map((status, statusIndex) => (
+												{stringBookingDetailStatus.map((status, statusIndex) => (
 													<div
 														key={status}
 														onClick={() =>
