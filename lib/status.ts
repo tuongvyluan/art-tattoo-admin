@@ -118,7 +118,9 @@ export const stringBookingDetailStatusColor = [
 export const enum BOOKING_MEETING_STATUS {
 	PENDING = 0,
 	COMPLETED = 1,
-	CANCELLED = 2
+	CUSTOMER_CANCEL = 2,
+	ARTIST_CANCEL = 3,
+	STUDIO_CANCEL = 4
 }
 
 export const stringBookingMeetingStatus = [

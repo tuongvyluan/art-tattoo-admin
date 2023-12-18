@@ -95,7 +95,7 @@ const ScheduleBookingMeetingModal = ({
 			id: id,
 			status: status
 		};
-		if (status === BOOKING_MEETING_STATUS.CANCELLED) {
+		if (status === BOOKING_MEETING_STATUS.STUDIO_CANCEL) {
 			payload.cancelAt = formatDateTimeForInput(moment().add(12, 'hours'));
 		}
 		fetcherPut(`${BASE_URL}/booking-meetings`, payload)
@@ -201,7 +201,7 @@ const ScheduleBookingMeetingModal = ({
 															onClick={() =>
 																updateBookingMeeting(
 																	time.id,
-																	BOOKING_MEETING_STATUS.CANCELLED
+																	BOOKING_MEETING_STATUS.STUDIO_CANCEL
 																)
 															}
 														>
