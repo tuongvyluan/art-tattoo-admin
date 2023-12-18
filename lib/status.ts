@@ -126,7 +126,9 @@ export const enum BOOKING_MEETING_STATUS {
 export const stringBookingMeetingStatus = [
 	'Đang chờ',
 	'Hoàn thành',
-	'Đã huỷ'
+	'Khách hàng huỷ',
+	'Nghệ sĩ huỷ',
+	'Tiệm xăm huỷ'
 ]
 
 export const stringBookingMeetingColors = [

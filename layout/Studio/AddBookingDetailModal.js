@@ -172,7 +172,7 @@ const AddBookingDetailModal = ({
 												})
 											}
 											key={service.id}
-											className={`bg-white border-b hover:bg-gray-50 text-black cursor-pointer ${
+											className={`bg-white border-b hover:bg-blue-50 text-black cursor-pointer ${
 												service.id === bookingDetail.serviceId && 'bg-blue-50'
 											}`}
 										>

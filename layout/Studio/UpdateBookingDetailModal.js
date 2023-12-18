@@ -90,6 +90,19 @@ const UpdateBookingDetailModal = ({
 			);
 			return;
 		}
+		if (
+			(detail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS ||
+				detail?.status === BOOKING_DETAIL_STATUS.COMPLETED) &&
+			detail?.artistId === null
+		) {
+			handleAlert(
+				true,
+				'Trạng thái không hợp lệ.',
+				`Ở trạng thái này phải có phân công rõ nghệ sĩ thực hiện.`,
+				2
+			);
+			return;
+		}
 		updateBookingDetail();
 	};
 
@@ -182,6 +195,9 @@ const UpdateBookingDetailModal = ({
 														}
 														className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
 															detail?.status === statusIndex && 'bg-blue-50'
+														} ${
+															statusIndex === BOOKING_DETAIL_STATUS.CANCELLED &&
+															'hidden'
 														}`}
 													>
 														{status}
@@ -191,7 +207,9 @@ const UpdateBookingDetailModal = ({
 										</DropdownMenu>
 									</Dropdown>
 								) : (
-									<div>{stringBookingDetailStatus.at(BOOKING_DETAIL_STATUS.CANCELLED)}</div>
+									<div>
+										{stringBookingDetailStatus.at(BOOKING_DETAIL_STATUS.CANCELLED)}
+									</div>
 								)}
 							</div>
 							<div className="pb-3 flex items-center gap-1">
