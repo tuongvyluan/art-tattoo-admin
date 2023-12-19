@@ -108,18 +108,19 @@ function BookingPage({ studioId }) {
 
 	useEffect(() => {
 		fetcher(`${BASE_URL}/studios/studio-details?id=${studioId}`).then((response) => {
-			setArtistList(
-				[{ id: null, fullName: 'Tất cả nghệ sĩ' }].concat(
-					response?.studioArtists
-						?.filter((a) => a.dismissedAt === null)
-						?.map((a) => {
-							return {
-								id: a.artist.id,
-								fullName: a.artist.fullName
-							};
-						})
-				)
-			);
+			const list = [{ id: null, fullName: 'Tất cả tiệm xăm' }];
+			const map = new Map();
+			map.set(null, 'Tất cả tiệm xăm');
+			response?.studioArtists?.forEach((a) => {
+				if (!map.has(a.artist.id)) {
+					list.push({
+						id: a.artist.id,
+						fullName: a.artist.fullName
+					});
+					map.set(a.artist.id, a.artist.fullName);
+				}
+			});
+			setArtistList(list);
 		});
 	}, []);
 
