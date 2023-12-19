@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { MdUpload } from 'react-icons/md';
 import { Card, CardBody, Alert, Avatar } from 'ui';
 
-function UpdateStudioInfo({ studio, setStudio, setIsEdit }) {
+function UpdateStudioInfo({ studio, setStudio, setIsEdit, setLoading }) {
 	const { data, update } = useSession();
 	const [avatar, setAvatar] = useState(studio.avatar);
 	const [showAlert, setShowAlert] = useState(false);
@@ -59,6 +59,20 @@ function UpdateStudioInfo({ studio, setStudio, setIsEdit }) {
 		setAvatar(studio.avatar);
 	};
 
+	const checkValidInfo = (newStudio) => {
+		let res = true;
+		if (newStudio?.bioContent?.trim().length === 0) {
+			res = false;
+			handleAlert(
+				true,
+				'Cập nhật thông tin thất bại.',
+				'Mục giới thiệu của tiệm xăm không được để trống.',
+				2
+			);
+		}
+		return res;
+	};
+
 	const handleUpdateStudio = async (newStudio) => {
 		handleAlert(true, '', 'Đang cập nhật studio.');
 		let validTax = studio.isAuthorized;
@@ -73,12 +87,21 @@ function UpdateStudioInfo({ studio, setStudio, setIsEdit }) {
 		}
 		const checkedStudio = {
 			...newStudio,
-			isAuthorized: validTax
+			isAuthorized: validTax,
+			avatar: avatar
 		};
 		fetcherPut(`${BASE_URL}/studios/${newStudio.id}`, checkedStudio)
 			.then(() => {
-				setDefaultProfile(profile);
-				handleAlert(true, '', 'Sửa thông tin thành công.', 1);
+				setLoading(true)
+				handleAlert(true, '', 'Sửa thông tin thành công.');
+				update({
+					...data,
+					user: {
+						...data?.user,
+						studioName: checkedStudio.studioName,
+						avatar: checkedStudio.avatar
+					}
+				})
 			})
 			.catch((e) => {
 				handleAlert(true, '', 'Sửa thông tin thất bại.', 2);
@@ -86,28 +109,23 @@ function UpdateStudioInfo({ studio, setStudio, setIsEdit }) {
 	};
 
 	const handleCreateStudio = (newStudio) => {
-		fetcherPost(`${BASE_URL}/studios`, {
-			ownerId: studio.ownerId,
-			studioName: newStudio.studioName,
-			taxCode: newStudio.taxCode,
-			address: newStudio.address,
-			bioContent: newStudio.bioContent,
-			openTime: newStudio.openTime,
-			closeTime: newStudio.closeTime,
-			avatar: newStudio.avatar
-		})
+		const newProfile = {
+			...newStudio,
+			ownerId: studio.ownerId
+		};
+		fetcherPost(`${BASE_URL}/studios`, newProfile)
 			.then((response) => {
+				setLoading(true)
+				handleAlert(true, '', 'Sửa thông tin thành công.');
 				update({
 					...data,
 					user: {
 						...data?.user,
 						studioId: response.studioId,
+						studioName: newStudio.studioName,
 						avatar: avatar
 					}
-				}).then(() => {
-					setDefaultProfile(profile);
-					handleAlert(true, '', 'Sửa thông tin thành công.');
-				});
+				})
 			})
 			.catch((e) => {
 				handleAlert(true, '', 'Sửa thông tin thất bại.', true);
@@ -117,20 +135,18 @@ function UpdateStudioInfo({ studio, setStudio, setIsEdit }) {
 
 	const handleFormSubmit = (e) => {
 		e.preventDefault();
-		if (studio.id) {
-			handleUpdateStudio({
-				...profile,
-				openTime: profile.openTime,
-				closeTime: profile.closeTime,
-				avatar: avatar
-			});
-		} else {
-			handleCreateStudio({
-				...profile,
-				openTime: profile.openTime,
-				closeTime: profile.closeTime,
-				avatar: avatar
-			});
+		const studio = {
+			...profile,
+			openTime: profile.openTime,
+			closeTime: profile.closeTime,
+			avatar: avatar
+		};
+		if (checkValidInfo(studio)) {
+			if (studio.id) {
+				handleUpdateStudio(studio);
+			} else {
+				handleCreateStudio(studio);
+			}
 		}
 	};
 
@@ -197,7 +213,7 @@ function UpdateStudioInfo({ studio, setStudio, setIsEdit }) {
 									<div key={avatar}>
 										<Avatar
 											circular={false}
-											src={avatar ? avatar : '/images/upload-img.png'}
+											src={avatar?.length > 0 ? avatar : '/images/upload-img.png'}
 											alt={'avatar'}
 											size={150}
 										/>
@@ -314,7 +330,7 @@ function UpdateStudioInfo({ studio, setStudio, setIsEdit }) {
 							</div> */}
 
 							<div className="block mb-3">
-								<label>{'Bio'}</label>
+								<label>{'Giới thiệu'}</label>
 								<textarea
 									aria-label={'bioContent'}
 									name="bioContent"
@@ -348,7 +364,8 @@ function UpdateStudioInfo({ studio, setStudio, setIsEdit }) {
 UpdateStudioInfo.propTypes = {
 	studio: PropTypes.object.isRequired,
 	setIsEdit: PropTypes.func,
-  setStudio: PropTypes.func
+	setStudio: PropTypes.func,
+	setLoading: PropTypes.func
 };
 
 export default UpdateStudioInfo;

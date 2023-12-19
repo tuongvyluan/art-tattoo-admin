@@ -134,6 +134,8 @@ export const stringBookingMeetingStatus = [
 export const stringBookingMeetingColors = [
 	'warning',
 	'success',
+	'failure',
+	'failure',
 	'failure'
 ]
 

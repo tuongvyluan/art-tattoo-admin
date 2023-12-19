@@ -27,6 +27,7 @@ import UpdateBookingDetailModal from './UpdateBookingDetailModal';
 import MyModal from 'components/MyModal';
 import { BASE_URL } from 'lib/env';
 import ScheduleBookingMeetingModal from './ScheduleBookingMeetingModal';
+import { noImageAvailable } from 'lib/tattooPhoto';
 
 const CustomerServices = ({
 	bookingDetails,
@@ -345,7 +346,7 @@ const CustomerServices = ({
 														src={
 															bookingDetail.tattooArt.thumbnail
 																? bookingDetail.tattooArt.thumbnail
-																: '/images/ATL.png'
+																: noImageAvailable
 														}
 														alt={'a'}
 														className="object-contain rounded-2xl"

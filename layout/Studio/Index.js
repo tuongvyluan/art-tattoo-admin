@@ -23,7 +23,7 @@ function StudioIndexPage({ studioId }) {
 	});
 
 	if (studioId && !studio.id) {
-		fetcher(`${BASE_URL}/studios/${studioId}`).then((response) => {
+		fetcher(`${BASE_URL}/studios/studio-details?id=${studioId}`).then((response) => {
 			setStudio({
 				...studio,
 				id: studioId,
@@ -42,34 +42,38 @@ function StudioIndexPage({ studioId }) {
 	} else
 		return (
 			<>
-				<div className="flex flex-wrap -mx-2">
-					<div className="w-full md:w-2/4 lg:w-1/4 px-2">
+				<div className="flex flex-wrap -mx-2 pb-2 md:gap-0">
+					<div className="w-full md:w-2/4 lg:w-1/4 px-2 pb-4">
 						<WidgetStatCard
 							title="Tổng đơn hàng"
+							className='h-full'
 							value={studio.bookings?.length}
 							icon={<Users width={16} height={16} />}
 							type={'blue'}
 						/>
 					</div>
-					<div className="w-full md:w-2/4 lg:w-1/4 px-2">
+					<div className="w-full md:w-2/4 lg:w-1/4 px-2 pb-4">
 						<WidgetStatCard
 							title="Đơn hàng tháng này"
+							className='h-full'
 							value={'23'}
 							icon={<Users width={16} height={16} />}
 							type={'gray'}
 						/>
 					</div>
-					<div className="w-full md:w-2/4 lg:w-1/4 px-2">
+					<div className="w-full md:w-2/4 lg:w-1/4 px-2 pb-4">
 						<WidgetStatCard
 							title={'Doanh thu tháng này'}
+							className='h-full'
 							value={'23,465,563'}
 							icon={<Users width={16} height={16} />}
 							type={'indigo'}
 						/>
 					</div>
-					<div className="w-full md:w-2/4 lg:w-1/4 px-2">
+					<div className="w-full md:w-2/4 lg:w-1/4 px-2 pb-4">
 						<WidgetStatCard
 							title={'Lượt theo dõi'}
+							className='h-full'
 							value={'123'}
 							icon={<Users width={16} height={16} />}
 							type={'red'}

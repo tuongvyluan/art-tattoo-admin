@@ -4,19 +4,24 @@ import { Tooltip } from 'flowbite-react';
 import { formatTimeWithoutSecond } from 'lib';
 import { cityMap } from 'lib/city';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardBody, Avatar } from 'ui';
 import UpdateStudioInfo from './UpdateStudioInfo';
 
-function StudioInfo({ studio }) {
+function StudioInfo({ studio, setLoading }) {
 	const [profile, setProfile] = useState(studio)
 	const [avatar, setAvatar] = useState(profile.avatar);
 	const [isEdit, setIsEdit] = useState(false);
 
+	useEffect(() => {
+		console.log(profile)
+		setAvatar(profile.avatar)
+	}, [profile])
+
 	return (
 		<div className="relative h-full">
 			{isEdit ? (
-				<UpdateStudioInfo studio={profile} setStudio={setProfile} setIsEdit={() => setIsEdit(false)} />
+				<UpdateStudioInfo studio={profile} setStudio={setProfile} setIsEdit={() => setIsEdit(false)} setLoading={setLoading} />
 			) : (
 				<div className="sm:px-12 md:px-16 lg:px-32 xl:px-56">
 					<Card>
@@ -109,7 +114,8 @@ function StudioInfo({ studio }) {
 }
 
 StudioInfo.propTypes = {
-	studio: PropTypes.object.isRequired
+	studio: PropTypes.object.isRequired,
+	setLoading: PropTypes.func
 };
 
 export default StudioInfo;

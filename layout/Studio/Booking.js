@@ -95,7 +95,7 @@ function BookingPage({ studioId }) {
 	}, [activeTab]);
 
 	return (
-		<div className="sm:px-8 md:px-1 lg:px-6 xl:px-56">
+		<div className="sm:px-8 md:px-1 lg:px-6 xl:px-32">
 			<div className="mx-auto ring-1 ring-black ring-opacity-5 bg-white">
 				<div className="flex flex-row w-0 min-w-full">
 					<ul className="list-none grid col-span-4 grid-flow-col place-items-center overflow-x-auto w-0 min-w-full -mb-10 pb-10">

@@ -4,7 +4,7 @@ import { Avatar, Link, Loading, WidgetPostCard } from 'ui';
 import { useCallback, useEffect, useState } from 'react';
 import debounce from 'lodash.debounce';
 import { useSession } from 'next-auth/react';
-import { randomPhoto } from 'lib/tattooPhoto';
+import { noImageAvailable } from 'lib/tattooPhoto';
 import MyInfiniteScroll from 'ui/MyInfiniteScroll';
 import { stringPlacements, stringSize } from 'lib/status';
 import { tattooStyleById } from 'lib/tattooStyle';
@@ -89,7 +89,7 @@ const TattooListNotFilter = ({ url, pageSize = 20 }) => {
 											<div key={index}>
 												{index % tattooCol === colIndex && (
 													<WidgetPostCard
-														image={item.thumbnail ? item.thumbnail : randomPhoto}
+														image={item.thumbnail ? item.thumbnail : noImageAvailable}
 														link={`/tattoo/${item.id}?booking=${item.bookingId}&back=tattoo`}
 													>
 														<div className="block cursor-pointer">

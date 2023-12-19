@@ -1,6 +1,7 @@
 import { ChevronLeft } from 'icons/solid';
 import {
 	calculateBookingTransactions,
+	calculateConfirmedTotal,
 	calculateTotal,
 	fetcher,
 	fetcherPut,
@@ -29,6 +30,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	const { data: account } = useSession();
 	const [renderData, setRenderData] = useState(data);
 	const [total, setTotal] = useState(calculateTotal(renderData.bookingDetails));
+	const [confirmedTotal, setConfirmedTotal] = useState(calculateConfirmedTotal(renderData.bookingDetails))
 	const [paidTotal, setPaidTotal] = useState(
 		calculateBookingTransactions(renderData.transactions)
 	);
@@ -358,10 +360,17 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 											<tbody>
 												<tr className="border-t border-gray-300">
 													<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
+														Tổng tiền đã xác nhận
+													</th>
+													<td className="py-3 text-right text-xl text-red-500">
+														{formatPrice(confirmedTotal)}
+													</td>
+												</tr>
+												<tr className="border-t border-gray-300">
+													<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
 														Tổng tiền
 													</th>
 													<td className="py-3 text-right text-xl text-red-500">
-														{/* {formatPrice(renderData.total)} */}
 														{formatPrice(total)}
 													</td>
 												</tr>
@@ -378,7 +387,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 														<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
 															Còn {total > paidTotal ? 'lại' : 'thừa'}
 														</th>
-														<td className="py-3 text-right text-xl text-red-500">
+														<td className={`py-3 text-right text-xl ${total > paidTotal ? 'text-red-500' : 'text-green-500'}`}>
 															<div>
 																{total > paidTotal
 																	? formatPrice(total - paidTotal)
@@ -407,11 +416,14 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 														<Button outline>Xem thanh toán</Button>
 													</div>
 												</Link>
-												{renderData.status !== BOOKING_STATUS.COMPLETED && (
-													<div className="flex">
-														<Button onClick={completeBooking}>Hoàn thành</Button>
-													</div>
-												)}
+												{renderData.status !== BOOKING_STATUS.COMPLETED &&
+													renderData.bookingDetails?.filter(
+														(bd) => bd.status === BOOKING_DETAIL_STATUS.PENDING
+													)?.length === 0 && (
+														<div className="flex">
+															<Button onClick={completeBooking}>Hoàn thành</Button>
+														</div>
+													)}
 											</div>
 										)}
 									</div>

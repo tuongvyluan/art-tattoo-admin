@@ -34,7 +34,7 @@ const StudioPage = () => {
 		}
 		if (data.user.role === ROLE.STUDIO) {
 			if (data.user.studioId && loading) {
-				fetcher(`${BASE_URL}/studios/${data.user.studioId}`).then((response) => {
+				fetcher(`${BASE_URL}/studios/studio-details?id=${data.user.studioId}`).then((response) => {
 					setLoading(false);
 					const newStudio = {
 						...response,
@@ -72,7 +72,8 @@ const StudioPage = () => {
 					</div>
 				);
 			} else {
-				return <StudioInfo studio={studio} />;
+				console.log(1)
+				return <StudioInfo studio={studio} setLoading={setLoading} />;
 			}
 		} else {
 			signOut();

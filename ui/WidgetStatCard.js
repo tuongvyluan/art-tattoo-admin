@@ -17,7 +17,7 @@ export const WidgetStatCard = ({
 
   const cardIcon = (
     <button
-      className={`${fill ? 'bg-white bg-opacity-20':'bg-'+type+'-100'} text-${type}-600 relative rounded-full flex justify-center w-12 h-12 flex items-center justify-center focus:outline-none`}
+      className={`${fill ? 'bg-white bg-opacity-20':'bg-'+type+'-100'} text-${type}-600 relative rounded-full flex justify-center w-12 h-12 items-center focus:outline-none`}
     >
       {icon}
       <Ripple className="rounded-full" />
@@ -30,7 +30,7 @@ export const WidgetStatCard = ({
 
   return (
     <Card
-      className={`bg-${fill ? type : "white"}-500 dark:bg-${
+      className={`bg-${fill ? type : "white"}-500 h-full dark:bg-${
         fill ? type : "white"
       }-500`}
     >

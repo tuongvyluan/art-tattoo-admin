@@ -1,5 +1,5 @@
 import { fetcher, fetcherPost, fetcherPut, formatDate } from 'lib';
-import { BASE_URL, SOCIAL_PAGE } from 'lib/env';
+import { BASE_URL, GOOGLE_CLIENT_SECRET, SOCIAL_PAGE } from 'lib/env';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Alert, Avatar, Card, CardBody, Loading } from 'ui';
@@ -7,8 +7,6 @@ import CryptoJS from 'crypto-js';
 import Button from 'components/Button';
 import Heading from 'components/Heading';
 import Link from 'next/link';
-
-const ENCRYPT_SECRET = 'qo7r0q3yrwfdngposdgv';
 
 const StudioArtist = ({ studioId }) => {
 	const [studio, setStudio] = useState({
@@ -57,7 +55,7 @@ const StudioArtist = ({ studioId }) => {
 	};
 
 	const handleAddArtist = () => {
-		const keyValue = CryptoJS.AES.decrypt(artistKey, ENCRYPT_SECRET);
+		const keyValue = CryptoJS.AES.decrypt(artistKey, GOOGLE_CLIENT_SECRET);
 		const artistId = JSON.parse(keyValue?.toString(CryptoJS.enc.Utf8))?.id;
 		let success = false;
 
@@ -112,7 +110,7 @@ const StudioArtist = ({ studioId }) => {
 	};
 
 	if (studioId && !studio.id) {
-		fetcher(`${BASE_URL}/studios/${studioId}`).then((response) => {
+		fetcher(`${BASE_URL}/studios/studio-details?id=${studioId}`).then((response) => {
 			setStudio({
 				...studio,
 				id: studioId,

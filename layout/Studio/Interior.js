@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import { Alert, Loading, WidgetPostCard } from 'ui';
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { randomPhoto } from 'lib/tattooPhoto';
+import { noImageAvailable } from 'lib/tattooPhoto';
 import MyInfiniteScroll from 'ui/MyInfiniteScroll';
 import { CldUploadButton } from 'next-cloudinary';
 import { BASE_URL, UPLOAD_PRESET } from 'lib/env';
@@ -160,7 +160,7 @@ const StudioInterior = ({ url, pageSize = 20, studioId }) => {
 									</div>
 									<WidgetPostCard
 										hasChildren={false}
-										image={item.url ? item.url : randomPhoto}
+										image={item.url ? item.url : noImageAvailable}
 									></WidgetPostCard>
 								</div>
 							))}
