@@ -2,6 +2,7 @@ import { ChevronLeft } from 'icons/solid';
 import {
 	calculateBookingTransactions,
 	calculateConfirmedTotal,
+	calculateMinBookingTotal,
 	calculateTotal,
 	fetcher,
 	fetcherPut,
@@ -30,6 +31,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	const { data: account } = useSession();
 	const [renderData, setRenderData] = useState(data);
 	const [total, setTotal] = useState(calculateTotal(renderData.bookingDetails));
+	const [minTotal, setMinTotal] = useState(calculateMinBookingTotal(renderData.bookingDetails))
 	const [confirmedTotal, setConfirmedTotal] = useState(
 		calculateConfirmedTotal(renderData.bookingDetails)
 	);
@@ -307,6 +309,8 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 									)}
 								</div>
 								<CustomerServices
+									paidTotal={paidTotal}
+									completedTotal={minTotal}
 									artistList={artists}
 									setLoading={setLoading}
 									showMore={true}
@@ -393,7 +397,9 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 														</th>
 														<td
 															className={`py-3 text-right text-xl ${
-																confirmedTotal > paidTotal ? 'text-red-500' : 'text-green-500'
+																confirmedTotal > paidTotal
+																	? 'text-red-500'
+																	: 'text-green-500'
 															}`}
 														>
 															<div>

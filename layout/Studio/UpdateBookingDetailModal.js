@@ -19,7 +19,9 @@ const UpdateBookingDetailModal = ({
 	bookingDetail,
 	openModal,
 	setOpenModal,
-	setLoading
+	setLoading,
+	paidTotal = 0,
+	minTotal = 0
 }) => {
 	const [detail, setDetail] = useState(bookingDetail);
 	const [artists, setArtists] = useState(artistList);
@@ -103,6 +105,15 @@ const UpdateBookingDetailModal = ({
 			);
 			return;
 		}
+		if (minTotal + detail?.price > paidTotal) {
+			handleAlert(
+				true,
+				'Trạng thái không hợp lệ.',
+				`Tổng tiền đã thanh toán (${formatPrice(paidTotal)}) không được bé hơn giá trị các đơn hàng đã hoàn thành ${formatPrice(minTotal + detail?.price)}.`,
+				2
+			);
+			return;
+		}
 		updateBookingDetail();
 	};
 
@@ -110,7 +121,7 @@ const UpdateBookingDetailModal = ({
 		setArtists(artistList);
 	}, [artistList]);
 	return (
-		<div>
+		<div className='relative'>
 			<MyModal
 				size="3xl"
 				title="Chỉnh sửa dịch vụ"
@@ -326,7 +337,9 @@ UpdateBookingDetailModal.propTypes = {
 	bookingDetail: PropTypes.object,
 	openModal: PropTypes.bool.isRequired,
 	setOpenModal: PropTypes.func.isRequired,
-	setLoading: PropTypes.func
+	setLoading: PropTypes.func,
+	paidTotal: PropTypes.number,
+	minTotal: PropTypes.number
 };
 
 export default UpdateBookingDetailModal;

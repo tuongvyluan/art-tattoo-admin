@@ -35,7 +35,9 @@ const CustomerServices = ({
 	showDetails = false,
 	showMore = false,
 	setLoading,
-	artistList
+	artistList,
+	paidTotal = 0,
+	minTotal = 0
 }) => {
 	const [bookingDetailModal, setBookingDetailModal] = useState(false);
 	const [confirmRemoveBookingDetailModal, setConfirmRemoveBookingDetailModal] =
@@ -165,6 +167,7 @@ const CustomerServices = ({
 			}
 			{canEdit && showDetails && (
 				<UpdateBookingDetailModal
+					paidTotal={paidTotal}
 					openModal={bookingDetailModal}
 					setLoading={setLoading}
 					artistList={artistList}
@@ -475,7 +478,9 @@ CustomerServices.propTypes = {
 	showMore: PropTypes.bool,
 	artistList: PropTypes.array,
 	setLoading: PropTypes.func,
-	showDetails: PropTypes.bool
+	showDetails: PropTypes.bool,
+	paidTotal: PropTypes.number,
+	minTotal: PropTypes.number
 };
 
 export default CustomerServices;
