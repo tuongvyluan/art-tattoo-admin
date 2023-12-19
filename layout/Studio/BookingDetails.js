@@ -30,7 +30,9 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	const { data: account } = useSession();
 	const [renderData, setRenderData] = useState(data);
 	const [total, setTotal] = useState(calculateTotal(renderData.bookingDetails));
-	const [confirmedTotal, setConfirmedTotal] = useState(calculateConfirmedTotal(renderData.bookingDetails))
+	const [confirmedTotal, setConfirmedTotal] = useState(
+		calculateConfirmedTotal(renderData.bookingDetails)
+	);
 	const [paidTotal, setPaidTotal] = useState(
 		calculateBookingTransactions(renderData.transactions)
 	);
@@ -252,12 +254,14 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 											<div className="text-lg font-semibold">
 												{renderData.customer.fullName}
 											</div>
-											<div>
-												Số điện thoại:{' '}
-												<span className="font-semibold">
-													{renderData.customer.phoneNumber}
-												</span>
-											</div>
+											{renderData.customer.phoneNumber?.length > 0 && (
+												<div>
+													Số điện thoại:{' '}
+													<span className="font-semibold text-base">
+														{renderData.customer.phoneNumber}
+													</span>
+												</div>
+											)}
 											<div>
 												Email:{' '}
 												<span className="font-semibold">
@@ -387,7 +391,11 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 														<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
 															Còn {total > paidTotal ? 'lại' : 'thừa'}
 														</th>
-														<td className={`py-3 text-right text-xl ${total > paidTotal ? 'text-red-500' : 'text-green-500'}`}>
+														<td
+															className={`py-3 text-right text-xl ${
+																total > paidTotal ? 'text-red-500' : 'text-green-500'
+															}`}
+														>
 															<div>
 																{total > paidTotal
 																	? formatPrice(total - paidTotal)
