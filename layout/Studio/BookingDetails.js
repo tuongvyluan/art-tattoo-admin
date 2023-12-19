@@ -389,17 +389,17 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 												{total !== paidTotal && (
 													<tr className="border-t border-gray-300">
 														<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
-															Còn {total > paidTotal ? 'lại' : 'thừa'}
+															Còn {confirmedTotal > paidTotal ? 'lại' : 'thừa'}
 														</th>
 														<td
 															className={`py-3 text-right text-xl ${
-																total > paidTotal ? 'text-red-500' : 'text-green-500'
+																confirmedTotal > paidTotal ? 'text-red-500' : 'text-green-500'
 															}`}
 														>
 															<div>
-																{total > paidTotal
-																	? formatPrice(total - paidTotal)
-																	: formatPrice(paidTotal - total)}
+																{confirmedTotal > paidTotal
+																	? formatPrice(confirmedTotal - paidTotal)
+																	: formatPrice(paidTotal - confirmedTotal)}
 															</div>
 														</td>
 													</tr>

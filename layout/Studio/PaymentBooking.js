@@ -2,8 +2,10 @@ import { ChevronLeft } from 'icons/solid';
 import { BsCashCoin, BsCreditCard, BsWallet2 } from 'react-icons/bs';
 import {
 	calculateBookingTransactions,
+	calculateConfirmedTotal,
 	calculateMinBookingTotal,
 	calculateTotal,
+	calculateTotalIncludingCancelled,
 	extractServiceFromBookingDetail,
 	fetcherPost,
 	fetcherPut,
@@ -40,6 +42,7 @@ const PaymentBooking = ({ booking }) => {
 	);
 	const [transactions, setTransactions] = useState(booking.transactions);
 	const [total, setTotal] = useState(calculateTotal(bookingDetails));
+	const [confirmedTotal, setConfirmedTotal] = useState(calculateConfirmedTotal(bookingDetails));
 	const [minTotal, setMinTotal] = useState(calculateMinBookingTotal(bookingDetails));
 	const [paidTotal, setPaidTotal] = useState(
 		calculateBookingTransactions(transactions)
@@ -141,6 +144,15 @@ const PaymentBooking = ({ booking }) => {
 	};
 
 	const checkValidAmount = () => {
+		if (amount < 1000) {
+			handleAlert(
+				true,
+				'Thanh toán thất bại.',
+				`Tổng tiền thanh toán tối thiểu phải lớn hơn ${formatPrice(1000)}.`,
+				2
+			);
+			return false;
+		}
 		if (isRefund) {
 			const newAmount = paidTotal - amount;
 			if (newAmount < minTotal) {
@@ -161,8 +173,8 @@ const PaymentBooking = ({ booking }) => {
 				handleAlert(
 					true,
 					'Thanh toán thất bại.',
-					`Tổng tiền sau khi thanh toán không được vượt quá giá trị đơn hàng ${formatPrice(
-						total
+					`Tổng tiền sau khi thanh toán không được vượt quá giá trị đơn hàng, tính cả các dịch vụ đã huỷ ${formatPrice(
+						calculateTotalIncludingCancelled(bookingDetails)
 					)}.`,
 					2
 				);
@@ -328,7 +340,7 @@ const PaymentBooking = ({ booking }) => {
 												colSpan={3}
 												className="text-right bg-blue-50 text-gray-900 w-24 lg:w-40 px-4 py-3 dark:bg-gray-800 text-base"
 											>
-												Tổng cộng
+												Tổng tiền
 											</td>
 											<td className="font-semibold text-left text-gray-900 w-24 lg:w-40 px-4 py-3 bg-yellow-50 dark:bg-gray-800 text-base">
 												{formatPrice(paidTotal)}
@@ -440,7 +452,18 @@ const PaymentBooking = ({ booking }) => {
 											colSpan={booking.status === BOOKING_STATUS.IN_PROGRESS ? 3 : 2}
 											className="text-right bg-blue-50 text-gray-900 w-24 lg:w-40 px-4 py-3 dark:bg-gray-800 text-base"
 										>
-											Thành tiền
+											Tổng tiền đã xác nhận
+										</td>
+										<td className="font-semibold text-left text-gray-900 w-24 lg:w-40 px-4 py-3 bg-yellow-50 dark:bg-gray-800 text-base">
+											{formatPrice(confirmedTotal)}
+										</td>
+									</tr>
+									<tr>
+										<td
+											colSpan={booking.status === BOOKING_STATUS.IN_PROGRESS ? 3 : 2}
+											className="text-right bg-blue-50 text-gray-900 w-24 lg:w-40 px-4 py-3 dark:bg-gray-800 text-base"
+										>
+											Tổng tiền
 										</td>
 										<td className="font-semibold text-left text-gray-900 w-24 lg:w-40 px-4 py-3 bg-yellow-50 dark:bg-gray-800 text-base">
 											{formatPrice(total)}
@@ -451,17 +474,17 @@ const PaymentBooking = ({ booking }) => {
 						</div>
 					</div>
 
-					{total > 0 && booking.status === BOOKING_STATUS.IN_PROGRESS && (
+					{confirmedTotal > 0 && booking.status === BOOKING_STATUS.IN_PROGRESS && (
 						<div>
 							{
 								// Payment method
 							}
 							<div className="pt-5">
-								{total > paidTotal && (
+								{confirmedTotal > paidTotal && (
 									<Heading>
 										Còn lại:{' '}
 										<span className="text-red-500">
-											{formatPrice(total - paidTotal)}
+											{formatPrice(confirmedTotal - paidTotal)}
 										</span>
 									</Heading>
 								)}
