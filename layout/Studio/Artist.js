@@ -54,10 +54,10 @@ const StudioArtist = ({ studioId }) => {
 		});
 	};
 
-	const handleAddArtist = () => {
+	const handleAddArtist = async () => {
+		let success = false;
 		const keyValue = CryptoJS.AES.decrypt(artistKey, GOOGLE_CLIENT_SECRET);
 		const artistId = JSON.parse(keyValue?.toString(CryptoJS.enc.Utf8))?.id;
-		let success = false;
 
 		if (artistId) {
 			const comparison =
@@ -67,7 +67,7 @@ const StudioArtist = ({ studioId }) => {
 			if (comparison <= 0) {
 				success = true;
 				handleAlert(true, 'Đang thêm nghệ sĩ', '', 0);
-				fetcherPost(`${BASE_URL}/artists/${studio.id}/studio-artist/${artistId}`)
+				await fetcherPost(`${BASE_URL}/artists/${studio.id}/studio-artist/${artistId}`)
 					.then((data) => {
 						setStudio({
 							...studio,
@@ -76,6 +76,7 @@ const StudioArtist = ({ studioId }) => {
 						handleAlert(true, 'Thêm nghệ sĩ thành công', '', 1);
 					})
 					.catch((e) => {
+						success = false
 						handleAlert(
 							true,
 							'Thêm nghệ sĩ thất bại',

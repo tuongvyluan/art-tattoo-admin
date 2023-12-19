@@ -105,7 +105,7 @@ const UpdateBookingDetailModal = ({
 			);
 			return;
 		}
-		if (minTotal + detail?.price > paidTotal) {
+		if (detail?.status === BOOKING_DETAIL_STATUS.COMPLETED && (minTotal + detail?.price > paidTotal)) {
 			handleAlert(
 				true,
 				'Trạng thái không hợp lệ.',

@@ -427,7 +427,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 											<div className="flex justify-center flex-wrap gap-3">
 												<Link href={`/payment/${renderData.id}`}>
 													<div className="flex">
-														<Button outline>Xem thanh toán</Button>
+														<Button outline>Chi tiết giao dịch</Button>
 													</div>
 												</Link>
 												{renderData.status !== BOOKING_STATUS.COMPLETED &&
