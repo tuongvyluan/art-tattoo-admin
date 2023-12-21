@@ -1,7 +1,6 @@
 import Button from 'components/Button';
 import MyModal from 'components/MyModal';
 import Register from 'components/Register';
-import { Modal } from 'flowbite-react';
 import { fetcher, fetcherPost } from 'lib';
 import { BASE_URL, TAX_CODE_API } from 'lib/env';
 import { checkPhoneNumber, checkTaxCode } from 'lib/regex';

@@ -1,31 +1,23 @@
-import { fetcher, fetcherPost, fetcherPut, formatDate } from 'lib';
-import { API_SECRET, BASE_URL, SOCIAL_PAGE } from 'lib/env';
+import { fetcher, fetcherPost, fetcherPut } from 'lib';
+import { API_SECRET, BASE_URL } from 'lib/env';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
-import { Alert, Avatar, Card, CardBody, Loading } from 'ui';
+import { useEffect, useState } from 'react';
+import { Alert, Avatar, Card, CardBody } from 'ui';
 import CryptoJS from 'crypto-js';
 import Button from 'components/Button';
+import { IoPersonRemoveSharp } from 'react-icons/io5';
 import Heading from 'components/Heading';
+import { Tooltip } from 'flowbite-react';
 import Link from 'next/link';
+import { HiMiniMagnifyingGlass } from 'react-icons/hi2';
 
 const StudioArtist = ({ studioId }) => {
-	const [studio, setStudio] = useState({
-		id: null,
-		ownerId: '',
-		studioName: '',
-		address: '',
-		bioContent: '',
-		openTime: '08:00',
-		closeTime: '20:00',
-		certificate: null,
-		isAuthorized: false,
-		isPrioritized: false,
-		status: 0,
-		artists: [],
-		bookings: []
-	});
+	const [artistList, setArtistList] = useState([]);
 	const [artistKey, setArtistKey] = useState('');
 	const [showAlert, setShowAlert] = useState(false);
+	const [totalPage, setTotalPage] = useState(0);
+	const [currentPage, setCurrentPage] = useState(1);
+	const pageSize = 15;
 
 	const [alertContent, setAlertContent] = useState({
 		title: '',
@@ -67,16 +59,14 @@ const StudioArtist = ({ studioId }) => {
 			if (comparison <= 0) {
 				success = true;
 				handleAlert(true, 'Đang thêm nghệ sĩ', '', 0);
-				await fetcherPost(`${BASE_URL}/artists/${studio.id}/studio-artist/${artistId}`)
+				await fetcherPost(
+					`${BASE_URL}/artists/${studioId}/studio-artist/${artistId}`
+				)
 					.then((data) => {
-						setStudio({
-							...studio,
-							id: null
-						});
 						handleAlert(true, 'Thêm nghệ sĩ thành công', '', 1);
 					})
 					.catch((e) => {
-						success = false
+						success = false;
 						handleAlert(
 							true,
 							'Thêm nghệ sĩ thất bại',
@@ -100,34 +90,34 @@ const StudioArtist = ({ studioId }) => {
 	};
 
 	const removeArtist = (artistId) => {
-		fetcherPut(
-			`${BASE_URL}/artists/${studioId}/studio-artist-deleted/${artistId}`
-		).then((data) => {
-			setStudio({
-				...studio,
-				id: null
-			});
-		});
+		fetcherPut(`${BASE_URL}/artists/${studioId}/studio-artist-deleted/${artistId}`);
 	};
 
-	if (studioId && !studio.id) {
-		fetcher(`${BASE_URL}/studios/studio-details?id=${studioId}`).then((response) => {
-			setStudio({
-				...studio,
-				id: studioId,
-				ownerId: response.artistId,
-				artists: response.studioArtists.sort(
-					(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-				),
-				bookings: response.bookings
-			});
+	const getArtistStyle = (styles) => {
+		const length = styles?.length;
+		if (length === 0) {
+			return 'Không có';
+		}
+		let showLength = length > 3 ? 3 : length
+		let styleString = styles.at(0).name;
+		let i = 1;
+		for (i; i < showLength; i++) {
+			styleString += `, ${styles.at(i).name}`;
+		}
+		if (showLength < length) {
+			styleString += ',...'
+		}
+		return styleString;
+	};
+
+	useEffect(() => {
+		fetcher(
+			`${BASE_URL}/artists/${studioId}/artist-studio-list?page=${currentPage}&pageSize=${pageSize}`
+		).then((response) => {
+			setArtistList(response);
 		});
-		return (
-			<div className="flex items-center justify-center h-full">
-				<Loading />
-			</div>
-		);
-	}
+	}, []);
+
 	return (
 		<div className="relative min-h-body">
 			<Alert
@@ -139,113 +129,110 @@ const StudioArtist = ({ studioId }) => {
 				<strong className="font-bold mr-1">{alertContent.title}</strong>
 				<span className="block sm:inline">{alertContent.content}</span>
 			</Alert>
-			{studio.artists && studio.artists.length > 0 ? (
-				<div>
-					<Card>
-						<CardBody>
-							<Heading>Đang hợp tác</Heading>
-							<div className="flex flex-wrap justify-center">
-								{studio.artists
-									?.filter((a) => a.dismissedAt === null)
-									.map((artist, artistIndex) => (
-										<div key={artist.id} className="min-w-max w-1/4 px-2 mb-3">
-											<div className={`w-full block text-gray-900 dark:text-white`}>
-												<div className="flex justify-center">
-													<Link target='_blank' href={`${SOCIAL_PAGE}/artist/${artist.artist.id}`}>
-														<Avatar
-															size={48}
-															src={
-																artist.artist.avatar
-																	? artist.artist.avatar
-																	: '/images/ATL.png'
-															}
-															alt={artist.artist.fullName}
-															className={'cursor-pointer'}
-														/>
-													</Link>
-												</div>
-												<div className="mt-1 flex justify-center text-center">
-													<div>
-														<div className="block">{artist.artist.fullName}</div>
-														<div className="flex pt-2">
-															<Button onClick={() => removeArtist(artist.artist.id)}>
-																Ngừng hợp tác
-															</Button>
-														</div>
-													</div>
-												</div>
-											</div>
-										</div>
-									))}
-							</div>
-							{studio.artists?.filter((a) => a.dismissedAt != null).at(0) ? (
-								<div>
-									<Heading>Đã ngừng hợp tác</Heading>
-									<div className="flex flex-wrap justify-center">
-										{studio.artists
-											?.filter((a) => a.dismissedAt != null)
-											.map((artist, artistIndex) => (
-												<div key={artist.id} className="min-w-max w-1/4 px-2 mb-3">
-													<a
-														className={`w-full block text-gray-900 dark:text-white`}
-													>
-														<div className="flex justify-center">
-															<Link target='_blank' href={`${SOCIAL_PAGE}/artist/${artist.artist.id}`}>
-																<Avatar
-																	size={48}
-																	src={
-																		artist.artist.avatar
-																			? artist.artist.avatar
-																			: '/images/ATL.png'
-																	}
-																	alt={artist.artist.fullName}
-																	className={'cursor-pointer'}
-																/>
-															</Link>
-														</div>
-														<div className="mt-1 flex justify-center text-center">
-															<div>
-																<div className="block">{artist.artist.fullName}</div>
-																<div className="flex pt-2">
-																	Từ {formatDate(artist.createdAt)} đến{' '}
-																	{formatDate(artist.dismissedAt)}
-																</div>
-															</div>
-														</div>
-													</a>
-												</div>
-											))}
+			<div className="sm:px-8 md:px-1 lg:px-6 xl:px-32">
+				<Card>
+					<CardBody>
+						<Heading>Nghệ sĩ</Heading>
+						<div className="flex items-center justify-center h-full">
+							<div className="block mb-3">
+								<label className="font-semibold py-2">
+									Nhập key của nghệ sĩ để thêm nghệ sĩ mới
+								</label>
+								<div className="flex gap-2 py-2 items-center">
+									<input
+										type="value"
+										value={artistKey}
+										onChange={(e) => setArtistKey(e.target.value)}
+										className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
+									/>
+									<div onClick={() => handleAddArtist()} className="w-16">
+										<Button>Thêm</Button>
 									</div>
 								</div>
-							) : (
-								<></>
-							)}
-						</CardBody>
-					</Card>
-				</div>
-			) : (
-				<div className="flex items-center justify-center h-full">
-					Bạn đang không hợp tác nghệ sĩ nào, vào trang nghệ sĩ để nhập key từ nghệ sĩ và
-					thêm họ vào tiệm xăm của mình nhé.
-				</div>
-			)}
-			<div className="flex items-center justify-center h-full">
-				<div className="block mb-3">
-					<label className="font-semibold py-2">
-						Nhập key của nghệ sĩ để thêm nghệ sĩ mới
-					</label>
-					<div className="flex gap-2 py-2 items-center">
-						<input
-							type="value"
-							value={artistKey}
-							onChange={(e) => setArtistKey(e.target.value)}
-							className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
-						/>
-						<div onClick={() => handleAddArtist()} className="w-16">
-							<Button>Thêm</Button>
+							</div>
 						</div>
-					</div>
-				</div>
+						{artistList && artistList.length > 0 ? (
+							<div className="w-full overflow-auto relative shadow-md sm:rounded-lg mb-5 text-base">
+								<table className="w-full min-w-3xl text-left text-gray-500">
+									<thead>
+										<tr>
+											<th scope="col" className="px-3 py-3 bg-gray-50">
+												Tên nghệ sĩ
+											</th>
+											<th scope="col" className="px-3 py-3 bg-gray-50">
+												Style
+											</th>
+											{/* <th scope="col" className="px-3 py-3 bg-gray-50">
+											Ngày hợp tác
+										</th>
+										<th scope="col" className="px-3 py-3 bg-gray-50">
+											Trạng thái
+										</th> */}
+											<th scope="col" className="px-3 py-3 bg-gray-50"></th>
+										</tr>
+									</thead>
+									<tbody>
+										{artistList.map((artist, artistIndex) => (
+											<tr
+												key={artist.id}
+												className={`hover:bg-gray-50 
+											${
+												''
+												//artist?.dismissedAt === null ? '' : 'bg-gray-200 opacity-40'
+											}
+											`}
+											>
+												<td className="px-3 py-4 flex flex-wrap items-center gap-2">
+													<Avatar src={artist.avatar} size={50} />
+													<div>{artist?.fullName}</div>
+												</td>
+												<td className="px-3 py-4 w-1/2">
+													<div>{getArtistStyle(artist.artistStyles)}</div>
+												</td>
+												{/* <td className="px-3 py-4">
+												<div>{formatDate(artist.createdAt)}</div>
+											</td>
+											<td className="px-3 py-4">
+												<div>
+													{artist.dismissedAt !== null
+														? `Ngừng hợp tác ngày ${formatDate(artist.dismissedAt)}`
+														: 'Đang hợp tác'}
+												</div>
+											</td> */}
+												<td className="px-3 py-4">
+													<div className="flex flex-wrap gap-3 justify-center">
+														<Tooltip content="Ngừng hợp tác">
+															<IoPersonRemoveSharp
+																size={25}
+																className="cursor-pointer"
+																onClick={() => removeArtist(artist.id)}
+															/>
+														</Tooltip>
+														<Tooltip content='Xem trang cá nhân'>
+															<Link
+																href={`https://tattoolover.netlify.app/artist/${artist.id}`} target='_blank'
+															>
+																<HiMiniMagnifyingGlass
+																	className="cursor-pointer font-bold"
+																	size={20}
+																/>
+															</Link>
+														</Tooltip>
+													</div>
+												</td>
+											</tr>
+										))}
+									</tbody>
+								</table>
+							</div>
+						) : (
+							<div className="flex items-center justify-center h-full">
+								Bạn đang không hợp tác nghệ sĩ nào, vào trang nghệ sĩ để nhập key từ
+								nghệ sĩ và thêm họ vào tiệm xăm của mình nhé.
+							</div>
+						)}
+					</CardBody>
+				</Card>
 			</div>
 		</div>
 	);
