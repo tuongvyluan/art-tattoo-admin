@@ -15,7 +15,8 @@ const MyModal = ({
 	warn = false,
 	size = 'lg',
 	noFooter = false,
-	canConfirm = true
+	canConfirm = true,
+	noHeader = false
 }) => {
 	const initialFocus = useRef(null);
 	return (
@@ -25,21 +26,25 @@ const MyModal = ({
 			onClose={() => setOpenModal(false)}
 			size={size}
 		>
-			<Modal.Header>
-				<div className="flex flex-wrap items-center gap-2">
-					{warn && <IoIosWarning size={20} className="text-red-500" />}
-					<div className={`${warn ? 'text-red-500' : ''}`}>{title}</div>
-				</div>
-			</Modal.Header>
+			{!noHeader && (
+				<Modal.Header>
+					<div className="flex flex-wrap items-center gap-2">
+						{warn && <IoIosWarning size={20} className="text-red-500" />}
+						<div className={`${warn ? 'text-red-500' : ''}`}>{title}</div>
+					</div>
+				</Modal.Header>
+			)}
 			<Modal.Body>{children}</Modal.Body>
 			{!noFooter && (
 				<Modal.Footer>
 					<Button ref={initialFocus} outline onClick={() => setOpenModal(false)}>
 						{cancelTitle}
 					</Button>
-					{canConfirm && (<Button warn={warn} onClick={onSubmit}>
-						{confirmTitle}
-					</Button>)}
+					{canConfirm && (
+						<Button warn={warn} onClick={onSubmit}>
+							{confirmTitle}
+						</Button>
+					)}
 				</Modal.Footer>
 			)}
 		</Modal>

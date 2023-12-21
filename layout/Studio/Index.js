@@ -28,9 +28,12 @@ function StudioIndexPage({ studioId }) {
 				...studio,
 				id: studioId,
 				ownerId: response.artistId,
-				artists: response.studioArtists.sort(
-					(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-				),
+				artists: response.studioArtists
+					.sort(
+						(a, b) =>
+							new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+					)
+					?.filter((a) => a.dismissedAt === null),
 				bookings: response.bookings
 			});
 		});
@@ -46,7 +49,7 @@ function StudioIndexPage({ studioId }) {
 					<div className="w-full md:w-2/4 lg:w-1/4 px-2 pb-4">
 						<WidgetStatCard
 							title="Tổng đơn hàng"
-							className='h-full'
+							className="h-full"
 							value={studio.bookings?.length}
 							icon={<Users width={16} height={16} />}
 							type={'blue'}
@@ -55,7 +58,7 @@ function StudioIndexPage({ studioId }) {
 					<div className="w-full md:w-2/4 lg:w-1/4 px-2 pb-4">
 						<WidgetStatCard
 							title="Đơn hàng tháng này"
-							className='h-full'
+							className="h-full"
 							value={'23'}
 							icon={<Users width={16} height={16} />}
 							type={'gray'}
@@ -64,7 +67,7 @@ function StudioIndexPage({ studioId }) {
 					<div className="w-full md:w-2/4 lg:w-1/4 px-2 pb-4">
 						<WidgetStatCard
 							title={'Doanh thu tháng này'}
-							className='h-full'
+							className="h-full"
 							value={'23,465,563'}
 							icon={<Users width={16} height={16} />}
 							type={'indigo'}
@@ -73,51 +76,52 @@ function StudioIndexPage({ studioId }) {
 					<div className="w-full md:w-2/4 lg:w-1/4 px-2 pb-4">
 						<WidgetStatCard
 							title={'Lượt theo dõi'}
-							className='h-full'
+							className="h-full"
 							value={'123'}
 							icon={<Users width={16} height={16} />}
 							type={'red'}
 						/>
 					</div>
 				</div>
-				{studio.artists && studio.artists.length > 0 ? (
+				{studio.artists && studio.artists?.length > 0 ? (
 					<div>
 						<Card>
 							<CardBody className="flex flex-wrap justify-center gap-3">
-								{studio.artists
-									?.filter((a) => a.dismissedAt === null)
-									.map((artist, artistIndex) => (
-										<div key={artist.id} className="min-w-max w-1/4 px-2 mb-3">
-											<div className="w-full block text-gray-900 dark:text-white">
-												<div className="flex justify-center">
-													<Link target='_blank' href={`${SOCIAL_PAGE}/artist/${artist.artist.id}`}>
-														<Avatar
-															size={48}
-															src={
-																artist.artist.avatar
-																	? artist.artist.avatar
-																	: '/images/ATL.png'
-															}
-															alt={artist.artist.fullName}
-															className={'cursor-pointer'}
-														/>
-													</Link>
-												</div>
-												<div className="mt-1 flex justify-center text-center">
-													<div>
-														<span className="block">{artist.artist.fullName}</span>
-													</div>
+								{studio.artists.map((artist, artistIndex) => (
+									<div key={artist.id} className="min-w-max w-1/4 px-2 mb-3">
+										<div className="w-full block text-gray-900 dark:text-white">
+											<div className="flex justify-center">
+												<Link
+													target="_blank"
+													href={`${SOCIAL_PAGE}/artist/${artist.artist.id}`}
+												>
+													<Avatar
+														size={48}
+														src={
+															artist.artist.avatar
+																? artist.artist.avatar
+																: '/images/ATL.png'
+														}
+														alt={artist.artist.fullName}
+														className={'cursor-pointer'}
+													/>
+												</Link>
+											</div>
+											<div className="mt-1 flex justify-center text-center">
+												<div>
+													<span className="block">{artist.artist.fullName}</span>
 												</div>
 											</div>
 										</div>
-									))}
+									</div>
+								))}
 							</CardBody>
 						</Card>
 					</div>
 				) : (
 					<div className="flex items-center justify-center gap-1 text-lg">
 						<div className="text-center">
-							<span>Bạn đang chưa có nghệ sĩ nào, vào </span>
+							<span>Bạn đang không hợp tác với nghệ sĩ nào, vào </span>
 							<Link href={'/artist'}>đây</Link>
 							<span>
 								{' '}

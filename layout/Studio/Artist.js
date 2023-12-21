@@ -1,5 +1,5 @@
 import { fetcher, fetcherPost, fetcherPut, formatDate } from 'lib';
-import { BASE_URL, GOOGLE_CLIENT_SECRET, SOCIAL_PAGE } from 'lib/env';
+import { API_SECRET, BASE_URL, SOCIAL_PAGE } from 'lib/env';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { Alert, Avatar, Card, CardBody, Loading } from 'ui';
@@ -56,7 +56,7 @@ const StudioArtist = ({ studioId }) => {
 
 	const handleAddArtist = async () => {
 		let success = false;
-		const keyValue = CryptoJS.AES.decrypt(artistKey, GOOGLE_CLIENT_SECRET);
+		const keyValue = CryptoJS.AES.decrypt(artistKey, API_SECRET);
 		const artistId = JSON.parse(keyValue?.toString(CryptoJS.enc.Utf8))?.id;
 
 		if (artistId) {
@@ -225,7 +225,7 @@ const StudioArtist = ({ studioId }) => {
 				</div>
 			) : (
 				<div className="flex items-center justify-center h-full">
-					Bạn đang chưa có nghệ sĩ nào, vào trang nghệ sĩ để nhập key từ nghệ sĩ và
+					Bạn đang không hợp tác nghệ sĩ nào, vào trang nghệ sĩ để nhập key từ nghệ sĩ và
 					thêm họ vào tiệm xăm của mình nhé.
 				</div>
 			)}

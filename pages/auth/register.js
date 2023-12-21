@@ -1,4 +1,7 @@
+import Button from 'components/Button';
+import MyModal from 'components/MyModal';
 import Register from 'components/Register';
+import { Modal } from 'flowbite-react';
 import { fetcher, fetcherPost } from 'lib';
 import { BASE_URL, TAX_CODE_API } from 'lib/env';
 import { checkPhoneNumber, checkTaxCode } from 'lib/regex';
@@ -6,10 +9,11 @@ import { ROLE } from 'lib/status';
 import { useSession } from 'next-auth/react';
 import Router from 'next/router';
 import { useEffect, useState } from 'react';
-import { Alert } from 'ui';
+import { MdCheck, MdOutlineErrorOutline } from 'react-icons/md';
+import { Loading } from 'ui';
 
 const RegisterPage = () => {
-	const { status, data } = useSession();
+	const { status } = useSession();
 
 	useEffect(() => {
 		if (status === 'authenticated') {
@@ -32,30 +36,74 @@ const RegisterPage = () => {
 		studioBioContent: '',
 		role: ROLE.STUDIO
 	});
-	const [avatar, setAvatar] = useState('/images/upload-img.png');
-	const [showAlert, setShowAlert] = useState(false);
 
-	const [alertContent, setAlertContent] = useState({
+	const [avatar, setAvatar] = useState('/images/upload-img.png');
+	const [showModal, setShowModal] = useState(false);
+
+	const [modalContent, setModalContent] = useState({
 		title: '',
 		content: '',
-		isWarn: 'blue'
+		isWarn: 0
 	});
 
 	const handleSetUser = (newUser) => {
-		handleAlert(false, '', '');
+		handleModal(false, '', '');
 		setUser(newUser);
 	};
 
+	const handleModal = (state, title, content, status = 0) => {
+		setShowModal((prev) => state);
+		setModalContent({
+			title: title,
+			content: content,
+			isWarn: status
+		});
+	};
+
+	const getModalIcon = () => {
+		switch (modalContent.isWarn) {
+			case 1:
+				return <MdCheck className="text-green-500" size={30} />;
+			case 2:
+				return <MdOutlineErrorOutline className="text-red-500" size={30} />;
+			default:
+				return <Loading size={30} />;
+		}
+	};
+
+	const handleCloseModal = () => {
+		if (modalContent?.isWarn === 2) {
+			setShowModal(false)
+		} else {
+			Router.replace('/auth/signin')
+		}
+	}
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		handleModal(true, 'Đang đăng ký tài khoản.', '', 0);
 		if (user.cpassword !== user.password) {
-			handleAlert(true, '', 'Mật khẩu xác nhận không trùng khớp.', 2);
+			handleModal(
+				true,
+				'Đăng ký tài khoản thất bại.',
+				'Mật khẩu xác nhận không trùng khớp.',
+				2
+			);
 		} else if (!checkTaxCode(user.studioTaxCode)) {
-			handleAlert(true, '', 'Mã số thuế không hợp lệ.', 2);
+			handleModal(
+				true,
+				'Đăng ký tài khoản thất bại.',
+				'Mã số thuế không hợp lệ.',
+				2
+			);
 		} else if (!checkPhoneNumber(user.phoneNumber)) {
-			handleAlert(true, '', 'Số điện thoại không hợp lệ.', 2);
+			handleModal(
+				true,
+				'Đăng ký tài khoản thất bại.',
+				'Số điện thoại không hợp lệ.',
+				2
+			);
 		} else {
-			handleAlert(true, '', 'Đang đăng ký tài khoản...');
 			try {
 				fetcher(`${TAX_CODE_API}/${user.studioTaxCode}`).then((data) => {
 					let validTax = false;
@@ -81,13 +129,20 @@ const RegisterPage = () => {
 							closeTime: user.studioCloseTime,
 							isAuthorized: validTax
 						}
-					}).then((data) => {
-						console.log(data)
-						handleAlert(true, 'Đăng ký tài khoản thành công', 'Bạn hãy kiểm tra mail để xác thực tài khoản nhé.', 1);
-					}).catch((e) => {
-						console.log(e)
-						handleAlert(true, 'Đăng ký tài khoản thất bại', '', 2);
 					})
+						.then((data) => {
+							console.log(data);
+							handleModal(
+								true,
+								'Đăng ký tài khoản thành công.',
+								'Bạn hãy kiểm tra mail để xác thực tài khoản nhé.',
+								1
+							);
+						})
+						.catch((e) => {
+							console.log(e);
+							handleModal(true, 'Đăng ký tài khoản thất bại.', '', 2);
+						});
 				});
 			} catch (e) {
 				console.log(e);
@@ -96,43 +151,37 @@ const RegisterPage = () => {
 				if (e.message.includes('already an account')) {
 					messageContent = 'Email hoặc số điện thoại này đã tồn tại.';
 				}
-				handleAlert(true, mesageTitle, messageContent, 2);
+				handleModal(true, mesageTitle, messageContent, 2);
 			}
 		}
 	};
 
-	const handleAlert = (state, title, content, isWarn = 0) => {
-		setShowAlert((prev) => state);
-		let color;
-		switch (isWarn) {
-			case 1:
-				color = 'green'
-				break;
-			case 2:
-				color = 'red'
-				break;
-			default:
-				color = 'blue'
-				break;
-		}
-		setAlertContent({
-			title: title,
-			content: content,
-			isWarn: color
-		});
-	};
-
 	return (
 		<div className="relative">
-			<Alert
-				showAlert={showAlert}
-				setShowAlert={setShowAlert}
-				color={alertContent.isWarn}
-				className="bottom-2 right-2 absolute"
+			<MyModal
+				noHeader={true}
+				openModal={showModal}
+				setOpenModal={setShowModal}
+				title={'Đăng ký tài khoản'}
+				noFooter={true}
 			>
-				<strong className="font-bold mr-1">{alertContent.title}</strong>
-				<span className="block sm:inline">{alertContent.content}</span>
-			</Alert>
+				<div className="flex justify-center">
+					<div className="text-center">
+						<div className="flex flex-wrap  gap-2 items-center pb-4">
+							<div>{getModalIcon()}</div>
+							<div className="text-2xl">{modalContent?.title}</div>
+						</div>
+						<div className="text-base">{modalContent?.content}</div>
+					</div>
+				</div>
+				{modalContent?.isWarn !== 0 && (
+					<div className='pt-6 mt-6 border-t border-gray-300 flex justify-center'>
+						<Button outline onClick={handleCloseModal}>
+							{modalContent?.isWarn === 2 ? 'Đóng' : 'Trở lại trang đăng nhập'}
+						</Button>
+					</div>
+				)}
+			</MyModal>
 			<Register
 				avatar={avatar}
 				setAvatar={setAvatar}

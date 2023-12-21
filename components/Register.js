@@ -22,7 +22,9 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 							<div className="text-center mb-3 text-gray-700">
 								<Logo height={50} width={50} />
 							</div>
-							<form onSubmit={handleSubmit}>
+							<form
+								onSubmit={handleSubmit}
+							>
 								<div className="text-center mb-2">
 									<h1 className="uppercase text-2xl mb-3 font-bold leading-none">
 										Art Tattoo Lover
@@ -64,7 +66,7 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 														</div>
 													</div>
 												</div>
-												<div className="block mt-5 mb-3">
+												<div className="block mt-9 mb-3">
 													<label className="mt-1">
 														Tên tiệm xăm <span className="text-red-500">*</span>{' '}
 													</label>
@@ -128,7 +130,7 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 														type="time"
 														step={1}
 														required={true}
-														className="appearance-none relative block w-full px-3 py-2 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
+														className="appearance-none text-base relative block w-full px-3 py-2 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
 													/>
 												</div>
 												<div className="block mb-3">
@@ -143,7 +145,7 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 														type="time"
 														step={1}
 														required={true}
-														className="appearance-none relative block w-full px-3 py-2 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
+														className="appearance-none text-base relative block w-full px-3 py-2 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
 													/>
 												</div>
 											</div>
