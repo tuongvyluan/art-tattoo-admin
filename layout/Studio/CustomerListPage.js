@@ -1,4 +1,5 @@
 import Heading from 'components/Heading';
+import { Search } from 'icons/outline';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
 import PropTypes from 'propTypes';
@@ -67,6 +68,8 @@ const StudioCustomerListPage = ({ studioId }) => {
 												<th scope="col" className="w-32 px-3 py-3 bg-gray-50">
 													Tổng số đơn hàng
 												</th>
+												<th scope="col" className="w-32 px-3 py-3 bg-gray-50">
+												</th>
 											</tr>
 										</thead>
 										<tbody className="h-full">
@@ -78,7 +81,7 @@ const StudioCustomerListPage = ({ studioId }) => {
 													<td className="px-3 py-4">
 														<div>{customer.fullName} </div>
 													</td>
-													<td className="px-3 py-4">
+													<td className="px-3 py-4 w-1/3">
 														<div>{customer.email} </div>
 													</td>
 													<td className="px-3 py-4">
@@ -86,6 +89,9 @@ const StudioCustomerListPage = ({ studioId }) => {
 													</td>
 													<td className="px-3 py-4">
 														<div>{customer.noOfBookings} </div>
+													</td>
+													<td className="px-3 py-4 flex justify-end">
+														<Search width={20} height={20} />
 													</td>
 												</tr>
 											))}

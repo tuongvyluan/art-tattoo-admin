@@ -99,7 +99,8 @@ export const enum BOOKING_DETAIL_STATUS {
 	PENDING = 0,
 	IN_PROGRESS = 1,
 	CANCELLED = 2,
-	COMPLETED = 3
+	COMPLETED = 3,
+	NOT_COMPLETED = 4
 }
 
 export const stringBookingDetailStatus = [

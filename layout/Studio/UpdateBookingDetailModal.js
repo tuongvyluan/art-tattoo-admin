@@ -117,9 +117,19 @@ const UpdateBookingDetailModal = ({
 		updateBookingDetail();
 	};
 
+	const getArtistNameById = (id) => {
+		let name = 'Nghệ sĩ bất kỳ';
+		let list = artists?.filter((a) => a.id === id)
+		if (list.length > 0) {
+			name = list.at(0).account.fullName
+		}
+		return name
+	}
+
 	useEffect(() => {
 		setArtists(artistList);
 	}, [artistList]);
+
 	return (
 		<div className='relative'>
 			<MyModal
@@ -194,7 +204,7 @@ const UpdateBookingDetailModal = ({
 										<DropdownMenu>
 											<div>
 												{stringBookingDetailStatus.map((status, statusIndex) => (
-													<div
+													<button
 														key={status}
 														onClick={() =>
 															handleChangeDetail({
@@ -204,7 +214,7 @@ const UpdateBookingDetailModal = ({
 																}
 															})
 														}
-														className={`px-2 py-1 cursor-pointer hover:bg-gray-100 ${
+														className={`block w-full px-2 py-1 cursor-pointer hover:bg-gray-100 ${
 															detail?.status === statusIndex && 'bg-blue-50'
 														} ${
 															statusIndex === BOOKING_DETAIL_STATUS.CANCELLED &&
@@ -212,7 +222,7 @@ const UpdateBookingDetailModal = ({
 														}`}
 													>
 														{status}
-													</div>
+													</button>
 												))}
 											</div>
 										</DropdownMenu>
@@ -246,8 +256,7 @@ const UpdateBookingDetailModal = ({
 								{detail?.tattooArtId !== null ? (
 									<div>
 										{
-											artists?.filter((a) => a?.id === detail?.artistId)?.at(0)
-												?.account?.fullName
+											getArtistNameById(detail?.artistId)
 										}
 									</div>
 								) : (
@@ -255,8 +264,7 @@ const UpdateBookingDetailModal = ({
 										<DropdownToggle>
 											<div className="w-40 rounded-lg p-1 border border-gray-600">
 												{
-													artists?.filter((a) => a?.id === detail?.artistId)?.at(0)
-														?.account?.fullName
+													getArtistNameById(detail?.artistId)
 												}
 											</div>
 											<div className="absolute top-2 right-2">

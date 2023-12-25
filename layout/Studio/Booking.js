@@ -314,7 +314,7 @@ function BookingPage({ studioId }) {
 							onChange={onSearch}
 							onKeyDown={onKeyDown}
 							className="my-2 appearance-none relative block w-full pl-3 pr-3 border-0 border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 leading-none h-5 bg-transparent"
-							placeholder="Bạn có thể tìm theo tên hình xăm, tên khách hàng, hoặc ID lịch hẹn"
+							placeholder="Bạn có thể tìm theo tên khách hàng hoặc ID khách hàng"
 						/>
 					</div>
 				</div>

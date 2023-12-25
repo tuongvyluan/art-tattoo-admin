@@ -23,12 +23,13 @@ import {
 	BOOKING_STATUS,
 	TRANSACTION_METHOD,
 	TRANSACTION_STATUS,
-	stringBookingDetailStatus,
-	stringBookingDetailStatusColor,
 	stringTransactionMethod
 } from 'lib/status';
 import MoneyInput from 'components/MoneyInput';
 import { BASE_URL } from 'lib/env';
+import MyModal from 'components/MyModal';
+import PaymentBookingDetails from './PaymentBookingDetails';
+import { MdCheck } from 'react-icons/md';
 
 const PaymentBooking = ({ booking }) => {
 	const [method, setMethod] = useState(0);
@@ -42,7 +43,9 @@ const PaymentBooking = ({ booking }) => {
 	);
 	const [transactions, setTransactions] = useState(booking.transactions);
 	const [total, setTotal] = useState(calculateTotal(bookingDetails));
-	const [confirmedTotal, setConfirmedTotal] = useState(calculateConfirmedTotal(bookingDetails));
+	const [confirmedTotal, setConfirmedTotal] = useState(
+		calculateConfirmedTotal(bookingDetails)
+	);
 	const [minTotal, setMinTotal] = useState(calculateMinBookingTotal(bookingDetails));
 	const [paidTotal, setPaidTotal] = useState(
 		calculateBookingTransactions(transactions)
@@ -50,16 +53,19 @@ const PaymentBooking = ({ booking }) => {
 	const [isRefund, setIsRefund] = useState(false);
 	const [amount, setAmount] = useState(0);
 	const [description, setDescription] = useState('');
+	const [openTransactionModal, setOpenTransactionModal] = useState(false);
+	const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
 	// Watching booking details or transactions change
 	useEffect(() => {
 		setMinTotal(calculateMinBookingTotal(bookingDetails));
+		setConfirmedTotal(calculateConfirmedTotal(bookingDetails));
 		setTotal(calculateTotal(bookingDetails));
 		setPaidTotal(calculateBookingTransactions(transactions));
 		setDescription('');
 		setIsRefund(false);
 		setAmount(0);
-	}, [transactions]);
+	}, [transactions, bookingDetails]);
 
 	// Alert related vars
 	const [showAlert, setShowAlert] = useState(false);
@@ -91,14 +97,6 @@ const PaymentBooking = ({ booking }) => {
 		});
 	};
 
-	const handleSelectDetail = (detailIndex) => {
-		const details = [...bookingDetails];
-		const detail = details.at(detailIndex);
-		detail.selected = !detail.selected;
-		details[detailIndex] = detail;
-		setBookingDetails(details);
-	};
-
 	useEffect(() => {
 		let paid = 0;
 		let note = '';
@@ -115,7 +113,8 @@ const PaymentBooking = ({ booking }) => {
 	}, [bookingDetails]);
 
 	const handleCreateSuccess = (newTransactionId) => {
-		handleAlert(true, 'Thanh toán thành công.', '', 1);
+		setOpenSuccessModal(true);
+		handleAlert(false);
 		const details = [...bookingDetails].map((detail) => {
 			if (detail.selected) {
 				return {
@@ -168,7 +167,7 @@ const PaymentBooking = ({ booking }) => {
 			}
 		} else {
 			const newAmount = paidTotal + amount;
-			console.log(newAmount > total)
+			console.log(newAmount > total);
 			if (newAmount > total) {
 				handleAlert(
 					true,
@@ -206,22 +205,162 @@ const PaymentBooking = ({ booking }) => {
 				});
 				Promise.all(promises).then(() => {
 					handleCreateSuccess(response.id);
+					setOpenTransactionModal(false);
 				});
 			});
 		}
 	};
 
+	const handleOpenTransactionModal = () => {
+		setIsRefund(false);
+		setDescription('');
+		setAmount(0);
+		setOpenTransactionModal(true);
+	};
+
 	return (
 		<div className="relative sm:px-12 md:px-3 lg:px-10 xl:px-20">
-			<Alert
-				showAlert={showAlert}
-				setShowAlert={setShowAlert}
-				color={alertContent.isWarn}
-				className="bottom-2 right-2 fixed max-w-md z-50"
+			<MyModal
+				noHeader={true}
+				openModal={openSuccessModal}
+				setOpenModal={setOpenSuccessModal}
+				title={'Ghi nhận giao dịch'}
+				noFooter={true}
 			>
-				<strong className="font-bold mr-1">{alertContent.title}</strong>
-				<span className="block sm:inline">{alertContent.content}</span>
-			</Alert>
+				<div className="flex justify-center">
+					<div className="text-center">
+						<div className="flex flex-wrap  gap-2 items-center pb-4">
+							<div>
+								<MdCheck className="text-green-500" size={30} />
+							</div>
+							<div className="text-2xl">Tạo giao dịch thành công</div>
+						</div>
+					</div>
+				</div>
+				<div className="pt-6 mt-6 border-t border-gray-300 flex justify-center">
+					<Button outline onClick={() => setOpenSuccessModal(false)}>
+						Đóng
+					</Button>
+				</div>
+			</MyModal>
+			<MyModal
+				size="4xl"
+				openModal={openTransactionModal}
+				setOpenModal={setOpenTransactionModal}
+				title={'Ghi nhận giao dịch'}
+				onSubmit={handleSubmit}
+			>
+				<Alert
+					showAlert={showAlert}
+					setShowAlert={setShowAlert}
+					color={alertContent.isWarn}
+					className="bottom-2 right-2 fixed max-w-md z-50"
+				>
+					<strong className="font-bold mr-1">{alertContent.title}</strong>
+					<span className="block sm:inline">{alertContent.content}</span>
+				</Alert>
+				<div className="h-96 overflow-auto p-2">
+					{
+						// Booking detail list
+					}
+					<div>
+						<PaymentBookingDetails
+							canSelect={true}
+							booking={booking}
+							bookingDetailList={bookingDetails}
+							setBookingDetailList={setBookingDetails}
+							total={total}
+							confirmedTotal={confirmedTotal}
+						/>
+					</div>
+					{
+						// Create transaction info
+					}
+					<div>
+						{
+							// Payment method
+						}
+						<div className="pt-5">
+							<Heading>
+								Khách hàng đã thanh toán:{' '}
+								<span className="text-green-500">
+									{formatPrice(paidTotal)}
+								</span>
+							</Heading>
+							{confirmedTotal > paidTotal && (
+								<Heading>
+									Còn lại:{' '}
+									<span className="text-red-500">
+										{formatPrice(confirmedTotal - paidTotal)}
+									</span>
+								</Heading>
+							)}
+							<Heading>Đã giao dịch qua phương thức:</Heading>
+							<div className="flex justify-center gap-5">
+								<button
+									className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
+										method === 0 && 'bg-blue-100'
+									}`}
+									onClick={() => setMethod(TRANSACTION_METHOD.CASH)}
+								>
+									<div>
+										<BsCashCoin size={20} />
+									</div>
+									<div>Tiền mặt</div>
+								</button>
+								<button
+									className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
+										method === 1 && 'bg-blue-100'
+									}`}
+									onClick={() => setMethod(TRANSACTION_METHOD.BANKING)}
+								>
+									<div>
+										<BsCreditCard size={20} />
+									</div>
+									<div>Thanh toán qua ngân hàng</div>
+								</button>
+								<button
+									className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
+										method === 2 && 'bg-blue-100'
+									}`}
+									onClick={() => setMethod(TRANSACTION_METHOD.EWALLET)}
+								>
+									<div>
+										<BsWallet2 size={20} />
+									</div>
+									<div>Ví điện tử</div>
+								</button>
+							</div>
+						</div>
+						{
+							// Fill in payment
+						}
+						<div className="flex flex-wrap gap-3 items-center pb-3 pt-5">
+							<div className="flex flex-wrap gap-1 items-center">
+								<input
+									type="checkbox"
+									checked={isRefund}
+									onChange={() => setIsRefund((prev) => !prev)}
+								/>
+								<div>Hoàn tiền</div>
+							</div>
+							<div className="max-w-max">
+								<MoneyInput value={amount} onAccept={(value) => setAmount(value)} />
+							</div>
+						</div>
+						<div>
+							<div className="text-base font-semibold">Ghi chú</div>
+							<textarea
+								rows={4}
+								type="text"
+								value={description}
+								onChange={(e) => setDescription(e.target.value)}
+								className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
+							/>
+						</div>
+					</div>
+				</div>
+			</MyModal>
 			<Card>
 				<CardBody>
 					{
@@ -269,6 +408,21 @@ const PaymentBooking = ({ booking }) => {
 								)}
 							</div>
 						</div>
+					</div>
+					{
+						// Booking details
+					}
+					<div className="border-b border-gray-300 pb-6 mb-3">
+						<Heading>Chi tiết đơn hàng</Heading>
+						{
+							// Tổng tiền
+						}
+						<PaymentBookingDetails
+							booking={booking}
+							bookingDetailList={bookingDetails}
+							total={total}
+							confirmedTotal={confirmedTotal}
+						/>
 					</div>
 					{
 						// Transaction list
@@ -351,212 +505,27 @@ const PaymentBooking = ({ booking }) => {
 							</div>
 						</div>
 					)}
-					{
-						// Booking details
-					}
-					<div className="border-b border-gray-300 pb-6 mb-3">
-						<Heading>Chi tiết đơn hàng</Heading>
-						{
-							// Tổng tiền
-						}
-						<div className="relative shadow-md sm:rounded-lg overflow-x-auto">
-							<table className="w-full min-w-3xl text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-								<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
-									<tr>
-										{booking.status === BOOKING_STATUS.IN_PROGRESS && (
-											<th
-												scope="col"
-												className="w-8 px-4 py-3 bg-gray-50 dark:bg-gray-800"
-											>
-												Chọn
-											</th>
-										)}
-										<th
-											scope="col"
-											className="w-1/2 px-4 py-3 bg-gray-50 dark:bg-gray-800"
-										>
-											Dịch vụ
-										</th>
-										<th
-											scope="col"
-											className="px-4 py-3 w-40 bg-gray-50 dark:bg-gray-800"
-										>
-											Trạng thái
-										</th>
-										<th
-											scope="col"
-											className="w-1/4 px-4 py-3 bg-gray-50 dark:bg-gray-800"
-										>
-											Giá
-										</th>
-									</tr>
-								</thead>
-								<tbody>
-									{bookingDetails?.length > 0 ? (
-										bookingDetails.map((detail, detailIndex) => (
-											<tr key={detail.id} className="text-base hover:bg-gray-50">
-												{booking.status === BOOKING_STATUS.IN_PROGRESS && (
-													<td
-														scope="col"
-														className="flex w-full justify-center pt-4 text-gray-900 px-4 py-3 bg-white"
-													>
-														{detail.status === BOOKING_DETAIL_STATUS.IN_PROGRESS && (
-															<input
-																type="checkbox"
-																checked={detail.selected}
-																onChange={() => handleSelectDetail(detailIndex)}
-															/>
-														)}
-													</td>
-												)}
-												<td
-													scope="col"
-													className="text-left text-gray-900 w-16 lg:w-24 px-4 py-3"
-												>
-													<div>{extractServiceFromBookingDetail(detail)}</div>
-												</td>
-												<td
-													scope="col"
-													className="text-left text-gray-900 px-4 py-3"
-												>
-													<div className="flex w-full">
-														<div
-															className={`text-base min-w-max text-black font-semibold bg-${stringBookingDetailStatusColor.at(
-																detail.status
-															)} px-2 rounded-full`}
-														>
-															<div>
-																{stringBookingDetailStatus.at(detail.status)}
-															</div>
-														</div>
-													</div>
-												</td>
-												<td className="text-left text-gray-900 w-24 lg:w-40 px-4 py-3 text-base">
-													<div
-														className={`${
-															detail.status === BOOKING_DETAIL_STATUS.CANCELLED &&
-															'line-through'
-														}`}
-													>
-														{formatPrice(detail.price)}
-													</div>
-												</td>
-											</tr>
-										))
-									) : (
-										<div>Đơn hàng còn trống</div>
-									)}
-
-									<tr>
-										<td
-											colSpan={booking.status === BOOKING_STATUS.IN_PROGRESS ? 3 : 2}
-											className="text-right bg-blue-50 text-gray-900 w-24 lg:w-40 px-4 py-3 dark:bg-gray-800 text-base"
-										>
-											Tổng tiền đã xác nhận
-										</td>
-										<td className="font-semibold text-left text-gray-900 w-24 lg:w-40 px-4 py-3 bg-yellow-50 dark:bg-gray-800 text-base">
-											{formatPrice(confirmedTotal)}
-										</td>
-									</tr>
-									<tr>
-										<td
-											colSpan={booking.status === BOOKING_STATUS.IN_PROGRESS ? 3 : 2}
-											className="text-right bg-blue-50 text-gray-900 w-24 lg:w-40 px-4 py-3 dark:bg-gray-800 text-base"
-										>
-											Tổng tiền
-										</td>
-										<td className="font-semibold text-left text-gray-900 w-24 lg:w-40 px-4 py-3 bg-yellow-50 dark:bg-gray-800 text-base">
-											{formatPrice(total)}
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
 
 					{confirmedTotal > 0 && booking.status === BOOKING_STATUS.IN_PROGRESS && (
 						<div>
 							{
 								// Payment method
 							}
-							<div className="pt-5">
+							<div>
 								{confirmedTotal > paidTotal && (
-									<Heading>
+									<Heading className="py-5">
 										Còn lại:{' '}
 										<span className="text-red-500">
 											{formatPrice(confirmedTotal - paidTotal)}
 										</span>
 									</Heading>
 								)}
-								<Heading>Chọn phương thức thanh toán:</Heading>
-								<div className="flex justify-center gap-5">
-									<div
-										className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
-											method === 0 && 'bg-blue-100'
-										}`}
-										onClick={() => setMethod(TRANSACTION_METHOD.CASH)}
-									>
-										<div>
-											<BsCashCoin size={20} />
-										</div>
-										<div>Tiền mặt</div>
-									</div>
-									<div
-										className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
-											method === 1 && 'bg-blue-100'
-										}`}
-										onClick={() => setMethod(TRANSACTION_METHOD.BANKING)}
-									>
-										<div>
-											<BsCreditCard size={20} />
-										</div>
-										<div>Thanh toán qua ngân hàng</div>
-									</div>
-									<div
-										className={`text-base flex gap-2 items-center shadow-md sm:rounded-lg w-max p-3 cursor-pointer hover:bg-blue-50 ${
-											method === 2 && 'bg-blue-100'
-										}`}
-										onClick={() => setMethod(TRANSACTION_METHOD.EWALLET)}
-									>
-										<div>
-											<BsWallet2 size={20} />
-										</div>
-										<div>Ví điện tử</div>
-									</div>
-								</div>
 							</div>
-							{
-								// Fill in payment
-							}
-							<div className="flex flex-wrap gap-3 items-center pb-3 pt-5">
-								<div className="flex flex-wrap gap-1 items-center">
-									<input
-										type="checkbox"
-										checked={isRefund}
-										onChange={() => setIsRefund((prev) => !prev)}
-									/>
-									<div>Hoàn tiền</div>
-								</div>
-								<div className="max-w-max">
-									<MoneyInput
-										value={amount}
-										onAccept={(value) => setAmount(value)}
-									/>
-								</div>
-							</div>
-							<div>
-								<label className="text-base font-semibold">Ghi chú</label>
-								<textarea
-									rows={4}
-									type="text"
-									value={description}
-									onChange={(e) => setDescription(e.target.value)}
-									className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
-								/>
-							</div>
-							<div className="flex justify-center pt-5">
+							<div className="flex justify-center">
 								<div className="w-32">
-									<Button onClick={handleSubmit}>Thanh toán</Button>
+									<Button onClick={handleOpenTransactionModal}>
+										Ghi nhận giao dịch
+									</Button>
 								</div>
 							</div>
 						</div>

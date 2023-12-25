@@ -1,4 +1,4 @@
-import PaymentBooking from 'layout/Studio/PaymentBooking';
+import PaymentBooking from 'layout/Studio/Payment/PaymentBooking';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
 import { useSession } from 'next-auth/react';
