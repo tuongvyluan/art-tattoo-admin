@@ -1,21 +1,19 @@
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { Loading, Logo } from 'ui';
+import { Loading } from 'ui';
 
 const VerifyPage = () => {
 	const router = useRouter();
 	const token = router.query.token;
 	const [loading, setLoading] = useState(true);
 	const [isSuccess, setIsSuccess] = useState(false);
+	const [errorMessage, setErrorMessage] = useState('Yêu cầu xác thực không hợp lệ.');
 
 	if (!token) {
 		return (
-			<div className="flex items-center justify-center h-screen">
-				Yêu cầu xác thực không hợp lệ.
-			</div>
+			<div className="flex items-center justify-center h-screen">{errorMessage}</div>
 		);
 	}
 	if (!isSuccess && loading) {
@@ -23,7 +21,12 @@ const VerifyPage = () => {
 			.then(() => {
 				setIsSuccess(true);
 			})
-			.catch(() => {
+			.catch((e) => {
+				let mesageTitle = 'Yêu cầu xác thực không hợp lệ.';
+				if (e.message.includes('already verified')) {
+					mesageTitle = 'Tài khoản này đã được xác thực.';
+				}
+				setErrorMessage(mesageTitle);
 				setLoading(false);
 			});
 		return (
@@ -34,37 +37,13 @@ const VerifyPage = () => {
 	}
 	if (isSuccess) {
 		return (
-			<div className="flex items-center justify-center h-screen">
-				<div className='text-lg'>
-					<div className="text-center mt-10 mb-20 text-gray-700">
-						<Logo height={50} width={50} />
-						<h1 className="uppercase text-2xl mb-3 font-bold leading-none">
-							Art Tattoo Lover
-						</h1>
-					</div>
-					<div className="text-center">
-						Bạn đã xác thực và tạo tiệm xăm thành công.
-					</div>
-					<div>
-						<Link href={'/auth/signin'}>Đăng nhập</Link> để sử dụng dịch vụ của chúng
-						tôi nhé.
-					</div>
-				</div>
+			<div className="flex items-center justify-center h-body">
+				<div className="text-center">Bạn đã xác thực tài khoản thành công.</div>
 			</div>
 		);
 	}
 	return (
-		<div className="flex justify-center h-screen">
-			<div>
-				<div className="text-center mt-10 mb-20 text-gray-700">
-					<Logo height={50} width={50} />
-					<h1 className="uppercase text-2xl mb-3 font-bold leading-none">
-						Art Tattoo Lover
-					</h1>
-				</div>
-				<div className="text-center text-lg">Yêu cầu xác thực không hợp lệ.</div>
-			</div>
-		</div>
+		<div className="flex items-center justify-center h-body">{errorMessage}</div>
 	);
 };
 

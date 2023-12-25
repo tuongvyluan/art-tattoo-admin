@@ -608,8 +608,8 @@ function ServicePage({ services, studioId, onReload }) {
 							</h2>
 							{serviceList?.length > 0 ? (
 								<div>
-									<div className="relative shadow-md sm:rounded-lg">
-										<table className="w-full text-sm text-left text-gray-500 pb-20">
+									<div className="w-full overflow-auto relative shadow-md sm:rounded-lg mb-5">
+										<table className="w-full min-w-3xl text-sm text-left text-gray-500">
 											<thead className="text-xs text-gray-700 uppercase">
 												<tr>
 													<th scope="col" className="w-1/4 px-3 py-3 bg-gray-50">
@@ -661,7 +661,7 @@ function ServicePage({ services, studioId, onReload }) {
 														</td>
 														<td className="px-3 py-4">
 															{service.maxPrice === 0 ? (
-																<div className='text-base '>Miễn phí</div>
+																<div className="text-base ">Miễn phí</div>
 															) : (
 																<div className="text-base flex flex-wrap min-w-max mx-auto gap-2 items-center">
 																	<div>{formatPrice(service.minPrice)}</div>
