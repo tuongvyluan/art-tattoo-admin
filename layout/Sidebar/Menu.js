@@ -34,9 +34,9 @@ const Menu = () => {
 
 	const [state] = useAppState();
 	const items = addRandomId(routes);
-	const [currentNode, setCurrentNode] = useState({});
-
 	const { pathname } = useRouter();
+	const [currentNode, setCurrentNode] = useState(getMatchedObjectByUrl(items, pathname));
+
 	const selectedListItem = (event) => {
 		setCurrentNode(event);
 	};
@@ -44,9 +44,7 @@ const Menu = () => {
 	useEffect(() => {
 		const foundNode = getMatchedObjectByUrl(items, pathname);
 		if (
-			foundNode !== undefined &&
-			foundNode.path !== undefined &&
-			foundNode.path !== null &&
+			foundNode?.path !== null &&
 			foundNode.path !== ''
 		) {
 			setCurrentNode(foundNode);
