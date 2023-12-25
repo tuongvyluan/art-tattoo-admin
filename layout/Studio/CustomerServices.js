@@ -290,7 +290,10 @@ const CustomerServices = ({
 					setOpenModal={setScheduleModal}
 				/>
 			)}
-			<div className="block">
+			<div className="relative">
+				{ !showMore && bookingDetails.length > 3 && (
+					<div className='absolute z-100 left-0 right-0 -bottom-10 text-center text-base underline'>Xem thêm</div>
+				)}
 				{bookingDetails.map((bookingDetail, bookingServiceIndex) => (
 					<Card
 						className={`shadow-lg ${
