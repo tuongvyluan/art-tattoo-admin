@@ -1,5 +1,6 @@
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Loading } from 'ui';
@@ -38,12 +39,25 @@ const VerifyPage = () => {
 	if (isSuccess) {
 		return (
 			<div className="flex items-center justify-center h-body">
-				<div className="text-center">Bạn đã xác thực tài khoản thành công.</div>
+				<div className="text-center text-base">
+					<div>Bạn đã xác thực tài khoản thành công.</div>
+					<div>
+						<Link href={'/auth/signin'}>Đăng nhập</Link> để sử dụng dịch vụ của chúng
+						tôi nhé.
+					</div>
+				</div>
 			</div>
 		);
 	}
 	return (
-		<div className="flex items-center justify-center h-body">{errorMessage}</div>
+		<div className="flex items-center justify-center h-body">
+			<div className="text-center text-base">
+				<div>{errorMessage}</div>
+				<div>
+					<Link href={'/'}>Trở lại trang chủ</Link>
+				</div>
+			</div>
+		</div>
 	);
 };
 
