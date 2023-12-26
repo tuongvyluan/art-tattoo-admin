@@ -45,7 +45,7 @@ const Menu = () => {
 		const foundNode = getMatchedObjectByUrl(items, pathname);
 		if (
 			foundNode?.path !== null &&
-			foundNode.path !== ''
+			foundNode?.path !== ''
 		) {
 			setCurrentNode(foundNode);
 			selectedListItem(foundNode);

@@ -43,6 +43,7 @@
     "react-map-gl": "5.2.10",
     "react-markdown": "5.0.3",
     "react-simple-maps": "^1.0.0",
+    "react-simple-star-rating": "^5.1.7",
     "react-table": "7.6.2",
     "swr": "0.3.9",
     "tailwindcss": "2.0.1",
