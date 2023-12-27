@@ -1,9 +1,6 @@
-import Button from 'components/Button';
 import Heading from 'components/Heading';
-import MyModal from 'components/MyModal';
 import MyRating from 'components/MyRating';
-import { fetcherPost, formatPrice, showTextMaxLength } from 'lib';
-import { BASE_URL } from 'lib/env';
+import { formatPrice, showTextMaxLength } from 'lib';
 import { stringPlacements, stringSize } from 'lib/status';
 import { noImageAvailable } from 'lib/tattooPhoto';
 import Image from 'next/image';
@@ -30,7 +27,7 @@ const getFeedbackList = (bookingDetails) => {
 	return list;
 };
 
-const BookingFeedback = ({ booking, accountId, canFeedback = false }) => {
+const BookingFeedback = ({ booking }) => {
 	const [bookingDetails, setBookingDetails] = useState(booking.bookingDetails);
 	const [feedbacks, setFeedbacks] = useState(getFeedbackList(bookingDetails));
 
@@ -182,10 +179,7 @@ const BookingFeedback = ({ booking, accountId, canFeedback = false }) => {
 };
 
 BookingFeedback.propTypes = {
-	booking: PropTypes.object,
-	bookingDetails: PropTypes.array,
-	accountId: PropTypes.string,
-	canFeedback: PropTypes.bool
+	booking: PropTypes.object
 };
 
 export default BookingFeedback;

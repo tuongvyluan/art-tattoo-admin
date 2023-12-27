@@ -46,20 +46,11 @@ const BookingFeedbackPage = () => {
 						(b) => b.status === BOOKING_DETAIL_STATUS.COMPLETED
 					);
 					if (
-						data.user.role === ROLE.CUSTOMER &&
-						res.customer?.accountId !== data.user.id
+						data.user.role === ROLE.STUDIO &&
+						res.studioId !== data.user.studioId
 					) {
-						setErrorMessage('Bạn không có quyền xem chi tiết đơn hàng này');
+						setErrorMessage('Bạn không có quyền xem đánh giá đơn hàng này');
 						setError(true);
-					}
-					if (data.user.role === ROLE.ARTIST) {
-						bookingDetails = res.bookingDetails?.filter(
-							(b) => b.artist?.id === data.user.id
-						);
-						if (bookingDetails.length === 0) {
-							setErrorMessage('Bạn không có quyền xem chi tiết đơn hàng này');
-							setError(true);
-						}
 					}
 					setBookingData({
 						...res,
@@ -79,8 +70,6 @@ const BookingFeedbackPage = () => {
 		return (
 			<BookingFeedback
 				booking={bookingData}
-				accountId={data.user.customerId}
-				canFeedback={false}
 			/>
 		);
 	}
