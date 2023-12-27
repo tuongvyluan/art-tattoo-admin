@@ -107,14 +107,16 @@ export const stringBookingDetailStatus = [
 	'Chờ xác nhận',
 	'Đang thực hiện',
 	'Đã huỷ',
-	'Hoàn thành'
+	'Hoàn thành',
+	'Đã dừng'
 ];
 
 export const stringBookingDetailStatusColor = [
 	'yellow-100',
 	'yellow-300',
 	'red-300',
-	'green-300'
+	'green-300',
+	'red-300'
 ];
 
 export const enum BOOKING_MEETING_STATUS {

@@ -97,7 +97,7 @@ const CustomerServices = ({
 	const handleRemoveBookingDetail = () => {
 		fetcherPut(`${BASE_URL}/booking-details/${removedBookingDetail.id}`, {
 			id: removedBookingDetail.id,
-			status: BOOKING_DETAIL_STATUS.CANCELLED
+			status: removedBookingDetail.status === BOOKING_DETAIL_STATUS.PENDING ? BOOKING_DETAIL_STATUS.CANCELLED : BOOKING_DETAIL_STATUS.NOT_COMPLETED
 		})
 			.then(() => {
 				setConfirmRemoveBookingDetailModal(false);
@@ -134,7 +134,7 @@ const CustomerServices = ({
 	useEffect(() => {
 		if (scheduleModal === false) {
 			setScheduledBookingDetail(undefined);
-		}
+		}setRemovedBookingDetail
 	}, [scheduleModal]);
 
 	// Open confirm remove modal when removedBookingDetail is not null
