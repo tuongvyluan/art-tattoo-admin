@@ -35,7 +35,9 @@ function BookingPage({ studioId }) {
 	const [activeTab, setActiveTab] = useState(
 		router.query.active ? router.query.active : ALL_TAB
 	);
-	const [searchKey, setSearchKey] = useState(router.query.search ? router.query.search : '');
+	const [searchKey, setSearchKey] = useState(
+		router.query.search ? router.query.search : ''
+	);
 	const [search, setSearch] = useState(
 		router.query.search ? router.query.search : ''
 	);
@@ -63,8 +65,8 @@ function BookingPage({ studioId }) {
 
 	const toggle = (tab) => {
 		if (activeTab !== tab) {
-			setSearch('')
-			setSearchKey('')
+			setSearch('');
+			setSearchKey('');
 			setActiveTab(tab);
 		}
 	};
@@ -286,7 +288,12 @@ function BookingPage({ studioId }) {
 					<Dropdown className={'relative'}>
 						<DropdownToggle>
 							<div className="w-44 rounded-lg px-3 py-3 border border-gray-600 bg-white">
-								<div>{artistList?.filter((a) => a.id === currentArtist)?.at(0)?.fullName}</div>
+								<div>
+									{
+										artistList?.filter((a) => a.id === currentArtist)?.at(0)
+											?.fullName
+									}
+								</div>
 							</div>
 							<div className="absolute top-4 right-2">
 								<ChevronDown width={16} height={16} />
@@ -403,6 +410,19 @@ function BookingPage({ studioId }) {
 											</div>
 										</div>
 									</Link>
+									<div className="flex justify-end pt-3">
+										{booking?.bookingDetails?.at(0)?.feedback !== null && (
+											<div className="w-max">
+												<a
+													target="_blank"
+													href={`/feedback/${booking.id}`}
+													className="block text-center text-white bg-gray-800 hover:bg-gray-700 font-medium rounded-lg text-sm py-2 px-5 w-full"
+												>
+													Xem đánh giá
+												</a>
+											</div>
+										)}
+									</div>
 								</CardBody>
 							</Card>
 						))}

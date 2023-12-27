@@ -95,6 +95,15 @@ export const enum BOOKING_STATUS {
 	NOT_COMPLETED = 5
 }
 
+export const stringBookingStatuses = [
+	'Chờ xác nhận',
+	'Đang thực hiện',
+	'Khách hàng huỷ',
+	'Studio huỷ',
+	'Hoàn thành',
+	'Đã dừng'
+];
+
 export const enum BOOKING_DETAIL_STATUS {
 	PENDING = 0,
 	IN_PROGRESS = 1,
@@ -147,14 +156,6 @@ export const enum TRANSACTION_STATUS {
 	AVAILABLE = 0,
 	DELETED = 1
 }
-
-export const stringBookingStatuses = [
-	'Chờ xác nhận',
-	'Đang thực hiện',
-	'Khách hàng huỷ',
-	'Studio huỷ',
-	'Hoàn thành'
-];
 
 export const operationNames = ['Khác', 'Trọn gói', 'Xoá xăm', 'Dặm lại', 'Sửa xăm'];
 

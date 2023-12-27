@@ -167,13 +167,12 @@ const PaymentBooking = ({ booking }) => {
 			}
 		} else {
 			const newAmount = paidTotal + amount;
-			console.log(newAmount > total);
-			if (newAmount > total) {
+			if (newAmount > confirmedTotal) {
 				handleAlert(
 					true,
 					'Thanh toán thất bại.',
-					`Tổng tiền sau khi thanh toán không được vượt quá giá trị đơn hàng, tính cả các dịch vụ đã huỷ ${formatPrice(
-						calculateTotalIncludingCancelled(bookingDetails)
+					`Tổng tiền sau khi thanh toán không được vượt quá giá trị đơn hàng, tính cả các dịch vụ đã dừng ${formatPrice(
+						confirmedTotal
 					)}.`,
 					2
 				);
@@ -283,15 +282,22 @@ const PaymentBooking = ({ booking }) => {
 						<div className="pt-5">
 							<Heading>
 								Khách hàng đã thanh toán:{' '}
-								<span className="text-green-500">
-									{formatPrice(paidTotal)}
-								</span>
+								<span className="text-green-500">{formatPrice(paidTotal)}</span>
 							</Heading>
-							{confirmedTotal > paidTotal && (
+							{confirmedTotal !== paidTotal && (
 								<Heading>
-									Còn lại:{' '}
-									<span className="text-red-500">
-										{formatPrice(confirmedTotal - paidTotal)}
+									{confirmedTotal > paidTotal ? 'Khách còn thiếu' : 'Khách trả thừa'}
+									:{' '}
+									<span
+										className={`${
+											confirmedTotal > paidTotal ? 'text-red-500' : 'text-green-500'
+										}`}
+									>
+										{formatPrice(
+											confirmedTotal > paidTotal
+												? confirmedTotal - paidTotal
+												: paidTotal - confirmedTotal
+										)}
 									</span>
 								</Heading>
 							)}
@@ -512,11 +518,24 @@ const PaymentBooking = ({ booking }) => {
 								// Payment method
 							}
 							<div>
-								{confirmedTotal > paidTotal && (
+								{confirmedTotal !== paidTotal && (
 									<Heading className="py-5">
-										Còn lại:{' '}
-										<span className="text-red-500">
-											{formatPrice(confirmedTotal - paidTotal)}
+										{confirmedTotal > paidTotal
+											? 'Khách còn thiếu'
+											: 'Khách trả thừa'}
+										:{' '}
+										<span
+											className={`${
+												confirmedTotal > paidTotal
+													? 'text-red-500'
+													: 'text-green-500'
+											}`}
+										>
+											{formatPrice(
+												confirmedTotal > paidTotal
+													? confirmedTotal - paidTotal
+													: paidTotal - confirmedTotal
+											)}
 										</span>
 									</Heading>
 								)}

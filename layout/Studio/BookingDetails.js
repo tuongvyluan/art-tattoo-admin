@@ -32,7 +32,9 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	const { data: account } = useSession();
 	const [renderData, setRenderData] = useState(data);
 	const [total, setTotal] = useState(calculateTotal(renderData.bookingDetails));
-	const [minTotal, setMinTotal] = useState(calculateMinBookingTotal(renderData.bookingDetails))
+	const [minTotal, setMinTotal] = useState(
+		calculateMinBookingTotal(renderData.bookingDetails)
+	);
 	const [confirmedTotal, setConfirmedTotal] = useState(
 		calculateConfirmedTotal(renderData.bookingDetails)
 	);
@@ -145,7 +147,8 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 		bookingDetails.forEach((detail) => {
 			if (
 				detail.status !== BOOKING_DETAIL_STATUS.CANCELLED &&
-				detail.status !== BOOKING_DETAIL_STATUS.COMPLETED
+				detail.status !== BOOKING_DETAIL_STATUS.COMPLETED &&
+				detail.status !== BOOKING_DETAIL_STATUS.NOT_COMPLETED
 			) {
 				promises.push(
 					fetcherPut(`${BASE_URL}/booking-details/${detail.id}`, {
@@ -154,9 +157,17 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 				);
 			}
 		});
+
+		const hasNotCompleted =
+			bookingDetails.filter(
+				(bd) => bd.status === BOOKING_DETAIL_STATUS.NOT_COMPLETED
+			).length > 0;
+
 		Promise.all(promises).then(() => {
 			fetcherPut(`${BASE_URL}/bookings/${renderData.id}`, {
-				status: BOOKING_STATUS.COMPLETED,
+				status: hasNotCompleted
+					? BOOKING_STATUS.NOT_COMPLETED
+					: BOOKING_STATUS.COMPLETED,
 				updaterId: account.user.id
 			})
 				.then((data) => {
@@ -183,9 +194,9 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 			</Alert>
 			<AddBookingDetailModal
 				bookingId={renderData.id}
-				serviceList={serviceData?.services?.filter(
-					(s) => s.status !== SERVICE_STATUS.DELETED
-				)?.sort(sortServiceByCategory)}
+				serviceList={serviceData?.services
+					?.filter((s) => s.status !== SERVICE_STATUS.DELETED)
+					?.sort(sortServiceByCategory)}
 				artistList={artists}
 				openModal={openAddDetailModal}
 				setLoading={setLoading}
@@ -362,7 +373,8 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								// Final sum
 							}
 							{(renderData.status === BOOKING_STATUS.IN_PROGRESS ||
-								renderData.status === BOOKING_STATUS.COMPLETED) &&
+								renderData.status === BOOKING_STATUS.COMPLETED ||
+								renderData.status === BOOKING_STATUS.NOT_COMPLETED) &&
 								renderData.bookingDetails?.length > 0 && (
 									<div>
 										<table className="w-full mb-3">
@@ -394,7 +406,9 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 												{total !== paidTotal && (
 													<tr className="border-t border-gray-300">
 														<th className="py-3 text-gray-500 w-fit sm:w-1/2 md:w-2/3 border-r pr-3 border-gray-300 text-right text-sm font-normal">
-															Còn {confirmedTotal > paidTotal ? 'lại' : 'thừa'}
+															{confirmedTotal > paidTotal
+																? 'Khách còn thiếu'
+																: 'Khách trả thừa'}
 														</th>
 														<td
 															className={`py-3 text-right text-xl ${
@@ -416,22 +430,28 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 										{
 											// Chuyển qua màn hình payment
 										}
-										{total !== paidTotal ? (
+										{total > paidTotal ? (
 											<div className="flex justify-center">
 												<Link href={`/payment/${renderData.id}`}>
 													<div className="w-32">
-														<Button>Thanh toán</Button>
+														<Button>Ghi nhận giao dịch</Button>
 													</div>
 												</Link>
 											</div>
 										) : (
 											<div className="flex justify-center flex-wrap gap-3">
-												<Link href={`/payment/${renderData.id}`}>
-													<div className="flex">
-														<Button outline>Chi tiết giao dịch</Button>
-													</div>
-												</Link>
-												{renderData.status !== BOOKING_STATUS.COMPLETED &&
+												{renderData.status === BOOKING_STATUS.IN_PROGRESS && (
+													<Link href={`/payment/${renderData.id}`}>
+														<div className="flex">
+															<Button outline={total === paidTotal}>
+																{total === paidTotal
+																	? 'Chi tiết giao dịch'
+																	: 'Ghi nhận giao dịch'}
+															</Button>
+														</div>
+													</Link>
+												)}
+												{renderData.status === BOOKING_STATUS.IN_PROGRESS &&
 													renderData.bookingDetails?.filter(
 														(bd) => bd.status === BOOKING_DETAIL_STATUS.PENDING
 													)?.length === 0 && (
@@ -439,6 +459,17 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 															<Button onClick={completeBooking}>Hoàn thành</Button>
 														</div>
 													)}
+												{renderData?.bookingDetails?.at(0)?.feedback !== null && (
+													<div className="w-max">
+														<a
+															target="_blank"
+															href={`/feedback/${renderData.id}`}
+															className="block text-center text-white bg-gray-800 hover:bg-gray-700 font-medium rounded-lg text-sm py-2 px-5 w-full"
+														>
+															Xem đánh giá
+														</a>
+													</div>
+												)}
 											</div>
 										)}
 									</div>

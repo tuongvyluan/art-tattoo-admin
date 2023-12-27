@@ -227,3 +227,8 @@ input:checked ~ .toggle__bar {
 .timeline-item-first > span {
 	margin-left: 2px;
 }
+
+/* Rating */
+svg.star-svg {
+	display: inline;
+}
