@@ -14,15 +14,12 @@ import {
 	stringServiceCategories,
 	stringSize
 } from 'lib/status';
+import { sortServiceByCategory } from 'lib/studioServiceHelper';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { BsTrash } from 'react-icons/bs';
 import { MdAdd } from 'react-icons/md';
 import { Alert, Card, CardBody, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
-
-const sortServiceByCategory = (a, b) => {
-	return a.status * 10 - b.status * 10 + b.serviceCategoryId - a.serviceCategoryId;
-};
 
 const filterDuplicate = (newService, oldService) => {
 	return (
@@ -318,6 +315,8 @@ function ServicePage({ services, studioId, onReload }) {
 										<div className="w-44">
 											{stringServiceCategories.map((cate, cateIndex) => (
 												<div
+													role="button"
+													tabIndex={0}
 													key={cate}
 													onClick={() =>
 														handleChangeService({
@@ -344,7 +343,7 @@ function ServicePage({ services, studioId, onReload }) {
 								// service size
 							}
 							<div className="mb-3 flex items-center">
-								<label className="w-32">Kích thước</label>
+								<div className="w-32">Kích thước</div>
 								<Dropdown className="relative">
 									<DropdownToggle>
 										<div className="w-48 rounded-lg px-3 py-1 border border-gray-600">
@@ -358,6 +357,8 @@ function ServicePage({ services, studioId, onReload }) {
 										<div className="w-44">
 											{stringSize.map((size, sizeIndex) => (
 												<div
+													role="button"
+													tabIndex={0}
 													key={size}
 													onClick={() =>
 														handleChangeService({
@@ -382,7 +383,7 @@ function ServicePage({ services, studioId, onReload }) {
 								// service placement
 							}
 							<div className="mb-3 flex items-center">
-								<label className="w-32">Vị trí xăm</label>
+								<div className="w-32">Vị trí xăm</div>
 								<Dropdown className="relative">
 									<DropdownToggle>
 										<div className="w-48 rounded-lg px-3 py-1 border border-gray-600">
@@ -396,6 +397,8 @@ function ServicePage({ services, studioId, onReload }) {
 										<div className="w-44">
 											{stringPlacements.map((placement, placementIndex) => (
 												<div
+													role="button"
+													tabIndex={0}
 													key={placement}
 													onClick={() =>
 														handleChangeService({
@@ -432,6 +435,8 @@ function ServicePage({ services, studioId, onReload }) {
 									<DropdownMenu className={'h-16 overflow-auto'}>
 										<div className="w-44">
 											<div
+												role="button"
+												tabIndex={0}
 												onClick={() =>
 													handleChangeService({
 														target: {
@@ -447,6 +452,8 @@ function ServicePage({ services, studioId, onReload }) {
 												Mọi người
 											</div>
 											<div
+												role="button"
+												tabIndex={0}
 												onClick={() =>
 													handleChangeService({
 														target: {
@@ -462,6 +469,8 @@ function ServicePage({ services, studioId, onReload }) {
 												Khách hàng cũ
 											</div>
 											<div
+												role="button"
+												tabIndex={0}
 												onClick={() =>
 													handleChangeService({
 														target: {
@@ -680,6 +689,8 @@ function ServicePage({ services, studioId, onReload }) {
 														<td className="px-3 py-4 flex flex-wrap gap-1">
 															<Tooltip content="Sửa dịch vụ" placement="top-end">
 																<div
+																	role="button"
+																	tabIndex={0}
 																	onClick={() => handleOpenUpdateModal(service)}
 																	className="cursor-pointer"
 																>
@@ -689,6 +700,8 @@ function ServicePage({ services, studioId, onReload }) {
 															{service.status !== SERVICE_STATUS.DELETED && (
 																<Tooltip content="Xoá dịch vụ" placement="top-end">
 																	<div
+																		role="button"
+																		tabIndex={0}
 																		onClick={() => handleOpenRemoveModal(service)}
 																		className="cursor-pointer"
 																	>
@@ -704,7 +717,10 @@ function ServicePage({ services, studioId, onReload }) {
 									</div>
 								</div>
 							) : (
-								<div>Tiệm xăm hiện không có bảng giá dịch vụ</div>
+								<div className="text-center text-base">
+									Tiệm xăm hiện không có bảng giá dịch vụ. Hãy tạo bảng giá để khách
+									hàng có thể đặt nhé.
+								</div>
 							)}
 						</div>
 					</CardBody>

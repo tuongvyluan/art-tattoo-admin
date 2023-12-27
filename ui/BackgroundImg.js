@@ -1,6 +1,7 @@
 import { useAppState } from "components/AppProvider";
+import PropTypes from "propTypes";
 
-export const BackgroundImg = (props) => {
+const BackgroundImg = (props) => {
   const [state] = useAppState();
   return (
     <div
@@ -12,3 +13,10 @@ export const BackgroundImg = (props) => {
     />
   );
 };
+
+BackgroundImg.propTypes = {
+  image: PropTypes.string.isRequired,
+  height: PropTypes.number
+}
+
+export default BackgroundImg

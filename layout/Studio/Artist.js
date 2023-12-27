@@ -19,6 +19,7 @@ const StudioArtist = ({ studioId }) => {
 	const [totalPage, setTotalPage] = useState(0);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [error, setError] = useState(false);
+	const [reloadKey, setReloadKey] = useState(Math.random());
 	const pageSize = 15;
 
 	const [alertContent, setAlertContent] = useState({
@@ -66,6 +67,7 @@ const StudioArtist = ({ studioId }) => {
 				)
 					.then((data) => {
 						handleAlert(true, 'Thêm nghệ sĩ thành công', '', 1);
+						setReloadKey(Math.random());
 					})
 					.catch((e) => {
 						success = false;
@@ -85,14 +87,24 @@ const StudioArtist = ({ studioId }) => {
 			handleAlert(
 				true,
 				'Thêm nghệ sĩ thất bại',
-				'Key không hợp lệ hoặc đã quá hạn 15 phút kể từ khi tạo key, hãy hỏi nghệ sĩ để lấy key mới',
+				'Key không hợp lệ hoặc đã quá hạn 15 phút kể từ khi tạo key, hãy hỏi nghệ sĩ để lấy key mới.',
 				2
 			);
 		}
 	};
 
 	const removeArtist = (artistId) => {
-		fetcherPut(`${BASE_URL}/artists/${studioId}/studio-artist-deleted/${artistId}`);
+		fetcherPut(
+			`${BASE_URL}/artists/${studioId}/studio-artist-deleted/${artistId}`
+		).then(() => {
+			setReloadKey(Math.random());
+			handleAlert(
+				true,
+				'Ngừng hợp tác với nghệ sĩ thành công',
+				'',
+				2
+			);
+		});
 	};
 
 	const getArtistStyle = (styles) => {
@@ -123,7 +135,7 @@ const StudioArtist = ({ studioId }) => {
 			.catch(() => {
 				setError(true);
 			});
-	}, [currentPage]);
+	}, [currentPage, reloadKey]);
 
 	return (
 		<div className="relative min-h-body">

@@ -2,6 +2,7 @@ import Heading from 'components/Heading';
 import { Search } from 'icons/outline';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
+import Link from 'next/link';
 import PropTypes from 'propTypes';
 import { useEffect, useState } from 'react';
 import { Card, CardBody, Loading } from 'ui';
@@ -68,8 +69,7 @@ const StudioCustomerListPage = ({ studioId }) => {
 												<th scope="col" className="w-32 px-3 py-3 bg-gray-50">
 													Tổng số đơn hàng
 												</th>
-												<th scope="col" className="w-32 px-3 py-3 bg-gray-50">
-												</th>
+												<th scope="col" className="w-32 px-3 py-3 bg-gray-50"></th>
 											</tr>
 										</thead>
 										<tbody className="h-full">
@@ -91,7 +91,9 @@ const StudioCustomerListPage = ({ studioId }) => {
 														<div>{customer.noOfBookings} </div>
 													</td>
 													<td className="px-3 py-4 flex justify-end">
-														<Search width={20} height={20} />
+														<Link href={`/booking?search=${customer.id}`}>
+															<Search width={20} height={20} />
+														</Link>
 													</td>
 												</tr>
 											))}

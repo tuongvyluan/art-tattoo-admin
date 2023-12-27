@@ -35,7 +35,10 @@ function BookingPage({ studioId }) {
 	const [activeTab, setActiveTab] = useState(
 		router.query.active ? router.query.active : ALL_TAB
 	);
-	const [searchKey, setSearchKey] = useState('');
+	const [searchKey, setSearchKey] = useState(router.query.search ? router.query.search : '');
+	const [search, setSearch] = useState(
+		router.query.search ? router.query.search : ''
+	);
 	const [page, setPage] = useState(router.query.page ? router.query.page : 1);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
@@ -53,12 +56,15 @@ function BookingPage({ studioId }) {
 
 	const handleKeyDown = debounce((e) => {
 		if (e.keyCode === 13 || e.key === 'Enter') {
-			console.log(searchKey);
+			setSearch(searchKey);
+			setActiveTab(ALL_TAB);
 		}
 	}, 300);
 
 	const toggle = (tab) => {
 		if (activeTab !== tab) {
+			setSearch('')
+			setSearchKey('')
 			setActiveTab(tab);
 		}
 	};
@@ -66,7 +72,9 @@ function BookingPage({ studioId }) {
 	const getQueryParam = () => {
 		return `studioId=${studioId}&page=${page}&pageSize=${pageSize}${
 			filter >= 0 ? `&status=${filter}` : ''
-		}${currentArtist !== null ? '&artistId=' + currentArtist : ''}`;
+		}${currentArtist !== null ? '&artistId=' + currentArtist : ''}${
+			search?.trim()?.length > 0 ? '&searchKey=' + search : ''
+		}`;
 	};
 
 	useEffect(() => {
@@ -86,39 +94,37 @@ function BookingPage({ studioId }) {
 				setLoading(false);
 			})
 			.finally(() => {
-				router.push(`/booking?active=${filter}&page=${page}`);
+				router.push(
+					`/booking?active=${filter}&page=${page}${
+						search?.trim()?.length > 0 ? '&search=' + search : ''
+					}`
+				);
 			});
-	}, [filter, page, currentArtist]);
+	}, [filter, page, currentArtist, search]);
 
 	useEffect(() => {
+		setPage(1);
 		switch (activeTab) {
 			case PENDING_TAB:
-				setPage(1);
 				setFilter(BOOKING_STATUS.PENDING);
 				break;
 			case IN_PROGRESS_TAB:
-				setPage(1);
 				setFilter(BOOKING_STATUS.IN_PROGRESS);
 				break;
 			case COMPLETE_TAB:
-				setPage(1);
 				setFilter(BOOKING_STATUS.COMPLETED);
 				break;
 			case STUDIO_CANCELLED_TAB:
-				setPage(1);
 				setFilter(BOOKING_STATUS.STUDIO_CANCEL);
 				break;
 			case CUSTOMER_CANCELLED_TAB:
-				setPage(1);
 				setFilter(BOOKING_STATUS.CUSTOMER_CANCEL);
 				break;
 			case NOT_COMPLETE_TAB:
-				setPage(1);
 				setFilter(BOOKING_STATUS.NOT_COMPLETED);
 				break;
 			default:
-				setPage(1);
-				setFilter(-1);
+				setFilter(ALL_TAB);
 				break;
 		}
 	}, [activeTab]);
@@ -280,7 +286,7 @@ function BookingPage({ studioId }) {
 					<Dropdown className={'relative'}>
 						<DropdownToggle>
 							<div className="w-44 rounded-lg px-3 py-3 border border-gray-600 bg-white">
-								{artistList?.filter((a) => a.id === currentArtist)?.at(0)?.fullName}
+								<div>{artistList?.filter((a) => a.id === currentArtist)?.at(0)?.fullName}</div>
 							</div>
 							<div className="absolute top-4 right-2">
 								<ChevronDown width={16} height={16} />

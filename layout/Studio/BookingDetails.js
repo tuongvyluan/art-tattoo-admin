@@ -26,6 +26,7 @@ import useSWR from 'swr';
 import Heading from 'components/Heading';
 import { useSession } from 'next-auth/react';
 import AddBookingDetailModal from './AddBookingDetailModal';
+import { sortServiceByCategory } from 'lib/studioServiceHelper';
 
 function BookingDetailsPage({ data, studioId, setLoading }) {
 	const { data: account } = useSession();
@@ -184,7 +185,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 				bookingId={renderData.id}
 				serviceList={serviceData?.services?.filter(
 					(s) => s.status !== SERVICE_STATUS.DELETED
-				)}
+				)?.sort(sortServiceByCategory)}
 				artistList={artists}
 				openModal={openAddDetailModal}
 				setLoading={setLoading}
