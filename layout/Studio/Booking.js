@@ -416,7 +416,7 @@ function BookingPage({ studioId }) {
 												<a
 													target="_blank"
 													href={`/feedback/${booking.id}`}
-													className="block text-center text-white bg-gray-800 hover:bg-gray-700 font-medium rounded-lg text-sm py-2 px-5 w-full"
+													className="text-gray-800 bg-white ring-1 ring-gray-300 hover:text-white hover:bg-gray-700 font-medium rounded-lg text-sm py-2 px-2 w-full"
 												>
 													Xem đánh giá
 												</a>
