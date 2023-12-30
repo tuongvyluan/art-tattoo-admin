@@ -1,7 +1,7 @@
 import { Modal } from 'flowbite-react';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -10,14 +10,21 @@ import { BackgroundImg, Loading, Logo } from 'ui';
 const VerifyPage = () => {
 	const router = useRouter();
 	const token = router.query.token;
+	const { status } = useSession();
 	const [loading, setLoading] = useState(true);
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [errorMessage, setErrorMessage] = useState('Yêu cầu xác thực không hợp lệ.');
 	const [isFirst, setIsFirst] = useState(true);
 
 	if (isFirst) {
-		setIsFirst(false);
-		signOut({ redirect: false });
+		if (status === 'authenticated') {
+			try {
+				setIsFirst(false);
+				signOut({ redirect: false });
+			} catch (e) {
+				console.log(e);
+			}
+		}
 	}
 
 	if (!token) {
