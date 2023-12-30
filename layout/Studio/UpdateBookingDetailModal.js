@@ -6,6 +6,7 @@ import { fetcherPut, formatPrice, formatTime, hasBookingMeeting } from 'lib';
 import { BASE_URL } from 'lib/env';
 import {
 	BOOKING_DETAIL_STATUS,
+	SERVICE_CATEGORY,
 	stringBookingDetailStatus,
 	stringPlacements,
 	stringSize
@@ -95,6 +96,21 @@ const UpdateBookingDetailModal = ({
 		if (
 			(detail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS ||
 				detail?.status === BOOKING_DETAIL_STATUS.COMPLETED) &&
+			!detail.price
+		) {
+			handleAlert(
+				true,
+				'Giá tiền không hợp lệ.',
+				`Giá tiền cho dịch vụ này phải nằm trong khoảng ${formatPrice(
+					detail?.serviceMinPrice
+				)} tới ${formatPrice(detail?.serviceMaxPrice)}`,
+				2
+			);
+			return;
+		}
+		if (
+			(detail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS ||
+				detail?.status === BOOKING_DETAIL_STATUS.COMPLETED) &&
 			detail?.artistId === null
 		) {
 			handleAlert(
@@ -105,11 +121,32 @@ const UpdateBookingDetailModal = ({
 			);
 			return;
 		}
-		if (detail?.status === BOOKING_DETAIL_STATUS.COMPLETED && (minTotal + detail?.price > paidTotal)) {
+		if (
+			detail?.status === BOOKING_DETAIL_STATUS.COMPLETED &&
+			minTotal + detail?.price > paidTotal
+		) {
 			handleAlert(
 				true,
 				'Trạng thái không hợp lệ.',
-				`Tổng tiền đã thanh toán (${formatPrice(paidTotal)}) không được bé hơn giá trị các đơn hàng đã hoàn thành ${formatPrice(minTotal + detail?.price)}.`,
+				`Tổng tiền đã thanh toán (${formatPrice(
+					paidTotal
+				)}) không được bé hơn giá trị các đơn hàng đã hoàn thành ${formatPrice(
+					minTotal + detail?.price
+				)}.`,
+				2
+			);
+			return;
+		}
+		if (
+			detail?.status === BOOKING_DETAIL_STATUS.COMPLETED &&
+			!detail?.tattooArt?.thumbnail &&
+			(detail?.serviceCategory?.id === SERVICE_CATEGORY.NEW_TATTOO ||
+				detail?.serviceCategory?.id === SERVICE_CATEGORY.COVER_UP)
+		) {
+			handleAlert(
+				true,
+				'Không thể hoàn tất dịch vụ.',
+				`DỊch vụ này bắt buộc phải có hình xăm đi kèm, không thể hoàn tất dịch vụ khi chưa có hình xăm.`,
 				2
 			);
 			return;
@@ -119,19 +156,19 @@ const UpdateBookingDetailModal = ({
 
 	const getArtistNameById = (id) => {
 		let name = 'Nghệ sĩ bất kỳ';
-		let list = artists?.filter((a) => a.id === id)
+		let list = artists?.filter((a) => a.id === id);
 		if (list.length > 0) {
-			name = list.at(0).account.fullName
+			name = list.at(0).account.fullName;
 		}
-		return name
-	}
+		return name;
+	};
 
 	useEffect(() => {
 		setArtists(artistList);
 	}, [artistList]);
 
 	return (
-		<div className='relative'>
+		<div className="relative">
 			<MyModal
 				size="3xl"
 				title="Chỉnh sửa dịch vụ"
@@ -254,18 +291,12 @@ const UpdateBookingDetailModal = ({
 							<div className="pb-3 flex items-center gap-1">
 								<div className="w-20">Phân công: </div>
 								{detail?.tattooArtId !== null ? (
-									<div>
-										{
-											getArtistNameById(detail?.artistId)
-										}
-									</div>
+									<div>{getArtistNameById(detail?.artistId)}</div>
 								) : (
 									<Dropdown className="relative h-full flex items-center">
 										<DropdownToggle>
 											<div className="w-40 rounded-lg p-1 border border-gray-600">
-												{
-													getArtistNameById(detail?.artistId)
-												}
+												{getArtistNameById(detail?.artistId)}
 											</div>
 											<div className="absolute top-2 right-2">
 												<ChevronDown width={16} height={16} />
