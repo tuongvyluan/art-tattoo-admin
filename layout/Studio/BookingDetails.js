@@ -158,20 +158,29 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 			}
 		});
 
-		const hasNotCompleted =
-			bookingDetails.filter(
-				(bd) => bd.status === BOOKING_DETAIL_STATUS.NOT_COMPLETED
-			).length > 0;
+		const countNotCompleted = bookingDetails.filter(
+			(bd) => bd.status === BOOKING_DETAIL_STATUS.NOT_COMPLETED
+		).length;
+
+		const countCancelled = bookingDetails.filter(
+			(bd) => bd.status === BOOKING_DETAIL_STATUS.CANCELLED
+		).length;
+
+		const isNotCompleted =
+			countCancelled + countNotCompleted === bookingDetails.length &&
+			countNotCompleted > 0;
+
+		const finalStatus = isNotCompleted
+			? BOOKING_STATUS.NOT_COMPLETED
+			: BOOKING_STATUS.COMPLETED;
 
 		Promise.all(promises).then(() => {
 			fetcherPut(`${BASE_URL}/bookings/${renderData.id}`, {
-				status: hasNotCompleted
-					? BOOKING_STATUS.NOT_COMPLETED
-					: BOOKING_STATUS.COMPLETED,
+				status: finalStatus,
 				updaterId: account.user.id
 			})
 				.then((data) => {
-					setBookingStatus(BOOKING_STATUS.COMPLETED);
+					setBookingStatus(finalStatus);
 					handleAlert(true, 'Cập nhật trạng thái đơn hàng thành công');
 					setLoading(true);
 				})
@@ -216,6 +225,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								className="my-1 full px-3 py-1 gap-2 flex items-center cursor-pointer"
 								onClick={() => handleCancelReason(reason)}
 								key={index}
+								role='button'
 							>
 								<input
 									type="radio"
@@ -456,7 +466,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 														(bd) => bd.status === BOOKING_DETAIL_STATUS.PENDING
 													)?.length === 0 && (
 														<div className="flex">
-															<Button onClick={completeBooking}>Hoàn thành</Button>
+															<Button onClick={completeBooking}>Kết thúc</Button>
 														</div>
 													)}
 												{renderData?.bookingDetails?.at(0)?.feedback !== null && (

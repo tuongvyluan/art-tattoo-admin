@@ -82,7 +82,7 @@ const CustomerServices = ({
 		return (
 			bookingDetails?.filter((b) => b.status === BOOKING_DETAIL_STATUS.CANCELLED)
 				.length ===
-			bookingDetails?.length - 1
+			bookingDetails?.length - 1 && removedBookingDetail?.status === BOOKING_DETAIL_STATUS.PENDING
 		);
 	};
 

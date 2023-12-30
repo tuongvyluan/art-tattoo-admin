@@ -31,10 +31,10 @@ const ScheduleBookingMeetingModal = ({
 	canEdit = false
 }) => {
 	const [minDate, setMinDate] = useState(
-		formatDateTimeForInput(moment().add(1, 'd'))
+		formatDateTimeForInput(moment())
 	);
 	const [newMeeting, setNewMeeting] = useState(
-		formatDateTimeForInput(moment().add(1, 'd'))
+		formatDateTimeForInput(moment())
 	);
 
 	// Alert related vars
