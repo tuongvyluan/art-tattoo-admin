@@ -99,7 +99,8 @@ const ScheduleBookingMeetingModal = ({
 			handleAlert(true, '', 'Đang tạo lịch hẹn', 0);
 			fetcherPost(`${BASE_URL}/booking-meetings`, {
 				bookingDetailId: bookingDetail?.id,
-				meetingTime: newMeeting
+				meetingTime: formatDateTimeForInput(newMeeting),
+				hadWarned: false
 			})
 				.then((data) => {
 					if (data?.artistOverlapsedBookingMeetings?.length === 0) {
@@ -111,7 +112,6 @@ const ScheduleBookingMeetingModal = ({
 					}
 				})
 				.catch((e) => {
-					console.log(e);
 					handleAlert(true, 'Tạo lịch hẹn thất bại', '', 2);
 				});
 		} else {

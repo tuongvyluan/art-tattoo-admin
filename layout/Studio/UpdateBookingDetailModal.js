@@ -96,21 +96,6 @@ const UpdateBookingDetailModal = ({
 		if (
 			(detail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS ||
 				detail?.status === BOOKING_DETAIL_STATUS.COMPLETED) &&
-			!detail.price
-		) {
-			handleAlert(
-				true,
-				'Giá tiền không hợp lệ.',
-				`Giá tiền cho dịch vụ này phải nằm trong khoảng ${formatPrice(
-					detail?.serviceMinPrice
-				)} tới ${formatPrice(detail?.serviceMaxPrice)}`,
-				2
-			);
-			return;
-		}
-		if (
-			(detail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS ||
-				detail?.status === BOOKING_DETAIL_STATUS.COMPLETED) &&
 			detail?.artistId === null
 		) {
 			handleAlert(

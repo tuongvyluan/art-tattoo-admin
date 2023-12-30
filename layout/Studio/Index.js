@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Avatar, Card, CardBody, Loading, WidgetStatCard } from '../../ui';
 import { Users } from 'icons/solid';
 import { fetcher, formatMonthYear, formatPrice } from 'lib';
 import { BASE_URL, SOCIAL_PAGE } from 'lib/env';
 import Link from 'next/link';
 import ChartComponent from 'components/ChartComponent';
-import { sharedOptions, gridOptions, colors } from 'lib/chartHelper';
+import { sharedOptions, gridOptions, colors, options } from 'lib/chartHelper';
 
 function StudioIndexPage({ studioId }) {
 	const [studio, setStudio] = useState({
@@ -29,6 +29,24 @@ function StudioIndexPage({ studioId }) {
 
 	const [bookingLabels, setBookingLabels] = useState([]);
 	const [bookingDataSet, setBookingDataSet] = useState([]);
+
+	const [tattooRevenueLabels, setTattooRevenueLabels] = useState([]);
+	const tattooRevenueDataSet = [
+		{
+			type: 'line',
+			label: 'Doanh thu',
+			data: revenueStat?.map((s) => s.revenue),
+			...colors[0],
+			yAxisID: 'y-axis-2'
+		},
+		{
+			label: 'Tổng số hình xăm',
+			type: 'bar',
+			data: tattooStat?.map((s) => s.noOfTattoo),
+			...colors[1],
+			yAxisID: 'y-axis-1'
+		}
+	];
 
 	if (studioId && !studio.id) {
 		// Get studio details
@@ -62,7 +80,9 @@ function StudioIndexPage({ studioId }) {
 						data: response.sta.map((s) => s.noOfBookingDone)
 					}
 				]);
-				setBookingLabels(response.sta.map((s) => formatMonthYear(s.month)));
+				const labels = response.sta.map((s) => formatMonthYear(s.month));
+				setBookingLabels(labels);
+				setTattooRevenueLabels(labels);
 			}
 		);
 
@@ -189,12 +209,24 @@ function StudioIndexPage({ studioId }) {
 					<div>
 						<ChartComponent
 							type={'bar'}
-							title="Doanh thu 12 tháng vừa qua"
+							title="Số đơn hàng từng tháng trong 12 tháng vừa qua"
 							options={{
 								...sharedOptions,
 								...gridOptions
 							}}
 							data={{ labels: bookingLabels, datasets: bookingDataSet }}
+						/>
+					</div>
+					<div>
+						<ChartComponent
+							type={'bar'}
+							title="Doanh thu và số hình xăm từng tháng trong 12 tháng vừa qua"
+							options={{
+								...sharedOptions,
+								...gridOptions,
+								...options(tattooRevenueLabels)
+							}}
+							data={{ labels: tattooRevenueLabels, datasets: tattooRevenueDataSet }}
 						/>
 					</div>
 				</div>
