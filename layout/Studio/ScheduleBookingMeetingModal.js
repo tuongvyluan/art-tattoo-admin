@@ -6,7 +6,8 @@ import {
 	fetcherPut,
 	formatDateTimeForInput,
 	formatPrice,
-	formatTime
+	formatTime,
+	isFuture
 } from 'lib';
 import { BASE_URL } from 'lib/env';
 import {
@@ -19,9 +20,11 @@ import {
 } from 'lib/status';
 import moment from 'moment';
 import PropTypes from 'propTypes';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BsCheck2, BsTrash } from 'react-icons/bs';
 import { Alert } from 'ui';
+import MeetingSchedule from './MeetingPage';
+import MeetingTable from 'components/MeetingTable';
 
 const ScheduleBookingMeetingModal = ({
 	bookingDetail,
@@ -31,11 +34,15 @@ const ScheduleBookingMeetingModal = ({
 	canEdit = false
 }) => {
 	const [minDate, setMinDate] = useState(
-		formatDateTimeForInput(moment())
+		formatDateTimeForInput(moment().add(1, 'd'))
 	);
 	const [newMeeting, setNewMeeting] = useState(
-		formatDateTimeForInput(moment())
+		formatDateTimeForInput(moment().add(1, 'd'))
 	);
+	const [currentArtist, setCurrentArtist] = useState(bookingDetail?.artist);
+	const [currentStudio, setCurrentStudio] = useState(bookingDetail?.studioId);
+	const [openDuplicateModal, setOpenDuplicateModal] = useState(false);
+	const [duplicateList, setDuplicateList] = useState([]);
 
 	// Alert related vars
 	const [showAlert, setShowAlert] = useState(false);
@@ -71,6 +78,22 @@ const ScheduleBookingMeetingModal = ({
 		setNewMeeting(formatDateTimeForInput(e.target.value));
 	};
 
+	const continueCreateMeeting = () => {
+		handleAlert(true, '', 'Đang tạo lịch hẹn', 0);
+		fetcherPost(`${BASE_URL}/booking-meetings`, {
+			bookingDetailId: bookingDetail?.id,
+			meetingTime: newMeeting,
+			hadWarned: true
+		})
+			.then((data) => {
+				setLoading(true);
+			})
+			.catch((e) => {
+				console.log(e);
+				handleAlert(true, 'Tạo lịch hẹn thất bại', '', 2);
+			});
+	};
+
 	const handleCreateMeeting = () => {
 		if (canEdit) {
 			handleAlert(true, '', 'Đang tạo lịch hẹn', 0);
@@ -78,14 +101,21 @@ const ScheduleBookingMeetingModal = ({
 				bookingDetailId: bookingDetail?.id,
 				meetingTime: newMeeting
 			})
-				.then(() => {
-					setLoading(true);
+				.then((data) => {
+					if (data?.artistOverlapsedBookingMeetings?.length === 0) {
+						setLoading(true);
+					} else {
+						handleAlert(false);
+						setDuplicateList(data.artistOverlapsedBookingMeetings);
+						setOpenDuplicateModal(true);
+					}
 				})
-				.catch(() => {
+				.catch((e) => {
+					console.log(e);
 					handleAlert(true, 'Tạo lịch hẹn thất bại', '', 2);
 				});
 		} else {
-			setOpenModal(false)
+			setOpenModal(false);
 		}
 	};
 
@@ -107,15 +137,53 @@ const ScheduleBookingMeetingModal = ({
 			});
 	};
 
+	useEffect(() => {
+		if (bookingDetail) {
+			setCurrentArtist(bookingDetail?.artist);
+		}
+	}, [bookingDetail]);
+
+	useEffect(() => {
+		if (!openModal) {
+			setOpenDuplicateModal(false);
+			setDuplicateList([]);
+		}
+	}, [openModal]);
+
 	return (
 		<div className="relative">
 			<MyModal
-				size="xl"
+				size="7xl"
+				openModal={openDuplicateModal}
+				setOpenModal={setOpenDuplicateModal}
+				title={'Xác nhận tiếp tục tạo lịch hẹn'}
+				confirmTitle="Tạo"
+				cancelTitle="Đóng"
+				onSubmit={continueCreateMeeting}
+			>
+				<div className="max-h-96 overflow-auto">
+					<div>
+						Lịch hẹn lúc {formatTime(newMeeting)} quá gần với các lịch hẹn sau. Bạn
+						có muốn tiếp tục tạo lịch hẹn mới này chứ?
+					</div>
+					<div className="relative min-h-full pt-3 flex flex-col text-sm">
+						<MeetingTable meetings={duplicateList} />
+					</div>
+				</div>
+			</MyModal>
+			<MyModal
+				size={
+					(bookingDetail?.status === BOOKING_DETAIL_STATUS.PENDING ||
+						bookingDetail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS) &&
+					canEdit
+						? '7xl'
+						: 'xl'
+				}
 				openModal={openModal}
 				setOpenModal={setOpenModal}
 				title={'Sắp xếp lịch hẹn'}
 				confirmTitle={'Tạo'}
-				cancelTitle='Đóng'
+				cancelTitle="Đóng"
 				canConfirm={canEdit}
 				onSubmit={handleCreateMeeting}
 			>
@@ -128,125 +196,143 @@ const ScheduleBookingMeetingModal = ({
 					<strong className="font-bold mr-1">{alertContent.title}</strong>
 					<span className="block sm:inline">{alertContent.content}</span>
 				</Alert>
-				<div className="max-h-96 overflow-auto">
-					<Heading>
-						<div className="flex flex-wrap gap-1">
-							<div className="flex gap-1 flex-wrap items-center">
-								{stringSize.at(bookingDetail?.serviceSize)},
-							</div>
-
-							{bookingDetail?.servicePlacement ? (
+				<div className="max-h-96 overflow-auto pr-5">
+					<div>
+						<Heading>
+							<div className="flex flex-wrap gap-1">
 								<div className="flex gap-1 flex-wrap items-center">
-									Vị trí xăm: {stringPlacements.at(bookingDetail?.servicePlacement)},
+									{stringSize.at(bookingDetail?.serviceSize)},
 								</div>
-							) : (
-								<></>
-							)}
-
-							{bookingDetail?.serviceCategory ? (
-								<div className="flex gap-1 flex-wrap items-center">
-									{bookingDetail?.serviceCategory.name},
-								</div>
-							) : (
-								<></>
-							)}
-
-							<div className="flex gap-1 flex-wrap items-center">
-								{bookingDetail?.serviceMaxPrice === 0 ? (
-									<div>Miễn phí</div>
-								) : (
-									<div>
-										{formatPrice(bookingDetail?.serviceMinPrice)} -{' '}
-										{formatPrice(bookingDetail?.serviceMaxPrice)}
+								{bookingDetail?.servicePlacement ? (
+									<div className="flex gap-1 flex-wrap items-center">
+										Vị trí xăm:{' '}
+										{stringPlacements.at(bookingDetail?.servicePlacement)},
 									</div>
+								) : (
+									<></>
 								)}
+								{bookingDetail?.serviceCategory ? (
+									<div className="flex gap-1 flex-wrap items-center">
+										{bookingDetail?.serviceCategory.name},
+									</div>
+								) : (
+									<></>
+								)}
+								<div className="flex gap-1 flex-wrap items-center">
+									{bookingDetail?.serviceMaxPrice === 0 ? (
+										<div>Miễn phí</div>
+									) : (
+										<div>
+											{formatPrice(bookingDetail?.serviceMinPrice)} -{' '}
+											{formatPrice(bookingDetail?.serviceMaxPrice)}
+										</div>
+									)}
+								</div>
 							</div>
-						</div>
-					</Heading>
-					{
-						// Booking meeting list
-					}
-					{bookingDetail?.bookingMeetings?.length > 0 ? (
-						<table className="w-full text-sm text-left text-gray-500 pb-20">
-							<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
-								<tr>
-									<th scope="col" className="w-1/3 px-3 py-3 bg-gray-50 text-center">
-										Ngày hẹn
-									</th>
-									<th scope="col" className="px-3 py-3 bg-gray-50 text-center">
-										Trạng thái
-									</th>
-									<th scope="col" className="px-3 py-3 bg-gray-50 text-center"></th>
-								</tr>
-							</thead>
-							<tbody>
-								{bookingDetail?.bookingMeetings.map((time) => (
-									<tr className="text-base" key={time.id}>
-										<td scope="col" className="w-1/3 px-3 py-3 text-center">
-											{formatTime(time.meetingTime)}
-										</td>
-										<td scope="col" className="px-3 py-3 text-center">
-											<div className="flex justify-center w-full">
-												<Badge color={stringBookingMeetingColors.at(time.status)}>
-													{stringBookingMeetingStatus.at(time.status)}
-												</Badge>
-											</div>
-										</td>
-										<td scope="col" className="px-3 py-3 text-center">
-											{time.status === BOOKING_MEETING_STATUS.PENDING && canEdit && (
-												<div className="flex gap-3 flex-wrap">
-													<Tooltip content="Huỷ hẹn">
-														<div
-															className="cursor-pointer"
-															onClick={() =>
-																updateBookingMeeting(
-																	time.id,
-																	BOOKING_MEETING_STATUS.STUDIO_CANCEL
-																)
-															}
-														>
-															<BsTrash size={25} />
-														</div>
-													</Tooltip>
-													<Tooltip content="Hoàn thành buổi hẹn">
-														<div
-															className="cursor-pointer"
-															onClick={() =>
-																updateBookingMeeting(
-																	time.id,
-																	BOOKING_MEETING_STATUS.COMPLETED
-																)
-															}
-														>
-															<BsCheck2 size={25} />
-														</div>
-													</Tooltip>
-												</div>
-											)}
-										</td>
+						</Heading>
+						{
+							// Booking meeting list
+						}
+						{bookingDetail?.bookingMeetings?.length > 0 ? (
+							<table className="w-full max-w-max text-sm text-left text-gray-500 pb-20">
+								<thead className="text-xs text-gray-700 uppercase dark:text-gray-400">
+									<tr>
+										<th
+											scope="col"
+											className="w-1/3 px-3 py-3 bg-gray-50 text-center"
+										>
+											Ngày hẹn
+										</th>
+										<th scope="col" className="px-3 py-3 bg-gray-50 text-center">
+											Trạng thái
+										</th>
+										<th
+											scope="col"
+											className="px-3 py-3 bg-gray-50 text-center"
+										></th>
 									</tr>
-								))}
-							</tbody>
-						</table>
-					) : (
-						<div>Chưa có lịch hẹn nào cho dịch vụ này</div>
-					)}
+								</thead>
+								<tbody>
+									{bookingDetail?.bookingMeetings.map((time) => (
+										<tr className="text-base" key={time.id}>
+											<td scope="col" className="w-1/3 px-3 py-3 text-center">
+												{formatTime(time.meetingTime)}
+											</td>
+											<td scope="col" className="px-3 py-3 text-center">
+												<div className="flex justify-center w-full">
+													<Badge color={stringBookingMeetingColors.at(time.status)}>
+														{stringBookingMeetingStatus.at(time.status)}
+													</Badge>
+												</div>
+											</td>
+											<td scope="col" className="px-3 py-3 text-center">
+												{time.status === BOOKING_MEETING_STATUS.PENDING &&
+													canEdit && (
+														<div className="flex gap-3 flex-wrap">
+															<Tooltip content="Huỷ hẹn">
+																<div
+																	className="cursor-pointer"
+																	onClick={() =>
+																		updateBookingMeeting(
+																			time.id,
+																			BOOKING_MEETING_STATUS.STUDIO_CANCEL
+																		)
+																	}
+																>
+																	<BsTrash size={25} />
+																</div>
+															</Tooltip>
+															{!isFuture(time.meetingTime) && (
+																<Tooltip content="Hoàn thành buổi hẹn">
+																	<div
+																		className="cursor-pointer"
+																		onClick={() =>
+																			updateBookingMeeting(
+																				time.id,
+																				BOOKING_MEETING_STATUS.COMPLETED
+																			)
+																		}
+																	>
+																		<BsCheck2 size={25} />
+																	</div>
+																</Tooltip>
+															)}
+														</div>
+													)}
+											</td>
+										</tr>
+									))}
+								</tbody>
+							</table>
+						) : (
+							<div>Chưa có lịch hẹn nào cho dịch vụ này</div>
+						)}
+						{(bookingDetail?.status === BOOKING_DETAIL_STATUS.PENDING ||
+							bookingDetail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS) &&
+							canEdit && (
+								<div>
+									<div className="py-2 font-semibold text-lg">Tạo lịch hẹn mới</div>
+									<div className="max-w-max">
+										<input
+											min={minDate}
+											type="datetime-local"
+											step={1}
+											value={newMeeting}
+											onChange={handleSetMeeting}
+											className="appearance-none relative block w-full px-3 py-2 ring-1 ring-gray-300 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-base leading-none"
+										/>
+									</div>
+								</div>
+							)}
+					</div>
 					{(bookingDetail?.status === BOOKING_DETAIL_STATUS.PENDING ||
-						bookingDetail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS) && canEdit && (
-						<div>
-							<div className="py-2 font-semibold text-lg">Tạo lịch hẹn mới</div>
-							<div className="max-w-max">
-								<input
-									min={minDate}
-									type="datetime-local"
-									step={1}
-									value={newMeeting}
-									onChange={handleSetMeeting}
-									className="appearance-none relative block w-full px-3 py-2 ring-1 ring-gray-300 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-base leading-none"
-								/>
+						bookingDetail?.status === BOOKING_DETAIL_STATUS.IN_PROGRESS) &&
+						canEdit &&
+						currentArtist && (
+							<div className="relative min-h-full pt-3 flex flex-col text-sm">
+								<MeetingSchedule artist={currentArtist} id={currentStudio} />
 							</div>
-						</div>
-					)}
+						)}
 				</div>
 			</MyModal>
 		</div>

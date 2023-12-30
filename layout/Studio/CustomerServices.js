@@ -146,10 +146,10 @@ const CustomerServices = ({
 
 	// Reset removedBookingDetail when confirm remove modal is close
 	useEffect(() => {
-		if (removedBookingDetail === false) {
+		if (confirmRemoveBookingDetailModal === false) {
 			setRemovedBookingDetail(undefined);
 		}
-	}, [removedBookingDetail]);
+	}, [confirmRemoveBookingDetailModal]);
 
 	return (
 		<div className="relative">

@@ -289,10 +289,10 @@ function BookingPage({ studioId }) {
 						<DropdownToggle>
 							<div className="w-44 rounded-lg px-3 py-3 border border-gray-600 bg-white">
 								<div>
-									{
-										artistList?.filter((a) => a.id === currentArtist)?.at(0)
-											?.fullName
-									}
+									{artistList?.filter((a) => a.id === currentArtist)?.at(0)?.fullName
+										? artistList?.filter((a) => a.id === currentArtist)?.at(0)
+												?.fullName
+										: 'Tất cả nghệ sĩ'}
 								</div>
 							</div>
 							<div className="absolute top-4 right-2">
@@ -302,7 +302,7 @@ function BookingPage({ studioId }) {
 						<DropdownMenu className={'max-h-24 overflow-auto w-40 bg-white'}>
 							<div className="w-44">
 								{artistList.map((artist, artistIndex) => (
-									<button
+									<div role='button'
 										key={artist.id}
 										onClick={() => setCurrentArtist(artist.id)}
 										className={`block w-full px-3 py-1 cursor-pointer hover:bg-gray-100 ${
@@ -310,7 +310,7 @@ function BookingPage({ studioId }) {
 										}`}
 									>
 										{artist.fullName}
-									</button>
+									</div>
 								))}
 							</div>
 						</DropdownMenu>
