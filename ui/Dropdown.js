@@ -48,6 +48,7 @@ export const DropdownToggle = ({ children, className, ...props }) => {
 	const [state, dispatch] = useDropdownState();
 	return (
 		<div
+			role="button"
 			{...props}
 			className={classNames(
 				`flex items-center justify-between relative rounded cursor-pointer`,
@@ -70,13 +71,10 @@ export const DropdownMenu = ({
 	className,
 	style,
 	closeOnClick = true,
-	isBottom = false,
+	position = 'right',
 	...props
 }) => {
 	const [state, dispatch] = useDropdownState();
-	const bottomKey = () => {
-		return isBottom ? 'bottom' : 'top'
-	}
 
 	return (
 		<Transition
@@ -89,10 +87,12 @@ export const DropdownMenu = ({
 			leaveTo="transform opacity-0 scale-95"
 			{...props}
 			className={classNames(
-				`z-50 absolute bg-white right-0 origin-top-right mt-1 w-auto rounded-lg shadow-lg left-auto ring-1 ring-black ring-opacity-5 `,
+				`z-10 absolute bg-white ${
+					position + '-0'
+				} origin-top-${position} mt-1 w-auto rounded-lg shadow-lg left-auto ring-1 ring-black ring-opacity-5 `,
 				className
 			)}
-			style={{ minWidth: '150px', [bottomKey()]: '100%' , ...style }}
+			style={{ minWidth: '150px', top: '100%', ...style }}
 			onClick={() => {
 				if (closeOnClick) {
 					dispatch({ type: 'toggle' });

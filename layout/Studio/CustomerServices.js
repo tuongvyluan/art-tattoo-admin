@@ -421,7 +421,7 @@ const CustomerServices = ({
 									{
 										// Giá tiền
 									}
-									{bookingDetail.price > 0 && (
+									{bookingDetail.price > 0 && bookingDetail.status !== BOOKING_DETAIL_STATUS.CANCELLED && (
 										<div className="flex flex-wrap items-center text-base font-semibold bg-teal-300 px-2 rounded-full">
 											<div>{formatPrice(bookingDetail.price)}</div>
 										</div>

@@ -85,58 +85,60 @@ function TattooDetailNoUpdatePage({ bookingId, artTattoo, myTattoo = false }) {
 						{
 							// Add tattoo stage, including tattoo tattooImages
 						}
-						<div>
-							<div className="font-semibold text-lg pt-3">Các giai đoạn xăm</div>
-							{tattoo.stages.map((stage, stageIndex) => (
-								<Card className={'pt-3'} key={stage.id}>
-									<CardBody className={'shadow-md bg-gray-50 relative'}>
-										<div className="w-full relative">
-											{
-												//Stage body
-											}
-											<div key={stage.id}>
-												<div className="text-base">
-													Giai đoạn: {stringTattooStages.at(stage.stageStyle)}
-												</div>
-												<div>
-													<div>Ghi chú: {stage.description}</div>
-												</div>
+						{tattoo.stages?.length > 0 && (
+							<div>
+								<div className="font-semibold text-lg pt-3">Các giai đoạn xăm</div>
+								{tattoo.stages.map((stage, stageIndex) => (
+									<Card className={'pt-3'} key={stage.id}>
+										<CardBody className={'shadow-md bg-gray-50 relative'}>
+											<div className="w-full relative">
 												{
-													//Show media section
+													//Stage body
 												}
-												<div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-													{stage.tattooImages?.map((media, mediaIndex) => (
-														<div className="relative" key={media.id}>
-															<div className="absolute top-0 left-0 flex items-center cursor-pointer gap-2">
-																<div className="text-gray-500">Public:</div>
-																<div className="relative">
-																	<input
-																		checked={media.isPublicized}
-																		type="checkbox"
-																		readOnly
-																		className="hidden"
-																		disabled={true}
-																	/>
-																	<div className="toggle__bar h-4 bg-gray-400 rounded-full shadow-inner"></div>
-																	<div className="toggle__handle absolute bg-white rounded-full shadow-sm transform transition duration-150 ease-in-out"></div>
+												<div key={stage.id}>
+													<div className="text-base">
+														Giai đoạn: {stringTattooStages.at(stage.stageStyle)}
+													</div>
+													<div>
+														<div>Ghi chú: {stage.description}</div>
+													</div>
+													{
+														//Show media section
+													}
+													<div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+														{stage.tattooImages?.map((media, mediaIndex) => (
+															<div className="relative" key={media.id}>
+																<div className="absolute top-0 left-0 flex items-center cursor-pointer gap-2">
+																	<div className="text-gray-500">Public:</div>
+																	<div className="relative">
+																		<input
+																			checked={media.isPublicized}
+																			type="checkbox"
+																			readOnly
+																			className="hidden"
+																			disabled={true}
+																		/>
+																		<div className="toggle__bar h-4 bg-gray-400 rounded-full shadow-inner"></div>
+																		<div className="toggle__handle absolute bg-white rounded-full shadow-sm transform transition duration-150 ease-in-out"></div>
+																	</div>
 																</div>
-															</div>
 
-															<BackgroundImg
-																key={media.id}
-																className="relative w-full bg-center bg-cover bg-fallback mt-7"
-																image={media.url}
-																height={150}
-															/>
-														</div>
-													))}
+																<BackgroundImg
+																	key={media.id}
+																	className="relative w-full bg-center bg-cover bg-fallback mt-7"
+																	image={media.url}
+																	height={150}
+																/>
+															</div>
+														))}
+													</div>
 												</div>
 											</div>
-										</div>
-									</CardBody>
-								</Card>
-							))}
-						</div>
+										</CardBody>
+									</Card>
+								))}
+							</div>
+						)}
 					</div>
 				</CardBody>
 			</Card>
