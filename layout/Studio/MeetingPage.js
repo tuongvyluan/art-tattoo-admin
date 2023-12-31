@@ -100,7 +100,7 @@ const MeetingSchedule = ({ id, artist = undefined }) => {
 		if (!hasChanged) {
 			setHasChanged(true);
 		}
-	}, [timeRange, status]);
+	}, [timeRange, status, currentArtist]);
 
 	useEffect(() => {
 		setHasChanged(true);

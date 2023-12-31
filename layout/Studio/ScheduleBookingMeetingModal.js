@@ -89,7 +89,6 @@ const ScheduleBookingMeetingModal = ({
 				setLoading(true);
 			})
 			.catch((e) => {
-				console.log(e);
 				handleAlert(true, 'Tạo lịch hẹn thất bại', '', 2);
 			});
 	};
