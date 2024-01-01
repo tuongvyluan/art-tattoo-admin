@@ -1,4 +1,5 @@
 import Heading from 'components/Heading';
+import { Tooltip } from 'flowbite-react';
 import { Search } from 'icons/outline';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
@@ -91,9 +92,11 @@ const StudioCustomerListPage = ({ studioId }) => {
 														<div>{customer.noOfBookings} </div>
 													</td>
 													<td className="px-3 py-4 flex justify-end">
-														<Link href={`/booking?search=${customer.id}`}>
-															<Search width={20} height={20} />
-														</Link>
+														<Tooltip content="Xem lịch sử đặt hàng của khách">
+															<Link href={`/booking?search=${customer.id}`}>
+																<Search width={20} height={20} />
+															</Link>
+														</Tooltip>
 													</td>
 												</tr>
 											))}

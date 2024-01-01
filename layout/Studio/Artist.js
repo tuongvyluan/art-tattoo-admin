@@ -235,7 +235,7 @@ const StudioArtist = ({ studioId }) => {
 
 															<Tooltip content="Xem trang cá nhân">
 																<Link
-																	href={`https://tattoolover.netlify.app/artist/${artist.id}`}
+																	href={`/artist/${artist.id}`}
 																	target="_blank"
 																>
 																	<HiMiniMagnifyingGlass

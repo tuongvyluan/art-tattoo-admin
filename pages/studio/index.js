@@ -4,7 +4,6 @@ import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
 import { ROLE } from 'lib/status';
 import { signOut, useSession } from 'next-auth/react';
-import Router from 'next/router';
 import { useState } from 'react';
 import { Loading } from 'ui';
 
@@ -21,7 +20,6 @@ const StudioPage = () => {
 		);
 	}
 	if (status === 'unauthenticated') {
-		Router.replace('/');
 		return (
 			<div className="flex items-center justify-center h-full">
 				<Loading />
@@ -72,7 +70,6 @@ const StudioPage = () => {
 					</div>
 				);
 			} else {
-				console.log(1)
 				return <StudioInfo studio={studio} setLoading={setLoading} />;
 			}
 		} else {

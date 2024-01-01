@@ -1,13 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Avatar, Card, CardBody, Loading, WidgetStatCard } from '../../ui';
 import { Users } from 'icons/solid';
 import { fetcher, formatMonthYear, formatPrice } from 'lib';
-import { BASE_URL, SOCIAL_PAGE } from 'lib/env';
+import { BASE_URL } from 'lib/env';
 import Link from 'next/link';
 import ChartComponent from 'components/ChartComponent';
 import { sharedOptions, gridOptions, colors, options } from 'lib/chartHelper';
+import { ROLE } from 'lib/status';
+import PropTypes from 'propTypes';
+import AdminStudioInfo from 'layout/Admin/StudioInfo';
 
-function StudioIndexPage({ studioId }) {
+function StudioIndexPage({ studioId, role = ROLE.STUDIO }) {
 	const [studio, setStudio] = useState({
 		id: null,
 		ownerId: '',
@@ -54,7 +57,14 @@ function StudioIndexPage({ studioId }) {
 			setStudio({
 				...studio,
 				id: studioId,
+				studioName: response.studioName,
+				address: response.address,
+				city: response.city,
+				status: response.status,
 				ownerId: response.artistId,
+				avatar: response.avatar,
+				phoneNumber: response.owner.phoneNumber,
+				rating: response.rating,
 				artists: response.studioArtists
 					.sort(
 						(a, b) =>
@@ -106,6 +116,7 @@ function StudioIndexPage({ studioId }) {
 	} else
 		return (
 			<>
+				{role === ROLE.ADMIN && <AdminStudioInfo studio={studio} />}
 				<div className="flex flex-wrap -mx-2 pb-2 md:gap-0">
 					<div className="w-full md:w-2/4 lg:w-1/4 px-2 pb-4">
 						<WidgetStatCard
@@ -164,7 +175,9 @@ function StudioIndexPage({ studioId }) {
 												<div className="flex justify-center">
 													<Link
 														target="_blank"
-														href={`${SOCIAL_PAGE}/artist/${artist.artist.id}`}
+														href={`/artist/${artist.artist.id}${
+															role === ROLE.ADMIN ? '?studioId=' + studio.id : ''
+														}`}
 													>
 														<Avatar
 															size={48}
@@ -205,7 +218,7 @@ function StudioIndexPage({ studioId }) {
 				{
 					// Charts
 				}
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+				<div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
 					<div>
 						<ChartComponent
 							type={'bar'}
@@ -233,5 +246,10 @@ function StudioIndexPage({ studioId }) {
 			</>
 		);
 }
+
+StudioIndexPage.propTypes = {
+	studioId: PropTypes.string,
+	role: PropTypes.number
+};
 
 export default StudioIndexPage;
