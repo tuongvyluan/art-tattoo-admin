@@ -1,4 +1,4 @@
-import MeetingSchedule from 'layout/Studio/MeetingPage';
+import MeetingSchedule from 'layout/Booking/MeetingPage';
 import { ROLE } from 'lib/status';
 import { useSession } from 'next-auth/react';
 import Router from 'next/router';

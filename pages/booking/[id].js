@@ -1,4 +1,4 @@
-import BookingDetailsPage from 'layout/Studio/BookingDetails';
+import BookingDetailsPage from 'layout/Booking/BookingDetails';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
 import { ROLE } from 'lib/status';

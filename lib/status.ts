@@ -48,6 +48,26 @@ export const enum SERVICE_STATUS {
 	DELETED = 2
 }
 
+export const getServiceStatusColor = (status: number) => {
+	if (status === 0) {
+		return 'success';
+	}
+	if (status === 1) {
+		return 'warning';
+	}
+	return 'failure';
+};
+
+export const getServiceStatusString = (status: number) => {
+	if (status === 0) {
+		return 'Mọi người';
+	}
+	if (status === 1) {
+		return 'Khách hàng cũ';
+	}
+	return 'Không ai cả (đã xoá)';
+};
+
 export const enum SERVICE_SIZE {
 	SMALL = 0,
 	MEDIUM = 1,
@@ -70,11 +90,7 @@ export const enum TRANSACTION_METHOD {
 	EWALLET = 2
 }
 
-export const stringTransactionMethod = [
-	'Tiền mặt',
-	'Thẻ ngân hàng',
-	'Ví điện tử'
-]
+export const stringTransactionMethod = ['Tiền mặt', 'Thẻ ngân hàng', 'Ví điện tử'];
 
 export const stringServiceStatus = ['Đang thực hiện', 'Hoàn thành', 'Đã huỷ'];
 
@@ -142,7 +158,7 @@ export const stringBookingMeetingStatus = [
 	'Khách hàng huỷ',
 	'Nghệ sĩ huỷ',
 	'Tiệm xăm huỷ'
-]
+];
 
 export const stringBookingMeetingColors = [
 	'warning',
@@ -150,7 +166,7 @@ export const stringBookingMeetingColors = [
 	'failure',
 	'failure',
 	'failure'
-]
+];
 
 export const enum TRANSACTION_STATUS {
 	AVAILABLE = 0,

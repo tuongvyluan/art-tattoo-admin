@@ -10,6 +10,8 @@ import {
 	SERVICE_PLACEMENT,
 	SERVICE_SIZE,
 	SERVICE_STATUS,
+	getServiceStatusColor,
+	getServiceStatusString,
 	stringPlacements,
 	stringServiceCategories,
 	stringSize
@@ -28,26 +30,6 @@ const filterDuplicate = (newService, oldService) => {
 		newService.size === oldService.size &&
 		newService.placement === oldService.placement
 	);
-};
-
-const getServiceStatusColor = (status) => {
-	if (status === 0) {
-		return 'success';
-	}
-	if (status === 1) {
-		return 'warning';
-	}
-	return 'failure';
-};
-
-const getServiceStatusString = (status) => {
-	if (status === 0) {
-		return 'Mọi người';
-	}
-	if (status === 1) {
-		return 'Khách hàng cũ';
-	}
-	return 'Không ai cả (đã xoá)';
 };
 
 function ServicePage({ services, studioId, onReload }) {

@@ -18,6 +18,9 @@ import { BASE_URL } from 'lib/env';
 import CustomerServices from './CustomerServices';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Button from 'components/Button';
+import FilterBookingStatus from './FilterBookingStatus';
+import CreateBookingModal from './CreateBookingModal';
 
 const ALL_TAB = '-1';
 const PENDING_TAB = '0';
@@ -29,6 +32,7 @@ const NOT_COMPLETE_TAB = '5';
 
 function BookingPage({ studioId }) {
 	const router = useRouter();
+	const [openCreateModal, setOpenCreateModal] = useState(false)
 	const [data, setData] = useState([]);
 	const [artistList, setArtistList] = useState([]);
 	const [currentArtist, setCurrentArtist] = useState(null);
@@ -150,144 +154,24 @@ function BookingPage({ studioId }) {
 	}, []);
 
 	return (
-		<div className="sm:px-8 md:px-1 lg:px-6 xl:px-32">
+		<div className="sm:px-8 md:px-1 lg:px-6 xl:px-32 relative">
+			<CreateBookingModal openModal={openCreateModal} setOpenModal={setOpenCreateModal} studioId={studioId} />
 			{
 				// Booking filter status
 			}
-			<div className="mx-auto ring-1 ring-black ring-opacity-5 bg-white">
-				<div className="flex flex-row w-0 min-w-full">
-					<ul className="list-none grid col-span-4 grid-flow-col place-items-center overflow-x-auto w-0 min-w-full -mb-10 pb-10">
-						<li
-							className={`text-center  cursor-pointer ${
-								activeTab === ALL_TAB
-									? 'border-b-2 border-solid border-gray-700'
-									: ''
-							}`}
-						>
-							<button
-								onClick={() => {
-									toggle(ALL_TAB);
-								}}
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
-							>
-								Tất cả
-								<Ripple color="black" />
-							</button>
-						</li>
-						<li
-							className={`text-center cursor-pointer ${
-								activeTab === PENDING_TAB
-									? 'border-b-2 border-solid border-gray-700'
-									: ''
-							}`}
-						>
-							<button
-								onClick={() => {
-									toggle(PENDING_TAB);
-								}}
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
-							>
-								Chờ xác nhận
-								<Ripple color="black" />
-							</button>
-						</li>
-						<li
-							className={`text-center cursor-pointer ${
-								activeTab === IN_PROGRESS_TAB
-									? 'border-b-2 border-solid border-gray-700'
-									: ''
-							}`}
-						>
-							<button
-								onClick={() => {
-									toggle(IN_PROGRESS_TAB);
-								}}
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
-							>
-								Đang thực hiện
-								<Ripple color="black" />
-							</button>
-						</li>
-						<li
-							className={`text-center cursor-pointer ${
-								activeTab === COMPLETE_TAB
-									? 'border-b-2 border-solid border-gray-700'
-									: ''
-							}`}
-						>
-							<button
-								onClick={() => {
-									toggle(COMPLETE_TAB);
-								}}
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
-							>
-								Hoàn thành
-								<Ripple color="black" />
-							</button>
-						</li>
-						<li
-							className={`text-center cursor-pointer ${
-								activeTab === CUSTOMER_CANCELLED_TAB
-									? 'border-b-2 border-solid border-gray-700'
-									: ''
-							}`}
-						>
-							<button
-								onClick={() => {
-									toggle(CUSTOMER_CANCELLED_TAB);
-								}}
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
-							>
-								Khách hàng huỷ
-								<Ripple color="black" />
-							</button>
-						</li>
-						<li
-							className={`text-center cursor-pointer ${
-								activeTab === STUDIO_CANCELLED_TAB
-									? 'border-b-2 border-solid border-gray-700'
-									: ''
-							}`}
-						>
-							<button
-								onClick={() => {
-									toggle(STUDIO_CANCELLED_TAB);
-								}}
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
-							>
-								Tiệm xăm huỷ
-								<Ripple color="black" />
-							</button>
-						</li>
-						<li
-							className={`text-center cursor-pointer ${
-								activeTab === NOT_COMPLETE_TAB
-									? 'border-b-2 border-solid border-gray-700'
-									: ''
-							}`}
-						>
-							<button
-								onClick={() => {
-									toggle(NOT_COMPLETE_TAB);
-								}}
-								className="relative text-gray-900 dark:text-white hover:text-indigo py-3 px-2 sm:px-3 md:px-2 lg:px-4 block"
-							>
-								Đã dừng
-								<Ripple color="black" />
-							</button>
-						</li>
-					</ul>
-				</div>
-			</div>
+			<FilterBookingStatus activeTab={activeTab} toggle={toggle} />
 			{
 				// Booking filter artist
 			}
-			<div className="my-3 flex flex-wrap gap-2 items-center">
+			<div className="my-3 flex flex-wrap gap-2 items-end">
+				<div>
+					<Button onClick={() => setOpenCreateModal(true)}>Tạo đơn hàng</Button>
+				</div>
 				<div className="min-w-max">
 					<div className="block font-semibold text-sm">Chọn nghệ sĩ</div>
 					<Dropdown className={'relative'}>
 						<DropdownToggle>
-							<div className="w-44 rounded-lg px-3 py-3 border border-gray-600 bg-white">
+							<div className="w-44 rounded-lg px-3 py-2 border border-gray-600 bg-white">
 								<div>
 									{artistList?.filter((a) => a.id === currentArtist)?.at(0)?.fullName
 										? artistList?.filter((a) => a.id === currentArtist)?.at(0)
@@ -295,7 +179,7 @@ function BookingPage({ studioId }) {
 										: 'Tất cả nghệ sĩ'}
 								</div>
 							</div>
-							<div className="absolute top-4 right-2">
+							<div className="absolute top-2.5 right-2">
 								<ChevronDown width={16} height={16} />
 							</div>
 						</DropdownToggle>
@@ -318,7 +202,7 @@ function BookingPage({ studioId }) {
 				</div>
 				<div className="flex-grow">
 					<div className="block font-semibold text-sm">Tìm kiếm</div>
-					<div className="relative bg-gray-200 rounded-lg p-1.5 flex items-center px-3">
+					<div className="relative bg-gray-200 rounded-lg flex items-center px-3">
 						<span className="block">
 							<Search width={18} height={18} />
 						</span>

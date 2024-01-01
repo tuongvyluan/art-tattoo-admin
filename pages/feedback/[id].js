@@ -1,4 +1,4 @@
-import BookingFeedback from 'layout/BookingFeedback';
+import BookingFeedback from 'layout/Booking/BookingFeedback';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
 import { BOOKING_DETAIL_STATUS, ROLE } from 'lib/status';
