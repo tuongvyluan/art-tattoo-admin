@@ -7,12 +7,15 @@ import { BASE_URL } from 'lib/env';
 import { useEffect, useState } from 'react';
 import { sortServiceByCategory } from 'lib/studioServiceHelper';
 import BookingForm from './BookingForm';
+import CreateCustomerModal from './CreateCustomerModal';
+import PropTypes from 'propTypes';
 
 const CreateBookingModal = ({ studioId, openModal, setOpenModal }) => {
 	const [searchValue, setSearchValue] = useState('');
 	const [hasSearched, setHasSearched] = useState(false);
 	const [customer, setCustomer] = useState(undefined);
 	const [openBookingModal, setOpenBookingModal] = useState(false);
+	const [openCreateCustomerModal, setOpenCreateCustomerModal] = useState(false);
 	const [studio, setStudio] = useState(undefined);
 
 	const handleSearch = (e) => {
@@ -28,6 +31,19 @@ const CreateBookingModal = ({ studioId, openModal, setOpenModal }) => {
 				setCustomer(undefined);
 				setHasSearched(true);
 			});
+	};
+
+	const onSubmitSearchForm = (customer) => {
+		if (customer) {
+			setOpenBookingModal(true);
+		} else {
+			setOpenCreateCustomerModal(true);
+		}
+	};
+
+	const onCreateCustomer = (newCustomer) => {
+		setCustomer(newCustomer);
+		onSubmitSearchForm(newCustomer);
 	};
 
 	useEffect(() => {
@@ -71,8 +87,9 @@ const CreateBookingModal = ({ studioId, openModal, setOpenModal }) => {
 				openModal={openModal}
 				setOpenModal={setOpenModal}
 				title={'Tạo đơn đặt hàng'}
-				canConfirm={!!customer}
-				onSubmit={() => setOpenBookingModal(true)}
+				canConfirm={hasSearched}
+				confirmTitle={!!customer ? 'Xác nhận' : 'Tạo khách hàng'}
+				onSubmit={() => onSubmitSearchForm(customer)}
 			>
 				<Heading>Tìm khách hàng</Heading>
 				<form onSubmit={handleSearch}>
@@ -130,7 +147,9 @@ const CreateBookingModal = ({ studioId, openModal, setOpenModal }) => {
 								</div>
 							</div>
 						) : (
-							<div>Khách hàng này không tồn tại</div>
+							<div>
+								Khách hàng này không tồn tại. Bạn có muốn tạo khách hàng mới chứ?
+							</div>
 						)}
 					</div>
 				)}
@@ -146,8 +165,22 @@ const CreateBookingModal = ({ studioId, openModal, setOpenModal }) => {
 					setOpenModal={setOpenBookingModal}
 				/>
 			)}
+			{
+				// Create new customer
+			}
+			<CreateCustomerModal
+				openModal={openCreateCustomerModal}
+				setOpenModal={setOpenCreateCustomerModal}
+				onSubmit={(newCustomer) => onCreateCustomer(newCustomer)}
+			/>
 		</div>
 	);
+};
+
+CreateBookingModal.propTypes = {
+	studioId: PropTypes.string,
+	openModal: PropTypes.bool,
+	setOpenModal: PropTypes.func
 };
 
 export default CreateBookingModal;

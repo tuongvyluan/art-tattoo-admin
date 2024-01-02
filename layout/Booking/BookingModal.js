@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import { Modal } from 'flowbite-react';
-import Router from 'next/router';
 import Button from 'components/Button';
 
 const BookingModal = ({

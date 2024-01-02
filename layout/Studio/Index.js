@@ -122,9 +122,9 @@ function StudioIndexPage({ studioId, role = ROLE.STUDIO }) {
 						<WidgetStatCard
 							title="Số hình xăm tháng này"
 							className="h-full"
-							value={
+							value={`${
 								tattooStat?.at(11)?.noOfTattoo ? tattooStat?.at(11)?.noOfTattoo : 0
-							}
+							}`}
 							icon={<Users width={16} height={16} />}
 							type={'blue'}
 						/>
@@ -133,11 +133,11 @@ function StudioIndexPage({ studioId, role = ROLE.STUDIO }) {
 						<WidgetStatCard
 							title="Đơn hàng tháng này"
 							className="h-full"
-							value={
+							value={`${
 								bookingStat?.at(11)?.noOfBooking
 									? bookingStat?.at(11)?.noOfBooking
 									: 0
-							}
+							}`}
 							icon={<Users width={16} height={16} />}
 							type={'gray'}
 						/>
@@ -146,7 +146,7 @@ function StudioIndexPage({ studioId, role = ROLE.STUDIO }) {
 						<WidgetStatCard
 							title={'Doanh thu tháng này'}
 							className="h-full"
-							value={formatPrice(revenueStat?.at(11)?.revenue)}
+							value={`${formatPrice(revenueStat?.at(11)?.revenue)}`}
 							icon={<Users width={16} height={16} />}
 							type={'indigo'}
 						/>

@@ -53,6 +53,6 @@ Chart.propTypes = {
     "radar",
   ]).isRequired,
   data: PropTypes.any.isRequired,
-  height: PropTypes.number.isRequired,
+  height: PropTypes.number,
   options: PropTypes.object.isRequired,
 };

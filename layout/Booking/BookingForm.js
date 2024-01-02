@@ -145,6 +145,7 @@ const BookingForm = ({ studio, customerId, openModal, setOpenModal }) => {
 			isWarn: color
 		});
 	};
+	
 	const handleSubmit = () => {
 		handleAlert(true, 'Đang đặt hẹn', '', 0);
 		let newDescription = `Thời gian hẹn dự tính: ${estimeDate.at(
