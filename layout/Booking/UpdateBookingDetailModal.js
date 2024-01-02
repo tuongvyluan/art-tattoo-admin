@@ -7,6 +7,7 @@ import { BASE_URL } from 'lib/env';
 import {
 	BOOKING_DETAIL_STATUS,
 	SERVICE_CATEGORY,
+	TATTOO_ART_STATUS,
 	stringBookingDetailStatus,
 	stringPlacements,
 	stringSize
@@ -131,7 +132,21 @@ const UpdateBookingDetailModal = ({
 			handleAlert(
 				true,
 				'Không thể hoàn tất dịch vụ.',
-				`DỊch vụ này bắt buộc phải có hình xăm đi kèm, không thể hoàn tất dịch vụ khi chưa có hình xăm.`,
+				`Dịch vụ này bắt buộc phải có hình xăm đi kèm, không thể hoàn tất dịch vụ khi chưa có hình xăm.`,
+				2
+			);
+			return;
+		}
+		if (
+			detail?.tattooArt?.status !== TATTOO_ART_STATUS.COMPLETED &&
+			detail?.status === BOOKING_DETAIL_STATUS.COMPLETED &&
+			(detail?.serviceCategory?.id === SERVICE_CATEGORY.NEW_TATTOO ||
+				detail?.serviceCategory?.id === SERVICE_CATEGORY.COVER_UP)
+		) {
+			handleAlert(
+				true,
+				'Không thể hoàn tất dịch vụ.',
+				`Hình xăm cho dịch vụ này chưa hoàn tất.`,
 				2
 			);
 			return;

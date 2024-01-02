@@ -9,6 +9,7 @@ import {
 	extractServiceFromBookingDetail,
 	fetcherPost,
 	fetcherPut,
+	formatPhoneNumber,
 	formatPrice,
 	formatTime
 } from 'lib';
@@ -115,17 +116,6 @@ const PaymentBooking = ({ booking }) => {
 	const handleCreateSuccess = (newTransactionId) => {
 		setOpenSuccessModal(true);
 		handleAlert(false);
-		const details = [...bookingDetails].map((detail) => {
-			if (detail.selected) {
-				return {
-					...detail,
-					selected: false,
-					status: BOOKING_DETAIL_STATUS.COMPLETED
-				};
-			}
-			return detail;
-		});
-		setBookingDetails(details);
 		const newTransactions = [...transactions];
 		newTransactions.push({
 			id: newTransactionId,
@@ -192,20 +182,8 @@ const PaymentBooking = ({ booking }) => {
 				isRefund: isRefund,
 				method: method
 			}).then((response) => {
-				const promises = [];
-				bookingDetails.forEach((detail) => {
-					if (detail.selected) {
-						promises.push(
-							fetcherPut(`${BASE_URL}/booking-details/${detail.id}`, {
-								status: BOOKING_DETAIL_STATUS.COMPLETED
-							})
-						);
-					}
-				});
-				Promise.all(promises).then(() => {
-					handleCreateSuccess(response.id);
-					setOpenTransactionModal(false);
-				});
+				handleCreateSuccess(response.id);
+				setOpenTransactionModal(false);
 			});
 		}
 	};
@@ -396,7 +374,7 @@ const PaymentBooking = ({ booking }) => {
 									<div>
 										Số điện thoại:{' '}
 										<span className="font-semibold">
-											{booking.customer.phoneNumber}
+											{formatPhoneNumber(booking.customer.phoneNumber)}
 										</span>
 									</div>
 									<div>

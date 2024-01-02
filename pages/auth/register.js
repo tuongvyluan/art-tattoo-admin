@@ -72,11 +72,11 @@ const RegisterPage = () => {
 
 	const handleCloseModal = () => {
 		if (modalContent?.isWarn === 2) {
-			setShowModal(false)
+			setShowModal(false);
 		} else {
-			Router.replace('/auth/signin')
+			Router.replace('/auth/signin');
 		}
-	}
+	};
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -140,12 +140,17 @@ const RegisterPage = () => {
 						})
 						.catch((e) => {
 							console.log(e);
-							handleModal(true, 'Đăng ký tài khoản thất bại.', '', 2);
+							let mesageTitle = 'Đăng ký tài khoản thất bại.';
+							let messageContent = '';
+							if (e.message.includes('already an account')) {
+								messageContent = 'Email hoặc số điện thoại này đã tồn tại.';
+							}
+							handleModal(true, mesageTitle, messageContent, 2);
 						});
 				});
 			} catch (e) {
 				console.log(e);
-				let mesageTitle = 'Đăng ký tài khoản không thành công.';
+				let mesageTitle = 'Đăng ký tài khoản thất bại.';
 				let messageContent = '';
 				if (e.message.includes('already an account')) {
 					messageContent = 'Email hoặc số điện thoại này đã tồn tại.';
@@ -166,7 +171,7 @@ const RegisterPage = () => {
 			>
 				<div className="flex justify-center">
 					<div className="text-center">
-						<div className="flex flex-wrap  gap-2 items-center pb-4">
+						<div className="flex flex-wrap gap-2 items-center pb-4">
 							<div>{getModalIcon()}</div>
 							<div className="text-2xl">{modalContent?.title}</div>
 						</div>
@@ -174,7 +179,7 @@ const RegisterPage = () => {
 					</div>
 				</div>
 				{modalContent?.isWarn !== 0 && (
-					<div className='pt-6 mt-6 border-t border-gray-300 flex justify-center'>
+					<div className="pt-6 mt-6 border-t border-gray-300 flex justify-center">
 						<Button outline onClick={handleCloseModal}>
 							{modalContent?.isWarn === 2 ? 'Đóng' : 'Trở lại trang đăng nhập'}
 						</Button>

@@ -1,6 +1,8 @@
 import PropTypes from 'prop-types';
 import {
 	BOOKING_DETAIL_STATUS,
+	SERVICE_CATEGORY,
+	getTattooArtStatusString,
 	stringBookingDetailStatus,
 	stringBookingDetailStatusColor,
 	stringPlacements,
@@ -22,12 +24,13 @@ import {
 } from 'react-icons/md';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from 'next/future/image';
 import UpdateBookingDetailModal from './UpdateBookingDetailModal';
 import MyModal from 'components/MyModal';
 import { BASE_URL } from 'lib/env';
 import ScheduleBookingMeetingModal from './ScheduleBookingMeetingModal';
 import { noImageAvailable } from 'lib/tattooPhoto';
+import { Badge } from 'flowbite-react';
 
 const CustomerServices = ({
 	bookingDetails,
@@ -36,8 +39,7 @@ const CustomerServices = ({
 	showMore = false,
 	setLoading,
 	artistList,
-	paidTotal = 0,
-	minTotal = 0
+	paidTotal = 0
 }) => {
 	const [bookingDetailModal, setBookingDetailModal] = useState(false);
 	const [confirmRemoveBookingDetailModal, setConfirmRemoveBookingDetailModal] =
@@ -82,7 +84,8 @@ const CustomerServices = ({
 		return (
 			bookingDetails?.filter((b) => b.status === BOOKING_DETAIL_STATUS.CANCELLED)
 				.length ===
-			bookingDetails?.length - 1 && removedBookingDetail?.status === BOOKING_DETAIL_STATUS.PENDING
+				bookingDetails?.length - 1 &&
+			removedBookingDetail?.status === BOOKING_DETAIL_STATUS.PENDING
 		);
 	};
 
@@ -97,7 +100,10 @@ const CustomerServices = ({
 	const handleRemoveBookingDetail = () => {
 		fetcherPut(`${BASE_URL}/booking-details/${removedBookingDetail.id}`, {
 			id: removedBookingDetail.id,
-			status: removedBookingDetail.status === BOOKING_DETAIL_STATUS.PENDING ? BOOKING_DETAIL_STATUS.CANCELLED : BOOKING_DETAIL_STATUS.NOT_COMPLETED
+			status:
+				removedBookingDetail.status === BOOKING_DETAIL_STATUS.PENDING
+					? BOOKING_DETAIL_STATUS.CANCELLED
+					: BOOKING_DETAIL_STATUS.NOT_COMPLETED
 		})
 			.then(() => {
 				setConfirmRemoveBookingDetailModal(false);
@@ -134,7 +140,8 @@ const CustomerServices = ({
 	useEffect(() => {
 		if (scheduleModal === false) {
 			setScheduledBookingDetail(undefined);
-		}setRemovedBookingDetail
+		}
+		setRemovedBookingDetail;
 	}, [scheduleModal]);
 
 	// Open confirm remove modal when removedBookingDetail is not null
@@ -291,8 +298,10 @@ const CustomerServices = ({
 				/>
 			)}
 			<div className="relative">
-				{ !showMore && bookingDetails.length > 3 && (
-					<div className='absolute z-100 left-0 right-0 -bottom-10 text-center text-base underline'>Xem thêm</div>
+				{!showMore && bookingDetails.length > 3 && (
+					<div className="absolute z-100 left-0 right-0 -bottom-10 text-center text-base underline">
+						Xem thêm
+					</div>
 				)}
 				{bookingDetails.map((bookingDetail, bookingServiceIndex) => (
 					<Card
@@ -345,24 +354,46 @@ const CustomerServices = ({
 										<Link
 											href={`/tattoo/${bookingDetail.tattooArt.id}?booking=${bookingDetail.tattooArt.bookingId}`}
 										>
-											<div className="cursor-pointer flex justify-start gap-3 flex-wrap">
-												<div className="relative w-24 h-24">
+											<div className="cursor-pointer">
+												<div className="relative w-28">
 													<Image
-														layout="fill"
+														width={0}
+														height={0}
+														sizes="100vw"
+														priority
 														src={
 															bookingDetail.tattooArt.thumbnail
 																? bookingDetail.tattooArt.thumbnail
 																: noImageAvailable
 														}
 														alt={'a'}
-														className="object-contain rounded-2xl"
+														className="relative w-full h-auto rounded-2xl"
 													/>
+													<div className="pt-3 max-w-max mx-auto">
+														<Badge
+															color={
+																bookingDetail.tattooArt.status === 0
+																	? 'warning'
+																	: 'success'
+															}
+														>
+															{getTattooArtStatusString.at(
+																bookingDetail.tattooArt.status
+															)}
+														</Badge>
+													</div>
 												</div>
 											</div>
 										</Link>
 									) : (
-										<div className="border border-black rounded-xl w-24 h-24 cursor-default">
-											<div className="px-2 py-7 text-center">Không có hình xăm</div>
+										<div className="border border-gray-300 rounded-xl w-28 h-28 cursor-default">
+											<div className="px-2 py-10 text-center text-gray-600">
+												{bookingDetail.serviceCategoryId !==
+													SERVICE_CATEGORY.NEW_TATTOO &&
+												bookingDetail.serviceCategoryId !== SERVICE_CATEGORY.COVER_UP
+													? 'Không có hình xăm'
+													: 'Chưa tạo hình xăm'}
+											</div>
 										</div>
 									)}
 								</div>
@@ -421,11 +452,12 @@ const CustomerServices = ({
 									{
 										// Giá tiền
 									}
-									{bookingDetail.price > 0 && bookingDetail.status !== BOOKING_DETAIL_STATUS.CANCELLED && (
-										<div className="flex flex-wrap items-center text-base font-semibold bg-teal-300 px-2 rounded-full">
-											<div>{formatPrice(bookingDetail.price)}</div>
-										</div>
-									)}
+									{bookingDetail.price > 0 &&
+										bookingDetail.status !== BOOKING_DETAIL_STATUS.CANCELLED && (
+											<div className="flex flex-wrap items-center text-base font-semibold bg-teal-300 px-2 rounded-full">
+												<div>{formatPrice(bookingDetail.price)}</div>
+											</div>
+										)}
 									{
 										// Ngày hẹn
 									}

@@ -1,7 +1,7 @@
 import Heading from 'components/Heading';
 import { Tooltip } from 'flowbite-react';
 import { Search } from 'icons/outline';
-import { fetcher } from 'lib';
+import { fetcher, formatPhoneNumber } from 'lib';
 import { BASE_URL } from 'lib/env';
 import Link from 'next/link';
 import PropTypes from 'propTypes';
@@ -86,7 +86,7 @@ const StudioCustomerListPage = ({ studioId }) => {
 														<div>{customer.email} </div>
 													</td>
 													<td className="px-3 py-4">
-														<div>{customer.phoneNumber} </div>
+														<div>{formatPhoneNumber(customer.phoneNumber)} </div>
 													</td>
 													<td className="px-3 py-4">
 														<div>{customer.noOfBookings} </div>

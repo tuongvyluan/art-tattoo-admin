@@ -6,6 +6,7 @@ import {
 	calculateTotal,
 	fetcher,
 	fetcherPut,
+	formatPhoneNumber,
 	formatPrice
 } from 'lib';
 import {
@@ -142,21 +143,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 	};
 
 	const completeBooking = () => {
-		const promises = [];
 		const bookingDetails = renderData.bookingDetails;
-		bookingDetails.forEach((detail) => {
-			if (
-				detail.status !== BOOKING_DETAIL_STATUS.CANCELLED &&
-				detail.status !== BOOKING_DETAIL_STATUS.COMPLETED &&
-				detail.status !== BOOKING_DETAIL_STATUS.NOT_COMPLETED
-			) {
-				promises.push(
-					fetcherPut(`${BASE_URL}/booking-details/${detail.id}`, {
-						status: BOOKING_DETAIL_STATUS.COMPLETED
-					})
-				);
-			}
-		});
 
 		const countNotCompleted = bookingDetails.filter(
 			(bd) => bd.status === BOOKING_DETAIL_STATUS.NOT_COMPLETED
@@ -174,20 +161,18 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 			? BOOKING_STATUS.NOT_COMPLETED
 			: BOOKING_STATUS.COMPLETED;
 
-		Promise.all(promises).then(() => {
-			fetcherPut(`${BASE_URL}/bookings/${renderData.id}`, {
-				status: finalStatus,
-				updaterId: account.user.id
+		fetcherPut(`${BASE_URL}/bookings/${renderData.id}`, {
+			status: finalStatus,
+			updaterId: account.user.id
+		})
+			.then((data) => {
+				setBookingStatus(finalStatus);
+				handleAlert(true, 'Cập nhật trạng thái đơn hàng thành công');
+				setLoading(true);
 			})
-				.then((data) => {
-					setBookingStatus(finalStatus);
-					handleAlert(true, 'Cập nhật trạng thái đơn hàng thành công');
-					setLoading(true);
-				})
-				.catch((e) => {
-					handleAlert(true, 'Cập nhật trạng thái đơn hàng thành công');
-				});
-		});
+			.catch((e) => {
+				handleAlert(true, 'Cập nhật trạng thái đơn hàng thành công');
+			});
 	};
 
 	return (
@@ -225,7 +210,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								className="my-1 full px-3 py-1 gap-2 flex items-center cursor-pointer"
 								onClick={() => handleCancelReason(reason)}
 								key={index}
-								role='button'
+								role="button"
 							>
 								<input
 									type="radio"
@@ -237,7 +222,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 							</li>
 						))}
 					</ul>
-					<label className="text-sm font-semibold">Mô tả lý do</label>
+					<div className="text-sm font-semibold">Mô tả lý do</div>
 					<textarea
 						rows={4}
 						type="text"
@@ -282,7 +267,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 												<div>
 													Số điện thoại:{' '}
 													<span className="font-semibold text-base">
-														{renderData.customer.phoneNumber}
+														{formatPhoneNumber(renderData.customer.phoneNumber)}
 													</span>
 												</div>
 											)}
@@ -463,7 +448,9 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 												)}
 												{renderData.status === BOOKING_STATUS.IN_PROGRESS &&
 													renderData.bookingDetails?.filter(
-														(bd) => bd.status === BOOKING_DETAIL_STATUS.PENDING
+														(bd) =>
+															bd.status === BOOKING_DETAIL_STATUS.PENDING ||
+															bd.status === BOOKING_DETAIL_STATUS.IN_PROGRESS
 													)?.length === 0 && (
 														<div className="flex">
 															<Button onClick={completeBooking}>Kết thúc</Button>

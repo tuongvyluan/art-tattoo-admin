@@ -119,7 +119,7 @@ const data = Array(20)
 							SERVICE_SIZE.MEDIUM,
 							SERVICE_SIZE.SMALL
 						][randomFrom0To(4)],
-						status: TATTOO_ART_STATUS.AVAILABLE,
+						status: TATTOO_ART_STATUS.COMPLETED,
 						bookingDetails: [
 							{
 								bookingDetailsId: v4(),

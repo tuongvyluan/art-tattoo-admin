@@ -176,10 +176,15 @@ export const enum TRANSACTION_STATUS {
 export const operationNames = ['Khác', 'Trọn gói', 'Xoá xăm', 'Dặm lại', 'Sửa xăm'];
 
 export const enum TATTOO_ART_STATUS {
-	UNAVAILABLE = 0,
-	AVAILABLE = 1,
+	PENDING = 0,
+	COMPLETED = 1,
 	DELETED = 2
 }
+
+export const getTattooArtStatusString = [
+	'Đang thực hiện',
+	'Đã hoàn thành'
+]
 
 export const enum TATTOO_ART_STAGE_STATUS {
 	UNAVAILABLE = 0,
