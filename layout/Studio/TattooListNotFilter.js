@@ -108,7 +108,7 @@ const TattooListNotFilter = ({ url, pageSize = 20 }) => {
 																	</div>
 																</div>
 															</div>
-															<Link href={`/artist/${item.artistId}`}>
+															<Link prefetch={false} href={`/artist/${item.artistId}`}>
 																<div className="cursor-pointer font-semibold pt-2">
 																	<div className="flex gap-2">
 																		<Avatar
@@ -121,7 +121,7 @@ const TattooListNotFilter = ({ url, pageSize = 20 }) => {
 																	</div>
 																</div>
 															</Link>
-															<Link href={`/tattoo/${item.id}?booking=${item.bookingId}&back=tattoo`}>
+															<Link prefetch={false} href={`/tattoo/${item.id}?booking=${item.bookingId}&back=tattoo`}>
 																<div className="cursor-pointer pt-1">
 																	<div className="text-gray-400">
 																		Vị trí xăm:{' '}

@@ -240,7 +240,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 								// Booking ID & back icon
 							}
 							<div className="flex justify-between border-b border-gray-300 pb-3">
-								<Link href="/booking">
+								<Link prefetch={false} href="/booking">
 									<div className="cursor-pointer flex gap-1 text-gray-500 hover:text-indigo-500">
 										<ChevronLeft width={20} heigh={20} /> TRỞ LẠI
 									</div>
@@ -427,7 +427,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 										}
 										{total > paidTotal ? (
 											<div className="flex justify-center">
-												<Link href={`/payment/${renderData.id}`}>
+												<Link prefetch={false} href={`/payment/${renderData.id}`}>
 													<div className="w-32">
 														<Button>Ghi nhận giao dịch</Button>
 													</div>
@@ -436,7 +436,7 @@ function BookingDetailsPage({ data, studioId, setLoading }) {
 										) : (
 											<div className="flex justify-center flex-wrap gap-3">
 												{renderData.status === BOOKING_STATUS.IN_PROGRESS && (
-													<Link href={`/payment/${renderData.id}`}>
+													<Link prefetch={false} href={`/payment/${renderData.id}`}>
 														<div className="flex">
 															<Button outline={total === paidTotal}>
 																{total === paidTotal

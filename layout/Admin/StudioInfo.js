@@ -15,7 +15,7 @@ const AdminStudioInfo = ({ studio }) => {
 					// Studio header
 				}
 				<div className="flex gap-2 items-center border-b border-gray-300">
-					<Link href={'/studio'}>
+					<Link prefetch={false} href={'/studio'}>
 						<div className="cursor-pointer flex gap-1 text-gray-500 hover:text-indigo-500 pb-2">
 							<ChevronLeft width={20} heigh={20} />
 						</div>

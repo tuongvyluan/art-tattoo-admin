@@ -93,7 +93,7 @@ const StudioCustomerListPage = ({ studioId }) => {
 													</td>
 													<td className="px-3 py-4 flex justify-end">
 														<Tooltip content="Xem lịch sử đặt hàng của khách">
-															<Link href={`/booking?search=${customer.id}`}>
+															<Link prefetch={false} href={`/booking?search=${customer.id}`}>
 																<Search width={20} height={20} />
 															</Link>
 														</Tooltip>

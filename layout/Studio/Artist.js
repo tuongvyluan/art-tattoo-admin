@@ -11,6 +11,7 @@ import { Tooltip } from 'flowbite-react';
 import Link from 'next/link';
 import { HiMiniMagnifyingGlass } from 'react-icons/hi2';
 import MyPagination from 'ui/MyPagination';
+import { Calendar } from 'icons/outline';
 
 const StudioArtist = ({ studioId }) => {
 	const [artistList, setArtistList] = useState([]);
@@ -94,17 +95,19 @@ const StudioArtist = ({ studioId }) => {
 	};
 
 	const removeArtist = (artistId) => {
-		fetcherPut(
-			`${BASE_URL}/artists/${studioId}/studio-artist-deleted/${artistId}`
-		).then(() => {
-			setReloadKey(Math.random());
-			handleAlert(
-				true,
-				'Ngừng hợp tác với nghệ sĩ thành công',
-				'',
-				2
-			);
-		});
+		fetcherPut(`${BASE_URL}/artists/${studioId}/studio-artist-deleted/${artistId}`)
+			.then(() => {
+				setReloadKey(Math.random());
+				handleAlert(true, 'Ngừng hợp tác với nghệ sĩ thành công', '', 0);
+			})
+			.catch(() => {
+				handleAlert(
+					true,
+					'Ngừng hợp tác với nghệ sĩ thất bại.',
+					'Nghệ sĩ này còn đơn hàng chưa hoàn tất. Bàn giao cho nghệ sĩ khác hoặc huỷ đơn trước khi ngừng hợp tác với nghệ sĩ.',
+					2
+				);
+			});
 	};
 
 	const getArtistStyle = (styles) => {
@@ -233,15 +236,35 @@ const StudioArtist = ({ studioId }) => {
 																</Tooltip>
 															)}
 
+															{artist.dismissedAt === null && (
+																<Tooltip content="Xem đơn hàng">
+																	<Link
+																		prefetch={false}
+																		href={`/booking?artistId=${artist.id}`}
+																	>
+																		<a className="text-gray-500">
+																			<Calendar
+																				className="cursor-pointer"
+																				width={25}
+																				height={25}
+																			/>
+																		</a>
+																	</Link>
+																</Tooltip>
+															)}
+
 															<Tooltip content="Xem trang cá nhân">
 																<Link
+																	prefetch={false}
 																	href={`/artist/${artist.id}`}
 																	target="_blank"
 																>
-																	<HiMiniMagnifyingGlass
-																		className="cursor-pointer font-bold"
-																		size={20}
-																	/>
+																	<a className="text-gray-500">
+																		<HiMiniMagnifyingGlass
+																			className="cursor-pointer font-bold"
+																			size={20}
+																		/>
+																	</a>
 																</Link>
 															</Tooltip>
 														</div>

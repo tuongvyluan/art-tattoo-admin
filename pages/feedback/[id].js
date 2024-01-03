@@ -26,7 +26,7 @@ const BookingFeedbackPage = () => {
 			return (
 				<div className="absolute top-0 bottom-0 flex flex-col justify-center left-0 right-0 text-lg">
 					<div className="text-center">{errorMessage}</div>
-					<Link href="/">
+					<Link prefetch={false} href="/">
 						<div className="text-center cursor-pointer text-blue-500">
 							Trở lại trang chủ
 						</div>

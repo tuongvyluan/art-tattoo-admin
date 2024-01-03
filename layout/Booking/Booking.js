@@ -236,8 +236,8 @@ function BookingPage({ studioId }) {
 						{data.map((booking, index) => (
 							<Card key={booking.id}>
 								<CardBody>
-									<Link className="text-black" href={`/booking/${booking.id}`}>
-										<div className="cursor-pointer ">
+									<Link prefetch={false} className="text-black" href={`/booking/${booking.id}`} passHref>
+										<a href='#' className="cursor-pointer text-black">
 											<div className="flex justify-between mx-auto border-b border-gray-300 pb-3 mb-3">
 												<div className="flex gap-3 items-start">
 													<div className="font-semibold text-base">
@@ -296,7 +296,7 @@ function BookingPage({ studioId }) {
 													}
 												</div>
 											</div>
-										</div>
+										</a>
 									</Link>
 									<div className="flex justify-end pt-3">
 										{booking?.bookingDetails?.at(0)?.feedback !== null && (

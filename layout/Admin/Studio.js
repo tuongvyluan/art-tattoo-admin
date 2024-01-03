@@ -125,7 +125,7 @@ function AdminStudioPage({ pageSize }) {
 											</td>
 											<td className="px-3 py-4">
 												<Tooltip content="Xem chi tiết tiệm xăm">
-													<Link href={`/studio/${item.id}`}>
+													<Link prefetch={false} href={`/studio/${item.id}`}>
 														<Search className='cursor-pointer' width={20} height={20} />
 													</Link>
 												</Tooltip>

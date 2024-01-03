@@ -134,7 +134,7 @@ const Login = ({ user }) => {
 													<div className="text-center">
 														<small className="text-gray-700 text-center">
 															<span>Chưa có tài khoản?</span>{' '}
-															<Link href="/auth/register">
+															<Link prefetch={false} href="/auth/register">
 																<a>Tạo tài khoản mới</a>
 															</Link>
 														</small>

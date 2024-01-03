@@ -66,7 +66,7 @@ const MeetingTable = ({ meetings = [] }) => {
 							</td>
 							<td scope="col" className="text-left text-gray-900 px-4 py-3">
 								<Tooltip content="Xem chi tiết đơn hàng">
-									<Link href={`/booking/${meeting?.bookingDetail?.bookingId}`}>
+									<Link prefetch={false} href={`/booking/${meeting?.bookingDetail?.bookingId}`}>
 										<Search className='cursor-pointer' width={18} height={18} />
 									</Link>
 								</Tooltip>

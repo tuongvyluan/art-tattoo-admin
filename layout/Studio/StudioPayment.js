@@ -43,7 +43,7 @@ const StudioPayment = ({ studioId }) => {
 		return (
 			<div className="absolute top-0 bottom-0 flex flex-col justify-center left-0 right-0 text-lg">
 				<div className="text-center">Tải dữ liệu thất bại.</div>
-				<Link href="/">
+				<Link prefetch={false} href="/">
 					<div className="text-center cursor-pointer text-blue-500">
 						Trở lại trang chủ
 					</div>
@@ -130,7 +130,7 @@ const StudioPayment = ({ studioId }) => {
 											</td>
 											<td className="text-left text-gray-900 px-4 py-3 text-base">
 												<Tooltip content='Xem đơn hàng'>
-													<Link href={`/booking/${transaction.bookingId}`}>
+													<Link prefetch={false} href={`/booking/${transaction.bookingId}`}>
 														<div className="cursor-pointer flex justify-center">
 															<HiMiniMagnifyingGlass
 																className="hover:text-gray-600 cursor-pointer"

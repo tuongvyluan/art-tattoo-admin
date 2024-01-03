@@ -21,7 +21,7 @@ const ArtistDetails = ({ artist, statistic, studioId = '', role = ROLE.ADMIN }) 
 								// Studio header
 							}
 							<div className="flex gap-2 items-center border-b border-gray-300">
-								<Link href={role === ROLE.ADMIN ? '/studio/' + studioId : '/artist'}>
+								<Link prefetch={false} href={role === ROLE.ADMIN ? '/studio/' + studioId : '/artist'}>
 									<div className="cursor-pointer flex gap-1 text-gray-500 hover:text-indigo-500 pb-2">
 										<ChevronLeft width={20} heigh={20} />
 									</div>

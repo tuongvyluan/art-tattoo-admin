@@ -53,7 +53,7 @@ const Header = ({ toggleOpen }) => {
 							</DropdownToggle>
 							<DropdownMenu>
 								<div className="py-1">
-									<Link href="/studio">
+									<Link prefetch={false} href="/studio">
 										<div className="flex cursor-pointer items-center px-5 py-3 leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
 											<User width={16} height={16} />{' '}
 											<span className="ml-3">Hồ sơ</span>

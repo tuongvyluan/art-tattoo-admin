@@ -206,7 +206,7 @@ function StudioIndexPage({ studioId, role = ROLE.STUDIO }) {
 						<div className="flex items-center justify-center gap-1 text-lg">
 							<div className="text-center">
 								<span>Bạn đang không hợp tác với nghệ sĩ nào, vào </span>
-								<Link href={'/artist'}>đây</Link>
+								<Link prefetch={false} href={'/artist'}>đây</Link>
 								<span>
 									{' '}
 									để nhập key từ nghệ sĩ và thêm họ vào tiệm xăm của mình nhé.

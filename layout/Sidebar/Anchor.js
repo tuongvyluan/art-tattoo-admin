@@ -42,7 +42,7 @@ const Anchor = ({
 	return hasItems || divider ? (
 		content
 	) : (
-		<Link href={path} passHref prefetch={false}>
+		<Link prefetch={false} href={path} passHref prefetch={false}>
 			{content}
 		</Link>
 	);

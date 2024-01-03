@@ -65,13 +65,13 @@ const TattooIndexPage = () => {
 								{index % tattooCol === colIndex && (
 									<WidgetPostCard image={item.thumbnail} link={`/tattoo/${item.id}`}>
 										<div>
-											<Link href={`/artist/${item.artist.id}`}>
+											<Link prefetch={false} href={`/artist/${item.artist.id}`}>
 												<div className="cursor-pointer font-semibold">
 													{item.fullName}
 												</div>
 											</Link>
 										</div>
-										<Link href={`/tattoo/${item.id}`}>
+										<Link prefetch={false} href={`/tattoo/${item.id}`}>
 											<div className="cursor-pointer pt-1">
 												<div className="text-gray-400">
 													Vị trí xăm:{' '}

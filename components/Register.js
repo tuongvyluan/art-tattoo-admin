@@ -250,7 +250,7 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 												<div className="text-center pb-3">
 													<small className="text-gray-700 text-center">
 														<span>{'Đã có tài khoản?'}</span>{' '}
-														<Link href="/auth/signin">
+														<Link prefetch={false} href="/auth/signin">
 															<a>{'Đăng nhập tại đây'}</a>
 														</Link>
 													</small>

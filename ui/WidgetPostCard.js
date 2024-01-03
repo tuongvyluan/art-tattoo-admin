@@ -14,7 +14,7 @@ export const WidgetPostCard = ({
 }) => {
 	return (
 		<Card>
-			<Link href={link}>
+			<Link prefetch={false} href={link}>
 				<div className="relative w-full cursor-pointer">
 					{imageHeight ? (
 						<BackgroundImg
