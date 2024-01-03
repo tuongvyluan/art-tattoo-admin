@@ -40,6 +40,7 @@ const MeetingSchedule = ({ id, artist = undefined }) => {
 		from: new Date(moment()),
 		to: new Date(moment().add(12, 'hours').add(7, 'days'))
 	});
+	const [isAsc, setIsAsc] = useState(true)
 	const [status, setStatus] = useState(-1);
 	const [searchKey, setSearchKey] = useState(undefined);
 	const [hasChanged, setHasChanged] = useState(true);
@@ -80,10 +81,10 @@ const MeetingSchedule = ({ id, artist = undefined }) => {
 					currentArtist.id
 				}&orderBy=MeetingTime${
 					status > -1 ? '&status=' + status : ''
-				}&pageSize=${pageSize}&page=${page}`
+				}&pageSize=${pageSize}&page=${page}&isDescending=${!isAsc}`
 			).then((data) => {
 				setTotalPage(Math.ceil(data.total / pageSize));
-				setMeetings(data.bookingMeetings);
+				setMeetings(getSortMeetings(data.bookingMeetings));
 				setHasChanged(false);
 			});
 		}
@@ -96,6 +97,14 @@ const MeetingSchedule = ({ id, artist = undefined }) => {
 		}
 	};
 
+	const getSortMeetings = (meetings) => {
+		return meetings?.sort((a, b) => {
+			return isAsc
+				? new Date(a.meetingTime).getTime() - new Date(b.meetingTime).getTime()
+				: new Date(b.meetingTime).getTime() - new Date(a.meetingTime).getTime();
+		});
+	};
+
 	useEffect(() => {
 		if (!hasChanged) {
 			setHasChanged(true);
@@ -105,7 +114,7 @@ const MeetingSchedule = ({ id, artist = undefined }) => {
 	useEffect(() => {
 		setHasChanged(true);
 		setSearchKey(Math.random() + page);
-	}, [page]);
+	}, [page, isAsc]);
 
 	useEffect(() => {
 		getMeetings();
@@ -254,7 +263,7 @@ const MeetingSchedule = ({ id, artist = undefined }) => {
 			}
 			{meetings?.length > 0 && currentArtist ? (
 				<div>
-					<MeetingTable meetings={meetings} />
+					<MeetingTable meetings={meetings} sort={(isAsc) => setIsAsc(isAsc)} isAsc={isAsc} />
 					{totalPage > 0 && (
 						<MyPagination
 							current={page}
