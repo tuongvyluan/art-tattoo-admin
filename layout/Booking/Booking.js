@@ -35,7 +35,7 @@ function BookingPage({ studioId }) {
 	const [openCreateModal, setOpenCreateModal] = useState(false)
 	const [data, setData] = useState([]);
 	const [artistList, setArtistList] = useState([]);
-	const [currentArtist, setCurrentArtist] = useState(null);
+	const [currentArtist, setCurrentArtist] = useState(router.query.artistId ? router.query.artistId : null);
 	const [activeTab, setActiveTab] = useState(
 		router.query.active ? router.query.active : ALL_TAB
 	);
@@ -103,7 +103,7 @@ function BookingPage({ studioId }) {
 				router.push(
 					`/booking?active=${filter}&page=${page}${
 						search?.trim()?.length > 0 ? '&search=' + search : ''
-					}`
+					}${currentArtist !== null ? '&artistId=' + currentArtist : ''}`
 				);
 			});
 	}, [filter, page, currentArtist, search]);
@@ -150,6 +150,10 @@ function BookingPage({ studioId }) {
 				}
 			});
 			setArtistList(list);
+			console.log(currentArtist)
+			if (list.filter((a) => a.id === currentArtist).length === 0) {
+				setCurrentArtist(null)
+			}
 		});
 	}, []);
 
