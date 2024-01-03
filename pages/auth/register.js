@@ -78,31 +78,39 @@ const RegisterPage = () => {
 		}
 	};
 
+	const handleCheckInfo = () => {
+		let result = true;
+		let content = ''
+		if (!checkPhoneNumber(user.phoneNumber)) {
+			content = 'Số điện thoại không hợp lệ. '
+			result = false;
+		}
+
+		if (user.cpassword !== user.password) {
+			content = content.concat('Mật khẩu xác nhận không trùng khớp. ')
+			result = false;
+		}
+
+		if (user.fullName.trim() === '') {
+			content = content.concat('Tên không được để trống. ')
+			result = false;
+		}
+
+		if (!checkTaxCode(user.studioTaxCode)) {
+			content = content.concat('Mã số thuế không hợp lệ. ')
+			result = false
+		}
+
+		if (!result) {
+			handleModal(true, 'Đăng ký tài khoản thất bại', content, 2);
+		}
+		return result;
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		handleModal(true, 'Đang đăng ký tài khoản.', '', 0);
-		if (user.cpassword !== user.password) {
-			handleModal(
-				true,
-				'Đăng ký tài khoản thất bại.',
-				'Mật khẩu xác nhận không trùng khớp.',
-				2
-			);
-		} else if (!checkTaxCode(user.studioTaxCode)) {
-			handleModal(
-				true,
-				'Đăng ký tài khoản thất bại.',
-				'Mã số thuế không hợp lệ.',
-				2
-			);
-		} else if (!checkPhoneNumber(user.phoneNumber)) {
-			handleModal(
-				true,
-				'Đăng ký tài khoản thất bại.',
-				'Số điện thoại không hợp lệ.',
-				2
-			);
-		} else {
+		if (handleCheckInfo()) {
 			try {
 				fetcher(`${TAX_CODE_API}/${user.studioTaxCode}`).then((data) => {
 					let validTax = false;
