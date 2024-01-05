@@ -1,5 +1,6 @@
 import MyModal from 'components/MyModal';
 import PricingComponent from 'components/Pricing';
+import { getCodeString } from 'lib/vnpayHelpers';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
@@ -18,7 +19,7 @@ const PackagePage = () => {
 				setOpenModal={setOpenResultModal}
 				title={'Kết quả thanh toán'}
 			>
-				<div>{code === '00' ? 'Thanh toán thành công.' : 'Thanh toán thất bại'}</div>
+				<div>{code === '00' ? 'Thanh toán thành công.' : 'Thanh toán thất bại. ' + getCodeString(code)}</div>
 			</MyModal>
 			<PricingComponent />
 		</div>
