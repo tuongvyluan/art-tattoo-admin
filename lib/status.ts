@@ -175,15 +175,20 @@ export const enum TRANSACTION_STATUS {
 
 export const operationNames = ['Khác', 'Trọn gói', 'Xoá xăm', 'Dặm lại', 'Sửa xăm'];
 
+export const getTattooArtIsCompleted = (value:boolean) => {
+	return value ? 'Đã hoàn thành' : 'Đang thực hiện'
+}
+
 export const enum TATTOO_ART_STATUS {
-	PENDING = 0,
-	COMPLETED = 1,
+	AVAILABLE = 0,
+	UNAVAILABLE = 1,
 	DELETED = 2
 }
 
 export const getTattooArtStatusString = [
-	'Đang thực hiện',
-	'Đã hoàn thành'
+	'Hiển thị',
+	'Bị khoá',
+	'Đã xoá'
 ]
 
 export const enum TATTOO_ART_STAGE_STATUS {

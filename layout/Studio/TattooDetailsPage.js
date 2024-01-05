@@ -142,6 +142,22 @@ function TattooDetailNoUpdatePage({ bookingId, artTattoo, myTattoo = false }) {
 					</div>
 				</CardBody>
 			</Card>
+			<div className="flex items-center cursor-pointer gap-2">
+				<div className="font-semibold">Đã hoàn thành:</div>
+				<div
+					className="relative"
+				>
+					<input
+						checked={tattoo.isCompleted}
+						type="checkbox"
+						readOnly
+						className="hidden"
+						disabled={true}
+					/>
+					<div className="toggle__bar h-4 bg-gray-400 rounded-full shadow-inner"></div>
+					<div className="toggle__handle absolute bg-white rounded-full shadow-sm transform transition duration-150 ease-in-out"></div>
+				</div>
+			</div>
 		</div>
 	);
 }

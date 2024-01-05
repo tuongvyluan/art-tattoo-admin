@@ -1,49 +1,69 @@
-import PropTypes from "prop-types";
-import { Ripple } from "./Ripple";
+import PropTypes from 'prop-types';
+import Button from 'components/Button';
+import { fetcherPost } from 'lib';
+import { v4 } from 'uuid';
 
-export const WidgetPricing = ({ title, subtitle, price, features, icon }) => (
-  <>
-    <div className="flex items-center justify-center mb-5 text-blue-500 py-4">
-      {icon}
-    </div>
+export const WidgetPricing = ({ title, subtitle, price, features, icon }) => {
+  const handleClickBuy = () => {
+    fetcherPost('/api/vnpay/create_payment_url', {
+			packageId: '123',
+      amount: 100000,
+			bankCode: ''
+    }).then((data) => {
+      console.log(data)
+    })
+  }
 
-    <div className="mb-5">
-      <h5 className="mb-0">{title}</h5>
-      <small className="mb-0 text-gray-500">{subtitle}</small>
-    </div>
+	return (
+		<div>
+			<div className="flex items-center justify-center mb-5 text-blue-500 py-4">
+				{icon}
+			</div>
 
-    <ul className="list-none mb-5">
-      {features.map((feature, index) => (
-        <li key={index}>{feature.title}</li>
-      ))}
-    </ul>
+			<div className="mb-5">
+				<h5 className="mb-0">{title}</h5>
+				<small className="mb-0 text-gray-500">{subtitle}</small>
+			</div>
 
-    <p className="mb-5 text-sm">
-      Perfect for small startups that have less than 10 team members
-    </p>
+			<ul className="list-none mb-5">
+				{features.map((feature, index) => (
+					<li key={index}>{feature.title}</li>
+				))}
+			</ul>
 
-    <div className="mt-auto">
-      <p className="font-bold text-5xl mb-4">
-        <span className="symbol">$</span>
-        <span>{price}</span>
-      </p>
+			<p className="mb-5 text-sm">
+				Perfect for small startups that have less than 10 team members
+			</p>
 
-      <a className="relative inline-flex justify-center rounded-lg border border-gray-200 px-4 py-3 bg-white text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline transition ease-in-out duration-150 text-sm leading-none mb-4">
-        <span>Choose plan</span>
-        <Ripple color="black" />
-      </a>
-    </div>
-  </>
-);
+			<div className="mt-auto">
+				<p className="font-bold text-5xl mb-4">
+					<span className="symbol">$</span>
+					<span>{price}</span>
+				</p>
+
+				<div className="flex justify-center">
+					<form action='/api/vnpay/create_payment_url' method='POST'>
+						<input name='packageId' readOnly hidden value={`${v4()}`} />
+						<input name='amount' readOnly hidden value={10000} />
+						<input name='bankCode' readOnly hidden value={''} />
+						<input name='language' readOnly hidden value={'vn'} />
+
+						<Button>Mua gói</Button>
+					</form>
+				</div>
+			</div>
+		</div>
+	);
+};
 
 WidgetPricing.propTypes = {
-  title: PropTypes.string,
-  subtitle: PropTypes.string,
-  price: PropTypes.number,
-  features: PropTypes.arrayOf(
-    PropTypes.shape({
-      title: PropTypes.string,
-      available: PropTypes.bool,
-    })
-  ),
+	title: PropTypes.string,
+	subtitle: PropTypes.string,
+	price: PropTypes.number,
+	features: PropTypes.arrayOf(
+		PropTypes.shape({
+			title: PropTypes.string,
+			available: PropTypes.bool
+		})
+	)
 };

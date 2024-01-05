@@ -6,7 +6,6 @@ import { useSession } from 'next-auth/react';
 import Router, { useRouter } from 'next/router';
 import { useState } from 'react';
 import { Loading } from 'ui';
-import { v4 } from 'uuid';
 
 const TattooDetails = () => {
 	// Check authenticated

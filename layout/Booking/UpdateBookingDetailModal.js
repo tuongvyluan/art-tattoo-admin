@@ -7,7 +7,7 @@ import { BASE_URL } from 'lib/env';
 import {
 	BOOKING_DETAIL_STATUS,
 	SERVICE_CATEGORY,
-	TATTOO_ART_STATUS,
+	TATTOO_ART_IS_COMPLETED,
 	stringBookingDetailStatus,
 	stringPlacements,
 	stringSize
@@ -138,7 +138,7 @@ const UpdateBookingDetailModal = ({
 			return;
 		}
 		if (
-			detail?.tattooArt?.status !== TATTOO_ART_STATUS.COMPLETED &&
+			detail?.tattooArt?.status !== TATTOO_ART_IS_COMPLETED.COMPLETED &&
 			detail?.status === BOOKING_DETAIL_STATUS.COMPLETED &&
 			(detail?.serviceCategory?.id === SERVICE_CATEGORY.NEW_TATTOO ||
 				detail?.serviceCategory?.id === SERVICE_CATEGORY.COVER_UP)

@@ -2,7 +2,7 @@ import { randomFrom0To } from 'lib';
 import {
 	BOOKING_STATUS,
 	SERVICE_SIZE,
-	TATTOO_ART_STATUS,
+	TATTOO_ART_IS_COMPLETED,
 	stringPlacements
 } from 'lib/status';
 import { tattooStylesWithoutDescription } from 'lib/tattooStyle';
@@ -119,7 +119,7 @@ const data = Array(20)
 							SERVICE_SIZE.MEDIUM,
 							SERVICE_SIZE.SMALL
 						][randomFrom0To(4)],
-						status: TATTOO_ART_STATUS.COMPLETED,
+						status: TATTOO_ART_IS_COMPLETED.COMPLETED,
 						bookingDetails: [
 							{
 								bookingDetailsId: v4(),
