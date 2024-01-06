@@ -5,7 +5,7 @@ export const Card = ({ children, className, ...props }) => (
   <div
     {...props}
     className={classNames(
-      `relative min-w-0 break-words rounded-lg overflow-hidden shadow-sm mb-4 w-full bg-white dark:bg-gray-600`,
+      `relative min-w-0 break-words rounded-lg overflow-hidden shadow-sm mb-4 w-full bg-white`,
       className
     )}
   >

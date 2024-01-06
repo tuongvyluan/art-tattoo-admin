@@ -13,6 +13,7 @@ import absoluteUrl from 'next-absolute-url';
 
 const handleCreatePaymentRequest = (req, res) => {
 	const packageId = req.body.packageId;
+	console.log(packageId)
 	const origin = absoluteUrl(req)?.origin;
 
 	if (req.method === 'POST') {
