@@ -12,8 +12,7 @@ import absoluteUrl from 'next-absolute-url';
 // Tạo request thanh toán
 
 const handleCreatePaymentRequest = (req, res) => {
-	const packageId = req.body.packageId;
-	console.log(packageId)
+	const packageId = JSON.parse(req.body.packageId);
 	const origin = absoluteUrl(req)?.origin;
 
 	if (req.method === 'POST') {
@@ -47,8 +46,8 @@ const handleCreatePaymentRequest = (req, res) => {
 		vnp_Params['vnp_TmnCode'] = tmnCode;
 		vnp_Params['vnp_Locale'] = locale;
 		vnp_Params['vnp_CurrCode'] = currCode;
-		vnp_Params['vnp_TxnRef'] = packageId;
-		vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + packageId;
+		vnp_Params['vnp_TxnRef'] = packageId.id + 'V' + packageId.studioId + 'V' + packageId.time;
+		vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + packageId.id + packageId.time;
 		vnp_Params['vnp_OrderType'] = 'other';
 		vnp_Params['vnp_Amount'] = amount * 100;
 		vnp_Params['vnp_ReturnUrl'] = returnUrl;

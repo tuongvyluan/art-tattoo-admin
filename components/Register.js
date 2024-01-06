@@ -8,6 +8,8 @@ import CldButton from './CldButton';
 import { MdUpload } from 'react-icons/md';
 import PickCity from './PickCity';
 import { Modal } from 'flowbite-react';
+import { updateIcon } from 'lib/tattooPhoto';
+import { CldImage } from 'next-cloudinary';
 
 const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 	const handleFormChange = (e) => {
@@ -21,7 +23,7 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 					image={'/images/booking-img.jpg'}
 					className="relative w-full h-full bg-center bg-cover bg-fallback"
 				/>
-				<div className="relative h-noFooter">
+				<div className="relative h-noFooter w-full">
 					<Modal size={'5xl'} position={'center'} show={true}>
 						<Modal.Body>
 							<div className="flex flex-col justify-center items-center px-3 bg-white max-h-body overflow-auto">
@@ -51,12 +53,24 @@ const Register = ({ user, setUser, handleSubmit, avatar, setAvatar }) => {
 																	<div className="w-full">
 																		<div className="flex justify-center">
 																			<div key={avatar}>
-																				<Avatar
-																					circular={false}
-																					src={avatar}
-																					alt={'avatar'}
-																					size={200}
-																				/>
+																				{avatar !== '' ? (
+																					<Avatar
+																						circular={false}
+																						src={avatar}
+																						alt={'avatar'}
+																						size={200}
+																					/>
+																				) : (
+																					<CldImage
+																						quality="auto"
+																						format="auto"
+																						width={200}
+																						height={200}
+																						src={updateIcon}
+																						className={'rounded-lg '}
+																						onError={() => setBroken(true)}
+																					/>
+																				)}
 																			</div>
 																		</div>
 																		<div className="flex flex-wrap items-center pt-3">

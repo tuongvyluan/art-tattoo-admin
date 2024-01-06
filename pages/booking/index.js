@@ -8,21 +8,13 @@ const Booking = () => {
 	// Check authenticated
 	const { status, data } = useSession();
 
-	if (status === 'loading') {
+	if (status !== 'authenticated') {
 		return (
 			<div className="flex items-center justify-center h-full">
 				<Loading />
 			</div>
 		);
-	}
-	if (status === 'unauthenticated') {
-		Router.replace('/')
-		return (
-			<div className="flex items-center justify-center h-full">
-				<Loading />
-			</div>
-		);
-	}
+	} 
 	if (status === 'authenticated' && data.user.role === ROLE.STUDIO) {
 		return <BookingPage studioId={data.user.studioId} />;
 	}

@@ -9,6 +9,8 @@ import { sortServiceByCategory } from 'lib/studioServiceHelper';
 import BookingForm from './BookingForm';
 import CreateCustomerModal from './CreateCustomerModal';
 import PropTypes from 'propTypes';
+import { Alert } from 'ui';
+import { checkPhoneNumber } from 'lib/regex';
 
 const CreateBookingModal = ({ studioId, openModal, setOpenModal }) => {
 	const [searchValue, setSearchValue] = useState('');
@@ -18,19 +20,38 @@ const CreateBookingModal = ({ studioId, openModal, setOpenModal }) => {
 	const [openCreateCustomerModal, setOpenCreateCustomerModal] = useState(false);
 	const [studio, setStudio] = useState(undefined);
 
+	const [showAlert, setShowAlert] = useState(false);
+	const [alertContent, setAlertContent] = useState({
+		title: '',
+		content: '',
+		isWarn: false
+	});
+
+	const handleAlert = (state, title, content, isWarn = false) => {
+		setShowAlert((prev) => state);
+		setAlertContent({
+			title: title,
+			content: content,
+			isWarn: isWarn
+		});
+	};
+
 	const handleSearch = (e) => {
 		e.preventDefault();
-		fetcher(
-			`${BASE_URL}/studios/GetCustomerWithPhoneNumber?phoneOrEmail=${searchValue.trim()}`
-		)
-			.then((response) => {
-				setCustomer(response.customer);
-				setHasSearched(true);
-			})
-			.catch(() => {
-				setCustomer(undefined);
-				setHasSearched(true);
-			});
+		if (!checkPhoneNumber(searchValue.trim())) {
+			handleAlert(true, 'Số điện thoại vừa nhập không hợp lệ.', '', 2);
+		} else
+			fetcher(
+				`${BASE_URL}/studios/GetCustomerWithPhoneNumber?phoneOrEmail=${searchValue.trim()}`
+			)
+				.then((response) => {
+					setCustomer(response.customer);
+					setHasSearched(true);
+				})
+				.catch(() => {
+					setCustomer(undefined);
+					setHasSearched(true);
+				});
 	};
 
 	const onSubmitSearchForm = (customer) => {
@@ -88,16 +109,32 @@ const CreateBookingModal = ({ studioId, openModal, setOpenModal }) => {
 				setOpenModal={setOpenModal}
 				title={'Tạo đơn đặt hàng'}
 				canConfirm={hasSearched}
-				confirmTitle={!!customer ? 'Xác nhận' : 'Tạo khách hàng'}
+				confirmTitle={
+					typeof customer !== 'undefined' ? 'Xác nhận' : 'Tạo khách hàng'
+				}
 				onSubmit={() => onSubmitSearchForm(customer)}
 			>
+				<Alert
+					showAlert={showAlert}
+					setShowAlert={setShowAlert}
+					color={alertContent.isWarn ? 'red' : 'blue'}
+					className="bottom-2 right-2 absolute z-100"
+				>
+					<strong className="font-bold mr-1">{alertContent.title}</strong>
+					<span className="block sm:inline">{alertContent.content}</span>
+				</Alert>
 				<Heading>Tìm khách hàng</Heading>
 				<form onSubmit={handleSearch}>
 					<div className="flex flex-wrap gap-2 w-full">
 						<div className="flex-grow">
 							<MyInput
 								value={searchValue}
-								onChange={(e) => setSearchValue(e.target.value)}
+								onChange={(e) => {
+									if (hasSearched) {
+										setHasSearched(false);
+									}
+									setSearchValue(e.target.value);
+								}}
 								placeholder={'Nhập số điện thoại để tìm kiếm khách hàng.'}
 							/>
 						</div>
@@ -172,6 +209,7 @@ const CreateBookingModal = ({ studioId, openModal, setOpenModal }) => {
 				openModal={openCreateCustomerModal}
 				setOpenModal={setOpenCreateCustomerModal}
 				onSubmit={(newCustomer) => onCreateCustomer(newCustomer)}
+				phoneNumber={searchValue.trim()}
 			/>
 		</div>
 	);

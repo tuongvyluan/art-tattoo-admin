@@ -528,7 +528,7 @@ function ServicePage({ services, studioId, onReload }) {
 									</span>{' '}
 									và dành cho{' '}
 									<span className="font-semibold">
-										{currentService.status === 0 ? 'Mọi người' : 'Khách hàng cũ'}
+										{currentService.status === 0 ? 'Mọi người' : 'Khách hàng thân thiết'}
 									</span>
 									. Bạn có chắc muốn tạo thêm dịch vụ này không hay cập nhật dịch vụ
 									cũ?

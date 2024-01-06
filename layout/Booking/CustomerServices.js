@@ -377,7 +377,7 @@ const CustomerServices = ({
 																	: 'warning'
 															}
 														>
-															{getTattooArtIsCompleted.at(
+															{getTattooArtIsCompleted(
 																bookingDetail.tattooArt.isCompleted
 															)}
 														</Badge>

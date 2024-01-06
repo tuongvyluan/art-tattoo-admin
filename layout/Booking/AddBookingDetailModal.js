@@ -185,7 +185,7 @@ const AddBookingDetailModal = ({
 												{stringServiceCategories.at(service.serviceCategoryId)}
 											</td>
 											<td className="sm:px-3 sm:py-4 text-base">
-												{service.status === 0 ? 'Mọi người' : 'Khách hàng cũ'}
+												{service.status === 0 ? 'Mọi người' : 'Khách hàng thân thiết'}
 											</td>
 											<td className="sm:px-3 sm:py-4">
 												{service.maxPrice === 0 ? (

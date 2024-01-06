@@ -2,17 +2,30 @@ import MyModal from 'components/MyModal';
 import PricingComponent from 'components/Pricing';
 import { BASE_URL } from 'lib/env';
 import { getCodeString } from 'lib/vnpayHelpers';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import useSWR from 'swr';
+import { Loading } from 'ui';
 
 const PackagePage = () => {
 	const router = useRouter();
+	const { data, status } = useSession();
 	const [code, setCode] = useState(router.query.code);
 	const [openResultModal, setOpenResultModal] = useState(
 		typeof code !== 'undefined'
 	);
-	const { data: packageTypes, error } = useSWR(`${BASE_URL}/Package/GetAllPackageType`);
+	const { data: packageTypes, error } = useSWR(
+		`${BASE_URL}/Package/GetAllPackageType`
+	);
+
+	if (status !== 'authenticated') {
+		return (
+			<div className="flex items-center justify-center h-full">
+				<Loading />
+			</div>
+		);
+	}
 
 	if (error) {
 		return (
@@ -29,7 +42,7 @@ const PackagePage = () => {
 				openModal={openResultModal}
 				setOpenModal={setOpenResultModal}
 				title={'Kết quả thanh toán'}
-				cancelTitle='Đóng'
+				cancelTitle="Đóng"
 			>
 				<div>
 					{code === '00'
@@ -37,7 +50,10 @@ const PackagePage = () => {
 						: 'Thanh toán thất bại. ' + getCodeString(code)}
 				</div>
 			</MyModal>
-			<PricingComponent packageTypes={packageTypes} />
+			<PricingComponent
+				packageTypes={packageTypes}
+				studioId={data?.user?.studioId}
+			/>
 		</div>
 	);
 };

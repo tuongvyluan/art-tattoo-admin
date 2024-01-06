@@ -63,7 +63,7 @@ export const getServiceStatusString = (status: number) => {
 		return 'Mọi người';
 	}
 	if (status === 1) {
-		return 'Khách hàng cũ';
+		return 'Khách hàng thân thiết';
 	}
 	return 'Không ai cả (đã xoá)';
 };

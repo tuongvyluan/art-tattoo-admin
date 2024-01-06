@@ -93,7 +93,9 @@ const Login = ({ user }) => {
 														</div>
 														<div className="rounded-lg shadow-sm">
 															<div className="block mb-3">
-																<label>Email</label>
+																<div>
+																	Email{' '}<span className="text-red-500">*</span>{' '}
+																</div>
 																<input
 																	aria-label={'Email'}
 																	name="email"
@@ -106,7 +108,9 @@ const Login = ({ user }) => {
 																/>
 															</div>
 															<div className="block mb-3">
-																<label>Password</label>
+																<div>
+																	Password{' '}<span className="text-red-500">*</span>{' '}
+																</div>
 																<input
 																	aria-label={'Password'}
 																	name="password"

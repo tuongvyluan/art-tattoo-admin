@@ -1,7 +1,7 @@
 import { WidgetPricing } from 'ui';
 import PropTypes from 'propTypes';
 
-const PricingComponent = ({ packageTypes = [] }) => {
+const PricingComponent = ({ packageTypes = [], studioId = '' }) => {
 	const getPackageTypes = () => {
 		return packageTypes.map((p) => {
 			return {
@@ -24,6 +24,7 @@ const PricingComponent = ({ packageTypes = [] }) => {
 					price={item.price}
 					id={item.id}
 					key={item.id}
+					studioId={studioId}
 				/>
 				// <div
 				// 	className="relative break-words rounded-lg overflow-hidden shadow-sm mb-4 bg-white w-full px-2 text-center py-5"
@@ -36,7 +37,8 @@ const PricingComponent = ({ packageTypes = [] }) => {
 };
 
 PricingComponent.propTypes = {
-	packageTypes: PropTypes.array
+	packageTypes: PropTypes.array,
+	studioId: PropTypes.string
 };
 
 export default PricingComponent;

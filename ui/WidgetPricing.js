@@ -5,11 +5,12 @@ import Heading from 'components/Heading';
 import classNames from 'classnames';
 import { formatPrice } from 'lib';
 
-export const WidgetPricing = ({ title, subtitle, price, status, className, id }) => {
+export const WidgetPricing = ({ title, subtitle, price, status, className, id, studioId = '' }) => {
 	const getPackageId = () => {
 		const packageId = {
 			id: id,
-			time: new Date().getTime()
+			time: new Date().getTime(),
+			studioId: studioId
 		}
 		return JSON.stringify(packageId)
 	}
@@ -68,5 +69,6 @@ WidgetPricing.propTypes = {
 	price: PropTypes.number,
 	status: PropTypes.status,
 	className: PropTypes.string,
-	id: PropTypes.string
+	id: PropTypes.string,
+	studioId: PropTypes.string
 };

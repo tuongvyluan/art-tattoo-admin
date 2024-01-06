@@ -3,13 +3,12 @@ import MyModal from 'components/MyModal';
 import { fetcherPost } from 'lib';
 import { BASE_URL } from 'lib/env';
 import PropTypes from 'propTypes';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
-const CreateCustomerModal = ({ onSubmit, openModal, setOpenModal }) => {
+const CreateCustomerModal = ({ onSubmit, openModal, setOpenModal, phoneNumber }) => {
 	const [customer, setCustomer] = useState({
 		fullName: '',
-		email: '',
-		phoneNumber: ''
+		phoneNumber: phoneNumber
 	});
 
 	const handleFormChange = (e) => {
@@ -19,16 +18,27 @@ const CreateCustomerModal = ({ onSubmit, openModal, setOpenModal }) => {
 		});
 	};
 
-  const onCreate = () => {
-    fetcherPost(`${BASE_URL}/studios/CreateCustomerWithoutAccount`, customer).then((response) => {
-      const newCustomer = {
-        ...customer,
-        id: response.id
-      }
-      onSubmit(newCustomer)
-    })
-  }
-  
+	const onCreate = () => {
+		fetcherPost(`${BASE_URL}/studios/CreateCustomerWithoutAccount`, customer).then(
+			(response) => {
+				const newCustomer = {
+					...customer,
+					id: response.id
+				};
+				onSubmit(newCustomer);
+			}
+		);
+	};
+
+	useEffect(() => {
+		if (!openModal) {
+			setCustomer({
+				fullName: '',
+				phoneNumber: phoneNumber
+			});
+		}
+	}, [openModal]);
+
 	return (
 		<MyModal
 			openModal={openModal}
@@ -41,7 +51,10 @@ const CreateCustomerModal = ({ onSubmit, openModal, setOpenModal }) => {
 				<div className="grid md:grid-cols-2 grid-cols-1 gap-5 w-full">
 					<div>
 						<div className="block mb-3">
-							<label>{'Tên'}</label>
+							<label>
+								{'Tên '}
+								<span className="text-red-500">*</span>
+							</label>
 							<MyInput
 								aria-label={'Full name'}
 								name="fullName"
@@ -53,28 +66,8 @@ const CreateCustomerModal = ({ onSubmit, openModal, setOpenModal }) => {
 							/>
 						</div>
 						<div className="block mb-3">
-							<label>{'Số điện thoại'}</label>
-							<MyInput
-								aria-label={'Phone'}
-								name="phoneNumber"
-								value={customer.phoneNumber}
-								onChange={handleFormChange}
-								type="tel"
-								required
-								placeholder={'Email'}
-							/>
-						</div>
-						<div className="block mb-3">
-							<label>{'Email'}</label>
-							<MyInput
-								aria-label={'Email'}
-								name="email"
-								value={customer.email}
-								onChange={handleFormChange}
-								type="email"
-								required
-								placeholder={'Email'}
-							/>
+							<label>{'Số điện thoại: '}</label>
+							<span>{phoneNumber}</span>
 						</div>
 					</div>
 				</div>
@@ -86,7 +79,8 @@ const CreateCustomerModal = ({ onSubmit, openModal, setOpenModal }) => {
 CreateCustomerModal.propTypes = {
 	onSubmit: PropTypes.func,
 	openModal: PropTypes.bool,
-	setOpenModal: PropTypes.func
+	setOpenModal: PropTypes.func,
+	phoneNumber: PropTypes.string
 };
 
 export default CreateCustomerModal;

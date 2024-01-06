@@ -36,7 +36,7 @@ const RegisterPage = () => {
 		role: ROLE.STUDIO
 	});
 
-	const [avatar, setAvatar] = useState('/images/upload-img.png');
+	const [avatar, setAvatar] = useState('');
 	const [showModal, setShowModal] = useState(false);
 
 	const [modalContent, setModalContent] = useState({

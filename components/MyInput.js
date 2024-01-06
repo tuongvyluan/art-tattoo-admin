@@ -6,11 +6,13 @@ const MyInput = ({
 	onChange,
 	required = false,
 	placeholder,
+	readonly,
 	type = 'text'
 }) => {
 	return (
 		<input
 			aria-label={name}
+			readOnly={readonly}
 			type={type}
 			name={name}
 			value={value}
@@ -28,7 +30,8 @@ MyInput.propTypes = {
 	onChange: PropTypes.func,
 	required: PropTypes.bool,
 	placeholder: PropTypes.string,
-	type: PropTypes.string
+	type: PropTypes.string,
+	readonly: PropTypes.bool
 };
 
 export default MyInput;

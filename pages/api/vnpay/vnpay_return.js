@@ -20,12 +20,17 @@ const vnpayReturn = (req, res) => {
 	let hmac = crypto.createHmac('sha512', secretKey);
 	let signed = hmac.update(new Buffer(signData, 'utf-8')).digest('hex');
 
-	console.log('secureHash', secureHash);
-	console.log('signed', signed);
-	console.log('res', res);
 	if (secureHash === signed) {
 		//Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
 
+		const code = vnp_Params['vnp_ResponseCode']
+		if (code === '00') {
+			const txnRefs = vnp_Params['vnp_TxnRef']?.split('V')
+			if (txnRefs?.length > 2) {
+				const packageTypeId = txnRefs.at(0)
+				const studioId = txnRefs.at(1)
+			}
+		}
 		res.redirect(
 			`/package?code=${vnp_Params['vnp_ResponseCode']}`
 		);
