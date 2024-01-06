@@ -58,7 +58,9 @@ const AdminReport = () => {
 		setLoading(true);
 		setError(false);
 
-		fetcher(`${BASE_URL}/Media/GetAllReports?page=${page}&pageSize=${pageSize}&status=${status}`)
+		fetcher(
+			`${BASE_URL}/Media/GetAllReports?page=${page}&pageSize=${pageSize}&status=${status}`
+		)
 			.then((data) => {
 				setReports(data.data);
 				setTotalPage(Math.ceil(data.total / pageSize));
@@ -90,9 +92,10 @@ const AdminReport = () => {
 				</Alert>
 				<Card>
 					<CardBody>
-						<div className="flex flex-wrap gap-2 justify-between pb-3">
+						<div className="flex flex-wrap gap-2 justify-between pb-3 items-center">
 							<Heading>Báo cáo</Heading>
 							<div className="relative">
+								<div className='font-semibold pb-1'>Trạng thái</div>
 								<Dropdown className={'relative w-36'}>
 									<DropdownToggle className={'relative'}>
 										<div
@@ -132,7 +135,7 @@ const AdminReport = () => {
 						</div>
 
 						{reports && reports.length > 0 && !error ? (
-							<div className='h-full'>
+							<div className="h-full">
 								<div className="w-full overflow-auto relative shadow-md sm:rounded-lg mb-5 text-base">
 									{
 										// Artist list
@@ -150,7 +153,7 @@ const AdminReport = () => {
 													Người bị báo cáo
 												</th>
 												<th scope="col" className="px-3 py-3 bg-gray-50">
-													Tình trạng
+													Trạng thái
 												</th>
 												<th scope="col" className="px-3 py-3 bg-gray-50"></th>
 											</tr>
