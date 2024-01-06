@@ -203,15 +203,23 @@ function StudioIndexPage({ studioId, role = ROLE.STUDIO }) {
 							</Card>
 						</div>
 					) : (
-						<div className="flex items-center justify-center gap-1 text-lg">
-							<div className="text-center">
-								<span>Bạn đang không hợp tác với nghệ sĩ nào, vào </span>
-								<Link prefetch={false} href={'/artist'}>đây</Link>
-								<span>
-									{' '}
-									để nhập key từ nghệ sĩ và thêm họ vào tiệm xăm của mình nhé.
-								</span>
-							</div>
+						<div className="flex items-center justify-center gap-1 text-lg pb-5">
+							{role === ROLE.STUDIO ? (
+								<div className="text-center">
+									<span>Bạn đang không hợp tác với nghệ sĩ nào, vào </span>
+									<Link prefetch={false} href={'/artist'}>
+										đây
+									</Link>
+									<span>
+										{' '}
+										để nhập key từ nghệ sĩ và thêm họ vào tiệm xăm của mình nhé.
+									</span>
+								</div>
+							) : (
+								<div className="text-center">
+									Tiệm xăm hiện không hợp tác với nghệ sĩ nào.
+								</div>
+							)}
 						</div>
 					)}
 				</div>

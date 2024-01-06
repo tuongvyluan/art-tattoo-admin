@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { stringPlacements, stringSize, stringTattooStages } from 'lib/status';
 import { tattooStyleById } from 'lib/tattooStyle';
 import { useState } from 'react';
+import { noImageAvailable } from 'lib/tattooPhoto';
 
 function TattooDetailNoUpdatePage({ bookingId, artTattoo, myTattoo = false }) {
 	const [tattoo, setTattoo] = useState(JSON.parse(JSON.stringify(artTattoo)));
@@ -46,9 +47,7 @@ function TattooDetailNoUpdatePage({ bookingId, artTattoo, myTattoo = false }) {
 								<div>
 									<Avatar
 										circular={false}
-										src={
-											tattoo.thumbnail ? tattoo.thumbnail : '/images/upload-img.png'
-										}
+										src={tattoo.thumbnail ? tattoo.thumbnail : noImageAvailable}
 										alt={'Thumbnail'}
 										size={150}
 									/>
@@ -140,24 +139,22 @@ function TattooDetailNoUpdatePage({ bookingId, artTattoo, myTattoo = false }) {
 							</div>
 						)}
 					</div>
+					<div className="flex items-center cursor-pointer gap-2 pt-3">
+						<div className="font-semibold">Đã hoàn thành:</div>
+						<div className="relative">
+							<input
+								checked={tattoo.isCompleted}
+								type="checkbox"
+								readOnly
+								className="hidden"
+								disabled={true}
+							/>
+							<div className="toggle__bar h-4 bg-gray-400 rounded-full shadow-inner"></div>
+							<div className="toggle__handle absolute bg-white rounded-full shadow-sm transform transition duration-150 ease-in-out"></div>
+						</div>
+					</div>
 				</CardBody>
 			</Card>
-			<div className="flex items-center cursor-pointer gap-2">
-				<div className="font-semibold">Đã hoàn thành:</div>
-				<div
-					className="relative"
-				>
-					<input
-						checked={tattoo.isCompleted}
-						type="checkbox"
-						readOnly
-						className="hidden"
-						disabled={true}
-					/>
-					<div className="toggle__bar h-4 bg-gray-400 rounded-full shadow-inner"></div>
-					<div className="toggle__handle absolute bg-white rounded-full shadow-sm transform transition duration-150 ease-in-out"></div>
-				</div>
-			</div>
 		</div>
 	);
 }

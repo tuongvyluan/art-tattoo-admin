@@ -52,7 +52,7 @@ const PackagePage = () => {
 			</MyModal>
 			<PricingComponent
 				packageTypes={packageTypes}
-				studioId={data?.user?.studioId}
+				studioId={data?.user?.studioId ? data.user.studioId : ''}
 			/>
 		</div>
 	);

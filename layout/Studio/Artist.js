@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { HiMiniMagnifyingGlass } from 'react-icons/hi2';
 import MyPagination from 'ui/MyPagination';
 import { Calendar } from 'icons/outline';
+import MyInput from 'components/MyInput';
 
 const StudioArtist = ({ studioId }) => {
 	const [artistList, setArtistList] = useState([]);
@@ -142,16 +143,16 @@ const StudioArtist = ({ studioId }) => {
 
 	return (
 		<div className="relative min-h-body">
-			<Alert
-				showAlert={showAlert}
-				setShowAlert={setShowAlert}
-				color={alertContent.isWarn}
-				className="bottom-2 right-2 absolute"
-			>
-				<strong className="font-bold mr-1">{alertContent.title}</strong>
-				<span className="block sm:inline">{alertContent.content}</span>
-			</Alert>
 			<div className="sm:px-8 md:px-1 lg:px-6 xl:px-16">
+				<Alert
+					showAlert={showAlert}
+					setShowAlert={setShowAlert}
+					color={alertContent.isWarn}
+					className="bottom-2 right-2 absolute z-100"
+				>
+					<strong className="font-bold mr-1">{alertContent.title}</strong>
+					<span className="block sm:inline">{alertContent.content}</span>
+				</Alert>
 				<Card>
 					<CardBody>
 						<Heading>Nghệ sĩ</Heading>
@@ -161,11 +162,10 @@ const StudioArtist = ({ studioId }) => {
 									Nhập key của nghệ sĩ để thêm nghệ sĩ mới
 								</div>
 								<div className="flex gap-2 py-2 items-center">
-									<input
-										type="value"
+									<MyInput
 										value={artistKey}
+										type="text"
 										onChange={(e) => setArtistKey(e.target.value)}
-										className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
 									/>
 									<div className="w-16">
 										<Button onClick={() => handleAddArtist()}>Thêm</Button>

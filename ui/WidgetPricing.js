@@ -38,7 +38,7 @@ export const WidgetPricing = ({ title, subtitle, price, status, className, id, s
 			</div>
 
 			<div className="mt-auto">
-				<p className="font-bold text-5xl mb-4">
+				<p className="font-bold text-4xl mb-4">
 					<span>{price === 0 ? 'Miễn phí' : formatPrice(price)}</span>
 				</p>
 

@@ -21,7 +21,7 @@ const AdminIndexPage = () => {
         <div className="w-full md:w-2/4 lg:w-1/4 px-2">
           <WidgetStatCard
             title="Số lượng tiệm xăm"
-            value={data?.total}
+            value={`${data?.total}`}
             icon={<Users width={16} height={16} />}
             type={'blue'}
           />
