@@ -3,23 +3,42 @@ import Button from 'components/Button';
 import { PACKAGE_TYPE_STATUS } from 'lib/status';
 import Heading from 'components/Heading';
 import classNames from 'classnames';
-import { formatPrice } from 'lib';
+import { fetcherPut, formatPrice } from 'lib';
+import { BASE_URL } from 'lib/env';
+import Router from 'next/router';
 
-export const WidgetPricing = ({ title, subtitle, price, status, className, id, studioId = '' }) => {
+export const WidgetPricing = ({
+	title,
+	subtitle,
+	price,
+	status,
+	className,
+	id,
+	studioId = ''
+}) => {
 	const getPackageId = () => {
 		const packageId = {
 			id: id,
 			time: new Date().getTime(),
 			studioId: studioId
-		}
-		return JSON.stringify(packageId)
-	}
+		};
+		return JSON.stringify(packageId);
+	};
 
 	const handleStartTrial = () => {
 		if (price === 0) {
-			console.log('trial')
+			fetcherPut(`${BASE_URL}/Package/PurchasePackage`, {
+				packageId: id,
+				studioId: studioId
+			})
+				.then(() => {
+					Router.replace('/package?code=00');
+				})
+				.catch(() => {
+					Router.replace('/package?code=99');
+				});
 		}
-	}
+	};
 
 	return (
 		<div className={classNames(className, 'flex flex-col relative break-words')}>

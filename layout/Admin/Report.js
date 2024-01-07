@@ -1,5 +1,5 @@
 import Heading from 'components/Heading';
-import { Badge, Tooltip } from 'flowbite-react';
+import { Badge } from 'flowbite-react';
 import { ChevronDown } from 'icons/outline';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
@@ -13,11 +13,14 @@ import { useEffect, useState } from 'react';
 import { HiMiniMagnifyingGlass } from 'react-icons/hi2';
 import { Alert, Card, CardBody, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
 import MyPagination from 'ui/MyPagination';
+import ReportDetailModal from './ReportDetail';
 
 const AdminReport = () => {
 	const router = useRouter();
 	const [reports, setReports] = useState([]);
-	const [page, setPage] = useState(router.query.page ? router.query.page : 1);
+	const [page, setPage] = useState(
+		router.query.page ? Number.parseInt(router.query.page) : 1
+	);
 	const pageSize = 20;
 	const [totalPage, setTotalPage] = useState(0);
 	const [loading, setLoading] = useState(true);
@@ -26,6 +29,8 @@ const AdminReport = () => {
 	const [status, setStatus] = useState(
 		router.query.status ? router.query.status : 0
 	);
+	const [currentReport, setCurrentReport] = useState(undefined);
+	const [openDetailModal, setOpenDetailModal] = useState(false);
 
 	const [alertContent, setAlertContent] = useState({
 		title: '',
@@ -54,7 +59,12 @@ const AdminReport = () => {
 		});
 	};
 
-	useEffect(() => {
+	const handleViewReportDetail = (report) => {
+		setCurrentReport(report);
+		setOpenDetailModal(true);
+	};
+
+	const fetchData = () => {
 		setLoading(true);
 		setError(false);
 
@@ -64,7 +74,6 @@ const AdminReport = () => {
 			.then((data) => {
 				setReports(data.data);
 				setTotalPage(Math.ceil(data.total / pageSize));
-				setLoading(false);
 			})
 			.catch((e) => {
 				setPage(1);
@@ -72,12 +81,17 @@ const AdminReport = () => {
 				setReports([]);
 				setTotalPage(0);
 				setError(true);
-				setLoading(false);
 			})
 			.finally(() => {
 				router.push(`/report?page=${page}&status=${status}`);
+				setLoading(false);
 			});
+	};
+
+	useEffect(() => {
+		fetchData();
 	}, [page, status]);
+
 	return (
 		<div className="relative min-h-body">
 			<div className="sm:px-8 md:px-1 lg:px-6 xl:px-16">
@@ -92,10 +106,17 @@ const AdminReport = () => {
 				</Alert>
 				<Card>
 					<CardBody>
-						<div className="flex flex-wrap gap-2 justify-between pb-3 items-center">
+						<div className="flex flex-wrap gap-2 justify-between pb-3 items-center relative">
+							<ReportDetailModal
+								openReport={openDetailModal}
+								setOpenReport={setOpenDetailModal}
+								report={currentReport}
+								fetchData={fetchData}
+								handleAlert={handleAlert}
+							/>
 							<Heading>Báo cáo</Heading>
 							<div className="relative">
-								<div className='font-semibold pb-1'>Trạng thái</div>
+								<div className="font-semibold pb-1">Trạng thái</div>
 								<Dropdown className={'relative w-36'}>
 									<DropdownToggle className={'relative'}>
 										<div
@@ -176,14 +197,15 @@ const AdminReport = () => {
 														</div>
 													</td>
 													<td className="px-3 py-4">
-														<Tooltip content="Xem chi tiết">
-															<a className="text-gray-500">
-																<HiMiniMagnifyingGlass
-																	className="cursor-pointer font-bold"
-																	size={20}
-																/>
-															</a>
-														</Tooltip>
+														<button
+															onClick={() => handleViewReportDetail(r)}
+															className="text-gray-500"
+														>
+															<HiMiniMagnifyingGlass
+																className="cursor-pointer font-bold"
+																size={20}
+															/>
+														</button>
 													</td>
 												</tr>
 											))}

@@ -42,6 +42,12 @@ export const enum STUDIO_STATUS {
 	DELETED = 2
 }
 
+export const enum REPORT_STATUS {
+	PENDING = 0,
+	INVALID = 1,
+	VALID = 2
+}
+
 export const enum SERVICE_STATUS {
 	AVAILABLE = 0,
 	STUDIO_ONLY = 1,

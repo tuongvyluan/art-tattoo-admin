@@ -1,23 +1,47 @@
 import MyModal from 'components/MyModal';
 import PricingComponent from 'components/Pricing';
+import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
+import { ROLE } from 'lib/status';
 import { getCodeString } from 'lib/vnpayHelpers';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import useSWR from 'swr';
+import { useEffect, useState } from 'react';
 import { Loading } from 'ui';
 
 const PackagePage = () => {
 	const router = useRouter();
+	const [code, setCode] = useState(router.query.code)
 	const { data, status } = useSession();
-	const [code, setCode] = useState(router.query.code);
 	const [openResultModal, setOpenResultModal] = useState(
-		typeof code !== 'undefined'
+		typeof router.query.code !== 'undefined'
 	);
-	const { data: packageTypes, error } = useSWR(
-		`${BASE_URL}/Package/GetAllPackageType`
-	);
+	const [packageTypes, setPackageTypes] = useState([]);
+	const [error, setError] = useState(false);
+
+	useEffect(() => {
+		fetcher(
+			`${BASE_URL}/Package/${
+				data?.user?.role === ROLE.STUDIO
+					? 'GetStudioPackageType?studioId=' + data.user.studioId
+					: 'GetAllPackageType'
+			}`
+		)
+			.then((data) => {
+				setPackageTypes(data);
+			})
+			.catch(() => {
+				setError(true);
+			});
+
+		if (typeof code !== 'undefined') {
+			setOpenResultModal(true);
+		}
+	}, [code]);
+
+	useEffect(() => {
+		setCode(router.query.code)
+	}, [router.query.code])
 
 	if (status !== 'authenticated') {
 		return (
@@ -45,9 +69,9 @@ const PackagePage = () => {
 				cancelTitle="Đóng"
 			>
 				<div>
-					{code === '00'
+					{router.query.code === '00'
 						? 'Thanh toán thành công.'
-						: 'Thanh toán thất bại. ' + getCodeString(code)}
+						: 'Thanh toán thất bại. ' + getCodeString(router.query.code)}
 				</div>
 			</MyModal>
 			<PricingComponent

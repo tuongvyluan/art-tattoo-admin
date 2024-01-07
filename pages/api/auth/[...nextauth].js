@@ -107,7 +107,8 @@ const authOptions = {
 						fullName: data?.accountResult?.fullName,
 						accountId: data?.accountResult?.accountId,
 						avatar: data?.accountResult?.avatar,
-						studioName: data?.accountResult?.studioName
+						studioName: data?.accountResult?.studioName,
+						validUntil: data?.accountResult?.validUntil? new Date(validUntil) : undefined
 					};
 				} else {
 					signOut();
@@ -125,7 +126,8 @@ const authOptions = {
 					artistId: user.artistId,
 					accountId: user.accountId,
 					avatar: user.avatar,
-					studioName: user.studioName
+					studioName: user.studioName,
+					validUntil: user.validUntil? new Date(user.validUntil) : undefined
 				};
 			}
 			return token;
@@ -142,6 +144,7 @@ const authOptions = {
 				session.user.accountId = token.accountId;
 				session.user.avatar = token.avatar;
 				session.user.studioName = token.studioName;
+				session.user.validUntil = token.validUntil? new Date(token.validUntil) : undefined;
 			}
 			return session;
 		},
@@ -195,7 +198,8 @@ const authOptions = {
 					artistId: res.artistId,
 					accountId: res.accountId,
 					avatar: res.avatar,
-					studioName: res.studioName
+					studioName: res.studioName,
+					validUntil: res.validUntil? new Date(res.validUntil) : undefined
 				};
 
 				// if everything is fine

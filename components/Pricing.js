@@ -20,7 +20,7 @@ const PricingComponent = ({ packageTypes = [], studioId = '' }) => {
 			<div className="grid xl:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-3">
 				{getPackageTypes().map((item, index) => (
 					<AdminWidgetPricing
-						className="relative break-words rounded-lg overflow-hidden shadow-sm mb-4 bg-white w-full px-2 text-center py-5"
+						className="relative break-words rounded-lg overflow-hidden shadow-md mb-4 bg-white w-full px-2 text-center py-5"
 						title={item.title}
 						subtitle={item.subtitle}
 						price={item.price}
@@ -36,7 +36,7 @@ const PricingComponent = ({ packageTypes = [], studioId = '' }) => {
 		<div className="grid xl:grid-cols-4 sm:grid-cols-2 grid-cols-1 gap-3">
 			{getPackageTypes().map((item, index) => (
 				<WidgetPricing
-					className="relative break-words rounded-lg overflow-hidden shadow-sm mb-4 bg-white w-full px-2 text-center py-5"
+					className="relative break-words rounded-lg overflow-hidden shadow-md mb-4 bg-white w-full px-2 text-center py-5"
 					title={item.title}
 					subtitle={item.subtitle}
 					price={item.price}

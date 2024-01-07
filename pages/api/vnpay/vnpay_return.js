@@ -1,9 +1,14 @@
 import queryString from 'query-string';
 import * as crypto from 'crypto';
-import { NEXT_PUBLIC_VNP_HASH_SECRET, NEXT_PUBLIC_VNP_TMN_CODE } from 'lib/env';
+import {
+	BASE_URL,
+	NEXT_PUBLIC_VNP_HASH_SECRET,
+	NEXT_PUBLIC_VNP_TMN_CODE
+} from 'lib/env';
 import { sortObject } from 'lib/vnpay';
+import { fetcherPut } from 'lib';
 
-const vnpayReturn = (req, res) => {
+const vnpayReturn = async (req, res) => {
 	let vnp_Params = req.query;
 
 	let secureHash = vnp_Params['vnp_SecureHash'];
@@ -23,17 +28,24 @@ const vnpayReturn = (req, res) => {
 	if (secureHash === signed) {
 		//Kiem tra xem du lieu trong db co hop le hay khong va thong bao ket qua
 
-		const code = vnp_Params['vnp_ResponseCode']
+		const code = vnp_Params['vnp_ResponseCode'];
 		if (code === '00') {
-			const txnRefs = vnp_Params['vnp_TxnRef']?.split('V')
+			const txnRefs = vnp_Params['vnp_TxnRef']?.split('V');
 			if (txnRefs?.length > 2) {
-				const packageTypeId = txnRefs.at(0)
-				const studioId = txnRefs.at(1)
+				const packageTypeId = txnRefs.at(0);
+				const studioId = txnRefs.at(1);
+				console.log(packageTypeId)
+				console.log(studioId)
+				await fetcherPut(`${BASE_URL}/Package/PurchasePackage`, {
+					packageId: packageTypeId,
+					studioId: studioId
+				}).catch((e) => {
+					console.log(e)
+					res.redirect('/package?code=99');
+				});
 			}
 		}
-		res.redirect(
-			`/package?code=${vnp_Params['vnp_ResponseCode']}`
-		);
+		res.redirect(`/package?code=${vnp_Params['vnp_ResponseCode']}`);
 	} else {
 		res.redirect('/package?code=97');
 	}
