@@ -13,7 +13,7 @@ import { Loading } from 'ui';
 const PackagePage = () => {
 	const router = useRouter();
 	const [code, setCode] = useState(router.query.code);
-	const { data, status } = useSession();
+	const { data, status, update } = useSession();
 	const [openResultModal, setOpenResultModal] = useState(
 		typeof router.query.code !== 'undefined'
 	);

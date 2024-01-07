@@ -17,7 +17,6 @@ export const WidgetPricing = ({
 	id,
 	studioId = ''
 }) => {
-	const { update, data } = useSession();
 	const getPackageId = () => {
 		const packageId = {
 			id: id,
@@ -33,16 +32,12 @@ export const WidgetPricing = ({
 				packageId: id,
 				studioId: studioId
 			})
-				.then((response) => {
-					update({
-						...data,
-						user: {
-							...data?.user,
-							validUntil: response.validUntil
-						}
-					});
+				.then(() => {
 					Router.replace('/package?code=00');
 				})
+				.catch(() => {
+					Router.replace('/package?code=99');
+				});
 		}
 	};
 
@@ -92,7 +87,7 @@ WidgetPricing.propTypes = {
 	title: PropTypes.string,
 	subtitle: PropTypes.string,
 	price: PropTypes.number,
-	status: PropTypes.number,
+	status: PropTypes.status,
 	className: PropTypes.string,
 	id: PropTypes.number,
 	studioId: PropTypes.string
