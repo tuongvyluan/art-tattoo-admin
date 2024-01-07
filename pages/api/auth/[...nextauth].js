@@ -56,7 +56,8 @@ const authOptions = {
 					fullName: res.fullName,
 					accountId: res.accountId,
 					avatar: res.avatar,
-					studioName: res.studioName
+					studioName: res.studioName,
+					validUntil: res.validUntil
 				};
 			}
 		}),
@@ -108,7 +109,7 @@ const authOptions = {
 						accountId: data?.accountResult?.accountId,
 						avatar: data?.accountResult?.avatar,
 						studioName: data?.accountResult?.studioName,
-						validUntil: data?.accountResult?.validUntil? new Date(validUntil) : undefined
+						validUntil: data?.accountResult?.validUntil
 					};
 				} else {
 					signOut();
@@ -127,7 +128,7 @@ const authOptions = {
 					accountId: user.accountId,
 					avatar: user.avatar,
 					studioName: user.studioName,
-					validUntil: user.validUntil? new Date(user.validUntil) : undefined
+					validUntil: user.validUntil
 				};
 			}
 			return token;
@@ -144,7 +145,7 @@ const authOptions = {
 				session.user.accountId = token.accountId;
 				session.user.avatar = token.avatar;
 				session.user.studioName = token.studioName;
-				session.user.validUntil = token.validUntil? new Date(token.validUntil) : undefined;
+				session.user.validUntil = token.validUntil
 			}
 			return session;
 		},
@@ -199,7 +200,7 @@ const authOptions = {
 					accountId: res.accountId,
 					avatar: res.avatar,
 					studioName: res.studioName,
-					validUntil: res.validUntil? new Date(res.validUntil) : undefined
+					validUntil: res.validUntil
 				};
 
 				// if everything is fine

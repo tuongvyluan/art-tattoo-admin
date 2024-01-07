@@ -11,7 +11,15 @@ import {
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { HiMiniMagnifyingGlass } from 'react-icons/hi2';
-import { Alert, Card, CardBody, Dropdown, DropdownMenu, DropdownToggle } from 'ui';
+import {
+	Alert,
+	Card,
+	CardBody,
+	Dropdown,
+	DropdownMenu,
+	DropdownToggle,
+	Loading
+} from 'ui';
 import MyPagination from 'ui/MyPagination';
 import ReportDetailModal from './ReportDetail';
 
@@ -91,6 +99,14 @@ const AdminReport = () => {
 	useEffect(() => {
 		fetchData();
 	}, [page, status]);
+
+	if (loading && !error) {
+		return (
+			<div className="flex items-center justify-center h-full">
+				<Loading />
+			</div>
+		);
+	}
 
 	return (
 		<div className="relative min-h-body">

@@ -163,7 +163,8 @@ ReportDetailModal.propTypes = {
 	report: PropTypes.object,
 	openReport: PropTypes.bool,
 	setOpenReport: PropTypes.func,
-	fetchData: PropTypes.func
+	fetchData: PropTypes.func,
+	handleAlert: PropTypes.func
 };
 
 export default ReportDetailModal;

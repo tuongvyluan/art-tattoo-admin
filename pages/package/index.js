@@ -1,23 +1,25 @@
 import MyModal from 'components/MyModal';
 import PricingComponent from 'components/Pricing';
+import PackageHistoryTable from 'layout/PackageHistoryTable';
 import { fetcher } from 'lib';
 import { BASE_URL } from 'lib/env';
 import { ROLE } from 'lib/status';
 import { getCodeString } from 'lib/vnpayHelpers';
 import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Loading } from 'ui';
 
 const PackagePage = () => {
 	const router = useRouter();
-	const [code, setCode] = useState(router.query.code)
+	const [code, setCode] = useState(router.query.code);
 	const { data, status } = useSession();
 	const [openResultModal, setOpenResultModal] = useState(
 		typeof router.query.code !== 'undefined'
 	);
 	const [packageTypes, setPackageTypes] = useState([]);
 	const [error, setError] = useState(false);
+	const [reloadKey, setReloadKey] = useState(Math.random());
 
 	useEffect(() => {
 		fetcher(
@@ -37,13 +39,17 @@ const PackagePage = () => {
 		if (typeof code !== 'undefined') {
 			setOpenResultModal(true);
 		}
-	}, [code]);
+	}, [code, data?.user?.role]);
 
 	useEffect(() => {
-		setCode(router.query.code)
-	}, [router.query.code])
+		setCode(router.query.code);
+		setReloadKey(Math.random());
+	}, [router.query.code]);
 
 	if (status !== 'authenticated') {
+		if (status === 'unauthenticated') {
+			Router.replace('/');
+		}
 		return (
 			<div className="flex items-center justify-center h-full">
 				<Loading />
@@ -60,30 +66,43 @@ const PackagePage = () => {
 	}
 
 	return (
-		<div className="relative">
-			<MyModal
-				canConfirm={false}
-				openModal={openResultModal}
-				setOpenModal={setOpenResultModal}
-				title={'Kết quả thanh toán'}
-				cancelTitle="Đóng"
-			>
-				<div>
-					{router.query.code === '00'
-						? 'Thanh toán thành công.'
-						: 'Thanh toán thất bại. ' + getCodeString(router.query.code)}
-				</div>
-			</MyModal>
+		<div className="relative px-3">
+			{router.query.code && (
+				<MyModal
+					canConfirm={false}
+					openModal={openResultModal}
+					setOpenModal={(val) => {
+						if (!val) {
+							router.push('/package?page=' + router.query.page);
+						}
+						setOpenResultModal(val);
+					}}
+					title={'Kết quả thanh toán'}
+					cancelTitle="Đóng"
+				>
+					<div>
+						{router.query.code === '00'
+							? 'Thanh toán thành công.'
+							: 'Thanh toán thất bại. ' + getCodeString(router.query.code)}
+					</div>
+				</MyModal>
+			)}
 			<PricingComponent
 				packageTypes={packageTypes}
-				studioId={data?.user?.studioId ? data.user.studioId : ''}
+				studioId={data.user.studioId ? data.user.studioId : ''}
 			/>
+			<div>
+				<PackageHistoryTable
+					studioId={data.user.studioId ? data.user.studioId : ''}
+					reloadKey={reloadKey}
+				/>
+			</div>
 		</div>
 	);
 };
 
 PackagePage.getInitialProps = async () => ({
-	namespacesRequired: ['header', 'footer', 'sidebar']
+	namespacesRequired: ['header', 'footer', 'sidebar', 'dashboard']
 });
 
 export default PackagePage;

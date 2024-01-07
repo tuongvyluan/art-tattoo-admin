@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { fetcherPut, formatPrice } from 'lib';
 import { BASE_URL } from 'lib/env';
 import Router from 'next/router';
+import { useSession } from 'next-auth/react';
 
 export const WidgetPricing = ({
 	title,
@@ -16,6 +17,7 @@ export const WidgetPricing = ({
 	id,
 	studioId = ''
 }) => {
+	const { update, data } = useSession();
 	const getPackageId = () => {
 		const packageId = {
 			id: id,
@@ -31,12 +33,16 @@ export const WidgetPricing = ({
 				packageId: id,
 				studioId: studioId
 			})
-				.then(() => {
+				.then((response) => {
+					update({
+						...data,
+						user: {
+							...data?.user,
+							validUntil: response.validUntil
+						}
+					});
 					Router.replace('/package?code=00');
 				})
-				.catch(() => {
-					Router.replace('/package?code=99');
-				});
 		}
 	};
 
@@ -86,8 +92,8 @@ WidgetPricing.propTypes = {
 	title: PropTypes.string,
 	subtitle: PropTypes.string,
 	price: PropTypes.number,
-	status: PropTypes.status,
+	status: PropTypes.number,
 	className: PropTypes.string,
-	id: PropTypes.string,
+	id: PropTypes.number,
 	studioId: PropTypes.string
 };

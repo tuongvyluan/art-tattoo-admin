@@ -36,5 +36,5 @@ AdminWidgetPricing.propTypes = {
 	price: PropTypes.number,
 	status: PropTypes.status,
 	className: PropTypes.string,
-	id: PropTypes.string
+	id: PropTypes.number
 };
