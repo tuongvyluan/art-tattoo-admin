@@ -30,12 +30,14 @@ const STUDIO_CANCELLED_TAB = '3';
 const COMPLETE_TAB = '4';
 const NOT_COMPLETE_TAB = '5';
 
-function BookingPage({ studioId }) {
+function BookingPage({ studioId, canBook }) {
 	const router = useRouter();
-	const [openCreateModal, setOpenCreateModal] = useState(false)
+	const [openCreateModal, setOpenCreateModal] = useState(false);
 	const [data, setData] = useState([]);
 	const [artistList, setArtistList] = useState([]);
-	const [currentArtist, setCurrentArtist] = useState(router.query.artistId ? router.query.artistId : null);
+	const [currentArtist, setCurrentArtist] = useState(
+		router.query.artistId ? router.query.artistId : null
+	);
 	const [activeTab, setActiveTab] = useState(
 		router.query.active ? router.query.active : ALL_TAB
 	);
@@ -94,7 +96,7 @@ function BookingPage({ studioId }) {
 				setLoading(false);
 			})
 			.catch((e) => {
-        setPage(1);
+				setPage(1);
 				setData([]);
 				setTotal(0);
 				setError(true);
@@ -151,16 +153,20 @@ function BookingPage({ studioId }) {
 				}
 			});
 			setArtistList(list);
-			console.log(currentArtist)
+			console.log(currentArtist);
 			if (list.filter((a) => a.id === currentArtist).length === 0) {
-				setCurrentArtist(null)
+				setCurrentArtist(null);
 			}
 		});
 	}, []);
 
 	return (
 		<div className="sm:px-8 md:px-1 lg:px-6 xl:px-32 relative">
-			<CreateBookingModal openModal={openCreateModal} setOpenModal={setOpenCreateModal} studioId={studioId} />
+			<CreateBookingModal
+				openModal={openCreateModal}
+				setOpenModal={setOpenCreateModal}
+				studioId={studioId}
+			/>
 			{
 				// Booking filter status
 			}
@@ -169,9 +175,11 @@ function BookingPage({ studioId }) {
 				// Booking filter artist
 			}
 			<div className="my-3 flex flex-wrap gap-2 items-end">
-				<div>
-					<Button onClick={() => setOpenCreateModal(true)}>Tạo đơn hàng</Button>
-				</div>
+				{canBook && (
+					<div>
+						<Button onClick={() => setOpenCreateModal(true)}>Tạo đơn hàng</Button>
+					</div>
+				)}
 				<div className="min-w-max">
 					<div className="block font-semibold text-sm">Chọn nghệ sĩ</div>
 					<Dropdown className={'relative'}>
@@ -191,7 +199,8 @@ function BookingPage({ studioId }) {
 						<DropdownMenu className={'max-h-24 overflow-auto w-40 bg-white'}>
 							<div className="w-44">
 								{artistList.map((artist, artistIndex) => (
-									<div role='button'
+									<div
+										role="button"
 										key={artist.id}
 										onClick={() => setCurrentArtist(artist.id)}
 										className={`block w-full px-3 py-1 cursor-pointer hover:bg-gray-100 ${
@@ -237,8 +246,13 @@ function BookingPage({ studioId }) {
 						{data.map((booking, index) => (
 							<Card key={booking.id}>
 								<CardBody>
-									<Link prefetch={false} className="text-black" href={`/booking/${booking.id}`} passHref>
-										<a href='#' className="cursor-pointer text-black">
+									<Link
+										prefetch={false}
+										className="text-black"
+										href={`/booking/${booking.id}`}
+										passHref
+									>
+										<a href="#" className="cursor-pointer text-black">
 											<div className="flex justify-between mx-auto border-b border-gray-300 pb-3 mb-3">
 												<div className="flex gap-3 items-start">
 													<div className="font-semibold text-base">
@@ -327,7 +341,8 @@ function BookingPage({ studioId }) {
 }
 
 BookingPage.propTypes = {
-	studioId: PropTypes.string
+	studioId: PropTypes.string,
+	canBook: PropTypes.bool
 };
 
 export default BookingPage;
