@@ -1,7 +1,7 @@
 import Button from 'components/Button';
 import Heading from 'components/Heading';
 import { Tooltip } from 'flowbite-react';
-import { formatTimeWithoutSecond } from 'lib';
+import { formatPhoneNumber, formatTimeWithoutSecond } from 'lib';
 import { cityMap } from 'lib/city';
 import PropTypes from 'prop-types';
 import { useEffect, useState } from 'react';
@@ -70,6 +70,16 @@ function StudioInfo({ studio, setLoading }) {
 									<div className="w-max flex flex-wrap gap-1 items-end sm:pb-0 pb-6">
 										<label className="w-20">{'Mã số thuế:'}</label>
 										<div className="text-base">{profile.taxCode}</div>
+									</div>
+								</div>
+								<div className="flex flex-wrap items-center justify-start gap-3 mb-3 mt-3">
+									<div className="w-full flex flex-wrap gap-1 items-end sm:w-2/5 lg:w-1/2 sm:pb-0 pb-6">
+										<label className="w-20">{'Email:'}</label>
+										<div className="text-base">{profile.owner.email}</div>
+									</div>
+									<div className="w-max flex flex-wrap gap-1 items-end sm:pb-0 pb-6">
+										<label className="w-20">{'Số điện thoại:'}</label>
+										<div className="text-base">{formatPhoneNumber(profile.owner.phoneNumber)}</div>
 									</div>
 								</div>
 								<div className="flex gap-3 mb-3 sm:mb-0 ">

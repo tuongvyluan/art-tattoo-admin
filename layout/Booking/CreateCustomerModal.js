@@ -19,7 +19,10 @@ const CreateCustomerModal = ({ onSubmit, openModal, setOpenModal, phoneNumber })
 	};
 
 	const onCreate = () => {
-		fetcherPost(`${BASE_URL}/studios/CreateCustomerWithoutAccount`, customer).then(
+		fetcherPost(`${BASE_URL}/studios/CreateCustomerWithoutAccount`, {
+			fullName: customer.fullName,
+			phoneNumber: phoneNumber
+		}).then(
 			(response) => {
 				const newCustomer = {
 					...customer,

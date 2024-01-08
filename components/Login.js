@@ -5,6 +5,7 @@ import GoogleLogo from '/public/svg/google.svg';
 import { signIn } from 'next-auth/react';
 import { Modal } from 'flowbite-react';
 import { useState } from 'react';
+import { checkEmail, checkPhoneNumber } from 'lib/regex';
 
 const Login = ({ user }) => {
 	const [profile, setProfile] = useState(user);
@@ -19,28 +20,40 @@ const Login = ({ user }) => {
 		setProfile({ ...profile, [e.target.name]: e.target.value });
 	};
 
+	const checkEmailOrPhoneNumber = () => {
+		return checkPhoneNumber(profile.email) || checkEmail(profile.email);
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		handleAlert(true, '', 'Đang đăng nhập tài khoản...');
+		if (!checkEmailOrPhoneNumber()) {
+			handleAlert(true, 'Email hoặc số điện thoại không hợp lệ.', '', 2);
+		} else {
+			const res = await signIn('credentials', {
+				email: profile.email,
+				password: profile.password,
+				redirect: false
+			});
 
-		const res = await signIn('credentials', {
-			email: profile.email,
-			password: profile.password,
-			redirect: false
-		});
-
-		if (!res.ok) {
-			if (res.error.includes('unverified')) {
-				handleAlert(
-					true,
-					'Đăng nhập thất bại.',
-					'Email chưa được xác thực, hãy kiểm tra hộp mail để xác thực tài khoản nhé.',
-					true
-				);
-			} else if (res.error.includes('banned')) {
-				handleAlert(true, 'Đăng nhập thất bại.', 'Tài khoản này đã bị khoá.', true);
-			} else
-				handleAlert(true, 'Đăng nhập thất bại.', 'Sai email hoặc password.', true);
+			if (!res.ok) {
+				if (res.error.includes('unverified')) {
+					handleAlert(
+						true,
+						'Đăng nhập thất bại.',
+						'Email chưa được xác thực, hãy kiểm tra hộp mail để xác thực tài khoản nhé.',
+						true
+					);
+				} else if (res.error.includes('banned')) {
+					handleAlert(
+						true,
+						'Đăng nhập thất bại.',
+						'Tài khoản này đã bị khoá.',
+						true
+					);
+				} else
+					handleAlert(true, 'Đăng nhập thất bại.', 'Sai email hoặc password.', true);
+			}
 		}
 	};
 
@@ -94,22 +107,23 @@ const Login = ({ user }) => {
 														<div className="rounded-lg shadow-sm">
 															<div className="block mb-3">
 																<div>
-																	Email{' '}<span className="text-red-500">*</span>{' '}
+																	Email/Số điện thoại{' '}
+																	<span className="text-red-500">*</span>{' '}
 																</div>
 																<input
 																	aria-label={'Email'}
 																	name="email"
-																	type="email"
+																	type="text"
 																	value={profile.email}
 																	onChange={handleFormChange}
 																	required
 																	className="appearance-none relative block w-full px-3 py-3 ring-1 ring-gray-300 dark:ring-gray-600 ring-opacity-80 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:shadow-outline-blue focus:border-blue-300 focus:z-10 text-sm leading-none"
-																	placeholder={'Email'}
+																	placeholder={'Email hoặc điện thoại'}
 																/>
 															</div>
 															<div className="block mb-3">
 																<div>
-																	Password{' '}<span className="text-red-500">*</span>{' '}
+																	Password <span className="text-red-500">*</span>{' '}
 																</div>
 																<input
 																	aria-label={'Password'}

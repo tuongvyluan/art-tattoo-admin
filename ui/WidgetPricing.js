@@ -6,7 +6,6 @@ import classNames from 'classnames';
 import { fetcherPut, formatPrice } from 'lib';
 import { BASE_URL } from 'lib/env';
 import Router from 'next/router';
-import { useSession } from 'next-auth/react';
 
 export const WidgetPricing = ({
 	title,
@@ -15,6 +14,8 @@ export const WidgetPricing = ({
 	status,
 	className,
 	id,
+	duration,
+	maxQuantity,
 	studioId = ''
 }) => {
 	const getPackageId = () => {
@@ -54,6 +55,15 @@ export const WidgetPricing = ({
 						<li key={index}>{feature.title}</li>
 					))}
 				</ul> */}
+				<div className="text-base pb-1">
+					Hạn sử dụng: <span className="font-semibold">{duration} tháng</span>
+				</div>
+				{maxQuantity && (
+					<div className="text-base pb-1">
+						Lượt mua tối đa: <span className="font-semibold">{maxQuantity} lần/tiệm xăm</span>
+					</div>
+				)}
+
 				<p className="mb-5 text-base">{subtitle}</p>
 			</div>
 
@@ -90,5 +100,7 @@ WidgetPricing.propTypes = {
 	status: PropTypes.status,
 	className: PropTypes.string,
 	id: PropTypes.number,
-	studioId: PropTypes.string
+	studioId: PropTypes.string,
+	duration: PropTypes.number,
+	maxQuantity: PropTypes.number
 };

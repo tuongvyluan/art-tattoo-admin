@@ -13,7 +13,6 @@ import { useEffect, useState } from 'react';
 import { HiMiniMagnifyingGlass } from 'react-icons/hi2';
 import {
 	Alert,
-	Card,
 	CardBody,
 	Dropdown,
 	DropdownMenu,
@@ -120,7 +119,7 @@ const AdminReport = () => {
 					<strong className="font-bold mr-1">{alertContent.title}</strong>
 					<span className="block sm:inline">{alertContent.content}</span>
 				</Alert>
-				<Card>
+				<div className='relative min-w-0 break-words rounded-lg overflow-hidden shadow-sm w-full bg-white'>
 					<CardBody>
 						<div className="flex flex-wrap gap-2 justify-between pb-3 items-center relative">
 							<ReportDetailModal
@@ -246,7 +245,7 @@ const AdminReport = () => {
 							</div>
 						)}
 					</CardBody>
-				</Card>
+				</div>
 			</div>
 		</div>
 	);

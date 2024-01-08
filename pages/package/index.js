@@ -13,13 +13,14 @@ import { Loading } from 'ui';
 const PackagePage = () => {
 	const router = useRouter();
 	const [code, setCode] = useState(router.query.code);
-	const { data, status, update } = useSession();
+	const { data, status } = useSession();
 	const [openResultModal, setOpenResultModal] = useState(
 		typeof router.query.code !== 'undefined'
 	);
 	const [packageTypes, setPackageTypes] = useState([]);
 	const [error, setError] = useState(false);
-	const [reloadKey, setReloadKey] = useState(Math.random());
+	const [reloadHistory, setReloadHistory] = useState(Math.random());
+	const [reloadType, setReloadType] = useState(Math.random());
 
 	useEffect(() => {
 		fetcher(
@@ -39,17 +40,14 @@ const PackagePage = () => {
 		if (typeof code !== 'undefined') {
 			setOpenResultModal(true);
 		}
-	}, [code, data?.user?.role]);
+	}, [code, data?.user?.role, reloadType]);
 
 	useEffect(() => {
 		setCode(router.query.code);
-		setReloadKey(Math.random());
+		setReloadHistory(Math.random());
 	}, [router.query.code]);
 
 	if (status !== 'authenticated') {
-		if (status === 'unauthenticated') {
-			Router.replace('/');
-		}
 		return (
 			<div className="flex items-center justify-center h-full">
 				<Loading />
@@ -88,13 +86,14 @@ const PackagePage = () => {
 				</MyModal>
 			)}
 			<PricingComponent
+				setReload={() => setReloadType(Math.random())}
 				packageTypes={packageTypes}
 				studioId={data.user.studioId ? data.user.studioId : ''}
 			/>
 			<div>
 				<PackageHistoryTable
 					studioId={data.user.studioId ? data.user.studioId : ''}
-					reloadKey={reloadKey}
+					reloadKey={reloadHistory}
 				/>
 			</div>
 		</div>

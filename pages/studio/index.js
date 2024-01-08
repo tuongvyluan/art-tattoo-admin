@@ -49,7 +49,8 @@ const StudioPage = () => {
 					address: '',
 					bioContent: '',
 					owner: {
-						phoneNumber: ''
+						phoneNumber: '',
+						email: ''
 					},
 					city: 79,
 					taxCode: '',

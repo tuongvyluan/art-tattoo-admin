@@ -15,7 +15,7 @@ const ReportPage = () => {
 		);
 	}
 
-	if (status !== 'loading' || data.user.role !== ROLE.ADMIN) {
+	if (status !== 'authenticated' || data.user.role !== ROLE.ADMIN) {
 		Router.replace('/');
 		return (
 			<div className="flex items-center justify-center h-full">
